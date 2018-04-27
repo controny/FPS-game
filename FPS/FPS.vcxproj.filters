@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="源文件\shaders">
+      <UniqueIdentifier>{4d3b634b-c540-4d52-8b05-d242da2481d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\lib">
+      <UniqueIdentifier>{103190ea-6859-440e-8021-23b6c71c3932}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\shaderPrograms">
+      <UniqueIdentifier>{ae209f55-9e52-45ff-9054-8ea562fb5772}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\objects">
+      <UniqueIdentifier>{7ace2d15-ea09-49f6-b56a-85bb558318f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\camera">
+      <UniqueIdentifier>{218075ef-3f8e-4cb1-8244-b7aa33c19e22}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\shader.h">
+      <Filter>源文件\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera.h">
+      <Filter>源文件\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\mesh.h">
+      <Filter>源文件\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\model.h">
+      <Filter>源文件\objects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\glad.c">
+      <Filter>源文件\lib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\shaderPrograms\model_loading.fs">
+      <Filter>源文件\shaderPrograms</Filter>
+    </None>
+    <None Include="src\shaderPrograms\model_loading.vs">
+      <Filter>源文件\shaderPrograms</Filter>
+    </None>
+  </ItemGroup>
+</Project>
