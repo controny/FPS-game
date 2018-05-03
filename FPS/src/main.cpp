@@ -8,8 +8,10 @@
 #include <shaders/shader.h>
 #include <camera/camera.h>
 #include <objects/model.h>
+#include <objects/ground.h>
 
 #include <iostream>
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -80,6 +82,9 @@ int main()
 	// -----------
 	Model ourModel("resources/objects/nanosuit/nanosuit.obj");
 
+	// load ground
+	// -----------
+	Ground ground(50, 40, Mesh::Load("resources/textures/woodDiffuse.jpg"), Mesh::Load("resources/textures/woodSpecular.jpg"));
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -118,6 +123,9 @@ int main()
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		ourShader.setMat4("model", model);
 		ourModel.Draw(ourShader);
+
+		// render ground
+		ground.Draw(ourShader);
 
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

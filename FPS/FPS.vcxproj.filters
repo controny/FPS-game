@@ -50,6 +50,12 @@
     <ClCompile Include="src\lib\glad.c">
       <Filter>源文件\lib</Filter>
     </ClCompile>
+    <ClCompile Include="src\objects\ground.h">
+      <Filter>源文件\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\mesh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\model_loading.fs">

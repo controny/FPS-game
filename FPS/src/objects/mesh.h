@@ -26,12 +26,21 @@ struct Vertex {
 	glm::vec3 Tangent;
 	// bitangent
 	glm::vec3 Bitangent;
+
+	Vertex(const glm::vec3 &_Position = glm::vec3(0), const glm::vec3 &_Normal = glm::vec3(0), const glm::vec2 &_TexCoord = glm::vec2(0)) :
+		Position(_Position),
+		Normal(_Normal),
+		TexCoords(_TexCoord) {}
 };
 
 struct Texture {
 	unsigned int id;
 	string type;
 	string path;
+
+	Texture(const unsigned int &_id = 0, const std::string &_type = "") :
+		id(_id),
+		type(_type) {}
 };
 
 class Mesh {
@@ -92,6 +101,9 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 	}
 
+	// Load texture onto mesh
+	static unsigned int Load(const char * path);
+
 private:
 	/*  Render data  */
 	unsigned int VBO, EBO;
@@ -135,5 +147,7 @@ private:
 
 		glBindVertexArray(0);
 	}
+
+
 };
 #endif
