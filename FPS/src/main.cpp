@@ -9,6 +9,7 @@
 #include <camera/camera.h>
 #include <objects/model.h>
 #include <objects/ground.h>
+#include <objects/cube.h>
 
 #include <iostream>
 
@@ -86,6 +87,7 @@ int main()
 	// -----------
 	Ground ground(50, 40, Mesh::Load("resources/textures/woodDiffuse.jpg"), Mesh::Load("resources/textures/woodSpecular.jpg"));
 
+	Cube cube(glm::vec3(5,2,1), 4, Mesh::Load("resources/textures/container2.png"), Mesh::Load("resources/textures/container2_specular.png"));
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -127,6 +129,8 @@ int main()
 		// render ground
 		ground.Draw(ourShader);
 
+		//render cube
+		cube.Draw(ourShader);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
