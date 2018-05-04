@@ -1,0 +1,27 @@
+﻿  源.cpp
+  GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: rotate_slow function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: perspectiveFov function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: infinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: tweakedInfinitePerspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: roll function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: pitch function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: yaw function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: angle function returning degrees is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: angleAxis function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+d:\downloads\head\include\glad\shader.h(65): warning C4101: “infoLog”: 未引用的局部变量
+d:\downloads\head\include\glad\shader.h(64): warning C4101: “success”: 未引用的局部变量
+d:\vs-code\skybox2\skybox2\源.cpp(27): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\vs-code\skybox2\skybox2\源.cpp(28): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\vs-code\skybox2\skybox2\源.cpp(97): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\vs-code\skybox2\skybox2\源.cpp(156): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\vs-code\skybox2\skybox2\源.cpp(157): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\vs-code\skybox2\skybox2\源.cpp(161): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\vs-code\skybox2\skybox2\源.cpp(162): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\vs-code\skybox2\skybox2\源.cpp(164): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\vs-code\skybox2\skybox2\源.cpp(165): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\vs-code\skybox2\skybox2\源.cpp(174): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  skybox2.vcxproj -> D:\vs-code\skybox2\Debug\skybox2.exe
