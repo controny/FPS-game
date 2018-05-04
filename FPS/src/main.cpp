@@ -10,7 +10,7 @@
 #include <objects/model.h>
 #include <objects/ground.h>
 #include <objects/cube.h>
-
+#include "objects/skybox.h"
 #include <iostream>
 
 
@@ -90,6 +90,21 @@ int main()
 	Cube cube(glm::vec3(5,2,1), 4, Mesh::Load("resources/textures/container2.png"), Mesh::Load("resources/textures/container2_specular.png"));
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//skybox
+	Shader skyboxShader("src/shaderPrograms/skybox.vs.txt", "src/shaderPrograms/skybox.fs.txt");
+	vector<std::string> faces
+	{
+		"resources/textures/skybox/right.jpg",
+		"resources/textures/skybox/left.jpg",
+		"resources/textures/skybox/top.jpg",
+		"resources/textures/skybox/bottom.jpg",
+		"resources/textures/skybox/back.jpg",
+		"resources/textures/skybox/front.jpg"
+	};
+	Skybox skybox;
+	unsigned int cubemapTexture = skybox.loadCubemap(faces);
+	skyboxShader.use();
+	skyboxShader.setInt("skybox", 0);
 
 	// render loop
 	// -----------
@@ -131,6 +146,16 @@ int main()
 
 		//render cube
 		cube.Draw(ourShader);
+
+		//skybox
+
+		skyboxShader.use();
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+
+		skybox.renderSkybox(skyboxShader, SCR_WIDTH, SCR_HEIGHT, camera);
+
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
