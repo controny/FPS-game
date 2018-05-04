@@ -110,14 +110,6 @@ public:
 			textures.push_back(Texture(diffuse, "diffuse"));
 		if (specular > 0)
 			textures.push_back(Texture(specular, "specular"));
-		/*for (int i = 0; i < 36 * 3; ++i) {
-			if ((i + 1) % 3 == 1) normals[i] += center.x;
-			else if ((i + 1) % 3 == 2) normals[i] += center.y;
-			else normals[i] += center.z;
-		}*/
-		/*for (int i = 0; i < 36; ++i) {
-			std::cout << coords[i * 3] << coords[i * 3 + 1] << coords[i * 3 + 2] << endl;
-		}*/
 		float tex_coords[] = {
 			// Back face
 			0.0f, 0.0f, // Bottom-left
