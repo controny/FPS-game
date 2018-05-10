@@ -10,8 +10,11 @@
 #include <objects/model.h>
 #include <objects/ground.h>
 #include <objects/cube.h>
-#include "objects/skybox.h"
+#include <objects/skybox.h>
 #include <iostream>
+
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw_gl3.h>
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -33,6 +36,8 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+bool show_menu = false;
+
 int main()
 {
 	// glfw: initialize and configure
@@ -46,8 +51,6 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
-														 // glfw window creation
-														 // --------------------
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
 	if (window == NULL)
 	{
@@ -61,7 +64,7 @@ int main()
 	glfwSetScrollCallback(window, scroll_callback);
 
 	// tell GLFW to capture our mouse
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
@@ -71,13 +74,21 @@ int main()
 		return -1;
 	}
 
+	// init ImGui
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui_ImplGlfwGL3_Init(window, true);
+
+	// Setup style
+	ImGui::StyleColorsDark();
+
 	// configure global opengl state
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
 
 	// build and compile shaders
 	// -------------------------
-	Shader ourShader("src/shaderPrograms/model_loading.vs", "src/shaderPrograms/model_loading.fs");
+	Shader objectShader("src/shaderPrograms/object.vs", "src/shaderPrograms/object.fs");
 
 	// load models
 	// -----------
@@ -91,7 +102,7 @@ int main()
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//skybox
-	Shader skyboxShader("src/shaderPrograms/skybox.vs.txt", "src/shaderPrograms/skybox.fs.txt");
+	Shader skyboxShader("src/shaderPrograms/skybox.vs", "src/shaderPrograms/skybox.fs");
 	vector<std::string> faces
 	{
 		"resources/textures/skybox/right.jpg",
@@ -108,6 +119,9 @@ int main()
 
 	// render loop
 	// -----------
+	float light_x = 15.0f, light_y = 15.0f, light_z = 10.0f;
+	float ambientStrength = 0.3f, specularStrength = 1.0f, diffuseStrength = 1.0f, shininess = 32;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		// per-frame time logic
@@ -118,7 +132,13 @@ int main()
 
 		// input
 		// -----
-		processInput(window);
+		if (show_menu) {
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		} else {
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			processInput(window);
+		}
+		
 
 		// render
 		// ------
@@ -126,26 +146,33 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// don't forget to enable shader before setting uniforms
-		ourShader.use();
+		objectShader.use();
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
-		ourShader.setMat4("projection", projection);
-		ourShader.setMat4("view", view);
+		objectShader.setMat4("projection", projection);
+		objectShader.setMat4("view", view);
+		objectShader.setVec3("viewPos", camera.Position);
+		objectShader.setVec3("lightPos", glm::vec3(light_x, light_y, light_z));
+		objectShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+		objectShader.setFloat("ambientStrength", ambientStrength);
+		objectShader.setFloat("specularStrength", specularStrength);
+		objectShader.setFloat("shininess", shininess);
+		objectShader.setFloat("diffuseStrength", diffuseStrength);
 
 		// render the loaded model
 		glm::mat4 model;
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
-		ourShader.setMat4("model", model);
-		ourModel.Draw(ourShader);
+		objectShader.setMat4("model", model);
+		ourModel.Draw(objectShader);
 
 		// render ground
-		ground.Draw(ourShader);
+		ground.Draw(objectShader);
 
 		//render cube
-		cube.Draw(ourShader);
+		cube.Draw(objectShader);
 
 		//skybox
 
@@ -156,6 +183,34 @@ int main()
 
 		skybox.renderSkybox(skyboxShader, SCR_WIDTH, SCR_HEIGHT, camera);
 
+
+		// render gui at last
+		if (show_menu) {
+			ImGui_ImplGlfwGL3_NewFrame();
+			{
+				ImGui::Begin("Game Menu", &show_menu);
+
+				ImGui::Text("Light position: ");
+				ImGui::SliderFloat("x", &light_x, -20.0f, 20.0f);
+				ImGui::SliderFloat("y", &light_y, 10.0f, 20.0f);
+				ImGui::SliderFloat("z", &light_z, -20.0f, 20.0f);
+
+				ImGui::Text("Light properties: ");
+				ImGui::SliderFloat("Ambient strength", &ambientStrength, 0.0f, 1.0f);
+				ImGui::SliderFloat("Specular strength", &specularStrength, 0.0f, 1.0f);
+				ImGui::SliderFloat("Diffuse Strength", &diffuseStrength, 0.0f, 1.0f);
+				ImGui::SliderFloat("Shininess", &shininess, 2, 256);
+				if (ImGui::Button("Exit the game")) {
+					// exit the render loop
+					break;
+				}
+				ImGui::End();
+			}
+			
+			ImGui::Render();
+			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+		}
+		
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
@@ -174,7 +229,7 @@ int main()
 void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
+		show_menu = true;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		camera.ProcessKeyboard(FORWARD, deltaTime);
@@ -212,12 +267,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastX = xpos;
 	lastY = ypos;
 
-	camera.ProcessMouseMovement(xoffset, yoffset);
+	if (!show_menu) camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera.ProcessMouseScroll(yoffset);
+	if (!show_menu) camera.ProcessMouseScroll(yoffset);
 }
