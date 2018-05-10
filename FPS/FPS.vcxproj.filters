@@ -56,12 +56,21 @@
     <ClCompile Include="src\objects\mesh.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="include\imgui\imgui_impl_glfw_gl3.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_draw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaderPrograms\model_loading.fs">
+    <None Include="src\shaderPrograms\object.fs">
       <Filter>源文件\shaderPrograms</Filter>
     </None>
-    <None Include="src\shaderPrograms\model_loading.vs">
+    <None Include="src\shaderPrograms\object.vs">
       <Filter>源文件\shaderPrograms</Filter>
     </None>
   </ItemGroup>

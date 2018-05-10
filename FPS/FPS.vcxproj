@@ -121,6 +121,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\imgui\imgui.cpp" />
+    <ClCompile Include="include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\imgui\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="src\objects\ground.h" />
     <ClCompile Include="src\lib\glad.c" />
     <ClCompile Include="src\main.cpp" />
@@ -133,8 +136,8 @@
     <ClInclude Include="src\shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaderPrograms\model_loading.fs" />
-    <None Include="src\shaderPrograms\model_loading.vs" />
+    <None Include="src\shaderPrograms\object.fs" />
+    <None Include="src\shaderPrograms\object.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
