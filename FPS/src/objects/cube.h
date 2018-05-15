@@ -5,11 +5,8 @@ class Cube : public Mesh {
 public:
 	//
 	Cube(glm::vec3 center, float length, const unsigned int &diffuse, const unsigned int &specular) :
-		Mesh(getCube(center, length, diffuse, specular)) {
-		std::cout << vertices.size();
-		for (int i = 0; i < 36; ++i)
-			std::cout << indices[i] << " ";
-	}
+		Mesh(getCube(center, length, diffuse, specular));
+
 	Mesh getCube(glm::vec3 center, float length, const unsigned int &diffuse, const unsigned int &specular) {
 		float coords[] = {
 			-0.5f, -0.5f, -0.5f,

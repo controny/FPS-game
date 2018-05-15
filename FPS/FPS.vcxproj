@@ -124,16 +124,22 @@
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_glfw_gl3.cpp" />
-    <ClCompile Include="src\objects\ground.h" />
     <ClCompile Include="src\lib\glad.c" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\objects\mesh.cpp" />
+    <ClCompile Include="src\sample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
+    <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
+    <ClInclude Include="src\Components\WindowInfoSingletonComponent.h" />
+    <ClInclude Include="src\Events\KeyPressEvent.h" />
+    <ClInclude Include="src\MeshComponent.h" />
+    <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\camera.h" />
-    <ClInclude Include="src\objects\mesh.h" />
-    <ClInclude Include="src\objects\model.h" />
     <ClInclude Include="src\shader.h" />
+    <ClInclude Include="src\shaders\shader.h" />
+    <ClInclude Include="src\Systems\CameraMovingSystem.h" />
+    <ClInclude Include="src\Systems\RenderSystem.h" />
+    <ClInclude Include="src\Game.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />
