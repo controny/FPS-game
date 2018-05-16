@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ECS.h>
-#include <camera\camera.h>
+#include <Camera.h>
 
 enum Action {
 	FORWARD,

@@ -30,12 +30,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\shader.h">
-      <Filter>源文件\shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\camera.h">
-      <Filter>源文件\camera</Filter>
-    </ClInclude>
     <ClInclude Include="src\shaders\shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -66,21 +60,18 @@
     <ClInclude Include="src\Events\KeyPressEvent.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\Components\MeshComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\lib\glad.c">
-      <Filter>源文件\lib</Filter>
-    </ClCompile>
-    <ClCompile Include="include\imgui\imgui_impl_glfw_gl3.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="include\imgui\imgui.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="include\imgui\imgui_draw.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sample.cpp">
+    <ClCompile Include="dependencies\include\glad\glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

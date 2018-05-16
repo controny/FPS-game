@@ -5,12 +5,12 @@
 
 #include "Resource.h"
 
-#include "MeshComponent.h"
-#include "Components\CameraInfoSingletonComponent.h"
-#include "Components\LightingInfoSingletonComponent.h"
-#include "Components\WindowInfoSingletonComponent.h"
-#include "Systems/RenderSystem.h"
-#include "Systems\CameraMovingSystem.h"
+#include <Components/MeshComponent.h>
+#include <Components/CameraInfoSingletonComponent.h>
+#include <Components/WindowInfoSingletonComponent.h>
+#include <Components/LightingInfoSingletonComponent.h>
+#include <Systems/RenderSystem.h>
+#include <Systems/CameraMovingSystem.h>
 
 
 namespace Game {

@@ -7,8 +7,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <shaders/shader.h>
-#include <camera/camera.h>
+#include <Shader.h>
+#include <Camera.h>
 
 #include <string>
 #include <fstream>
@@ -17,10 +17,10 @@
 #include <vector>
 
 #include <ECS.h>
-#include "../MeshComponent.h"
-#include "../Components/CameraInfoSingletonComponent.h"
-#include "../Components/WindowInfoSingletonComponent.h"
-#include "../Components/LightingInfoSingletonComponent.h"
+#include <Components/MeshComponent.h>
+#include <Components/CameraInfoSingletonComponent.h>
+#include <Components/WindowInfoSingletonComponent.h>
+#include <Components/LightingInfoSingletonComponent.h>
 
 using namespace ECS;
 
@@ -31,7 +31,7 @@ public:
 	Camera camera;
 
 	RenderSystem() {
-		objectShader.init("src/shaderPrograms/object.vs", "src/shaderPrograms/object.fs");
+		objectShader.init("src/Shaders/object.vs", "src/Shaders/object.fs");
 	}
 
 	virtual void tick(class World* world, float deltaTime) override

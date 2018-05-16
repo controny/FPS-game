@@ -1,7 +1,7 @@
 #pragma once
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb\stb_image.h>
+#include <stb/stb_image.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -10,7 +10,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <MeshComponent.h>
+#include <Components/MeshComponent.h>
 
 using namespace std;
 
@@ -180,7 +180,7 @@ struct Resource {
 				0.0f,  1.0f,  0.0f,
 				0.0f,  1.0f,  0.0f
 			};
- 
+  
 			textures.push_back(textureResource.container);
 			textures.push_back(textureResource.container_specular);
 
