@@ -1,15 +1,24 @@
 #pragma once
 
 #include <ECS.h>
-#include <Camera.h>
+using namespace ECS;
 
-enum Action {
-	FORWARD,
-	BACKWARD,
-	LEFT,
-	RIGHT
+enum Key {
+	W,
+	S,
+	A,
+	D,
+	ESC
 };
 
 struct KeyPressEvent {
-	Action action;
+	ECS_DECLARE_TYPE;
+
+	KeyPressEvent(Key _key, float _deltaTime)
+		: key(_key), deltaTime(_deltaTime) {};
+	
+	Key key;
+	float deltaTime;
 };
+
+ECS_DEFINE_TYPE(KeyPressEvent);

@@ -2,6 +2,7 @@
 
 #include <ECS.h>
 
+// 单例组件；存储全局的渲染窗口的信息
 struct WindowInfoSingletonComponent {
 	ECS_DECLARE_TYPE;
 
