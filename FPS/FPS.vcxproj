@@ -127,18 +127,23 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\MeshComponent.h" />
     <ClInclude Include="src\Components\WindowInfoSingletonComponent.h" />
     <ClInclude Include="src\Events\KeyPressEvent.h" />
+    <ClInclude Include="src\Events\MouseMovementEvent.h" />
     <ClInclude Include="src\MeshComponent.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\shaders\shader.h" />
     <ClInclude Include="src\Systems\CameraMovingSystem.h" />
+    <ClInclude Include="src\Systems\KeyPressingSystem.h" />
+    <ClInclude Include="src\Systems\MouseMovingSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Systems\GUISystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />

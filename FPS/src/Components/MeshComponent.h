@@ -43,6 +43,7 @@ struct Texture {
 	}
 };
 
+// 之前 Mesh 类的所有数据；把渲染逻辑放在 RenderSystem 中
 struct MeshComponent {
 	ECS_DECLARE_TYPE;
 
