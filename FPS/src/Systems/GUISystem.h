@@ -48,29 +48,28 @@ public:
 
 	// 如果 ImGui 还没有初始化和绑定到 window，先初始化和绑定
 	virtual void tick(class World* world, float deltaTime) override {
-		
-		world->each<WindowInfoSingletonComponent>([&](Entity* ent, ComponentHandle<WindowInfoSingletonComponent> c) -> void {
-			if (!initialized) {
-				ImGui::CreateContext();
-				ImGuiIO& io = ImGui::GetIO(); (void)io;
-				ImGui_ImplGlfwGL3_Init(c->Window, true);
+		ComponentHandle<WindowInfoSingletonComponent> windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
+			
+		if (!initialized) {
+			ImGui::CreateContext();
+			ImGuiIO& io = ImGui::GetIO(); (void)io;
+			ImGui_ImplGlfwGL3_Init(windowCHandle->Window, true);
 
-				initialized = true;
+			initialized = true;
+		}
+
+		if (windowCHandle->showGUI) {
+			ImGui_ImplGlfwGL3_NewFrame();
+			{
+				ImGui::Begin("Game Menu", &(windowCHandle->showGUI));  // 用右上角的交叉关闭 GUI
+				ImGui::Text("dfdfdf");
+
+				ImGui::Text("hhhhhh");
+				ImGui::End();
 			}
 
-			if (c->showGUI) {
-				ImGui_ImplGlfwGL3_NewFrame();
-				{
-					ImGui::Begin("Game Menu", &(c->showGUI));  // 用右上角的交叉关闭 GUI
-					ImGui::Text("dfdfdf");
-
-					ImGui::Text("hhhhhh");
-					ImGui::End();
-				}
-
-				ImGui::Render();
-				ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
-			}
-		});	
+			ImGui::Render();
+			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+		}
 	}
 };

@@ -33,12 +33,12 @@ namespace Game {
 		world->registerSystem(new MouseMovingSystem());
 		world->registerSystem(new CameraMovingSystem(cameraPos));
 
-		// Entities
-		Entity* singletons = world->create();
-		singletons->assign<CameraInfoSingletonComponent>(cameraPos);
-		singletons->assign<LightingInfoSingletonComponent>();
-		singletons->assign<WindowInfoSingletonComponent>(window);
+		// Singleton components
+		world->createSingletonComponent<CameraInfoSingletonComponent>(cameraPos);
+		world->createSingletonComponent<LightingInfoSingletonComponent>();
+		world->createSingletonComponent<WindowInfoSingletonComponent>(window);
 
+		// Entities
 		Entity* cube1 = world->create();
 		Entity* cube2 = world->create();
 
