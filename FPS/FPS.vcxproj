@@ -124,6 +124,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\include\glad\glad.c" />
+    <ClCompile Include="dependencies\include\imgui\imgui.cpp" />
+    <ClCompile Include="dependencies\include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dependencies\include\imgui\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -139,11 +142,16 @@
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\shaders\shader.h" />
     <ClInclude Include="src\Systems\CameraMovingSystem.h" />
+    <ClInclude Include="src\Systems\CameraMovingSystem\Camera.h" />
+    <ClInclude Include="src\Systems\CameraMovingSystem\CameraMovingSystem.h" />
     <ClInclude Include="src\Systems\KeyPressingSystem.h" />
     <ClInclude Include="src\Systems\MouseMovingSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Systems\GUISystem.h" />
+    <ClInclude Include="src\Systems\RenderSystem\Camera.h" />
+    <ClInclude Include="src\Systems\RenderSystem\RenderSystem.h" />
+    <ClInclude Include="src\Systems\RenderSystem\Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />
