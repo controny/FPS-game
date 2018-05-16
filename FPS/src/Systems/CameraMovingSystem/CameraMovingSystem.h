@@ -1,7 +1,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 
-#include <Camera.h>
+#include "Camera.h"
 #include <ECS.h>
 #include <Components/MeshComponent.h>
 #include <Components/CameraInfoSingletonComponent.h>
@@ -10,8 +10,7 @@
 #include <Events/MouseMovementEvent.h>
 #include <Events/KeyPressEvent.h>
 
-#include <iostream>
-using namespace std;
+using namespace ECS;
 
 // 更新 camera 的位置和仰角等信息，并负责更新 pos 和 viewmatrix 的 component 信息
 class CameraMovingSystem : public EntitySystem, 

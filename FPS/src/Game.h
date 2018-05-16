@@ -1,18 +1,18 @@
 #pragma once
-#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 #include <ECS.h>
 
-#include "Resource.h"
-
+#include <Resource.h>
 #include <Components/MeshComponent.h>
 #include <Components/CameraInfoSingletonComponent.h>
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Components/LightingInfoSingletonComponent.h>
-#include <Systems/RenderSystem.h>
-#include <Systems/CameraMovingSystem.h>
+#include <Systems/RenderSystem/RenderSystem.h>
+#include <Systems/CameraMovingSystem/CameraMovingSystem.h>
 #include <Systems/KeyPressingSystem.h>
 #include <Systems/MouseMovingSystem.h>
+#include <Systems/GUISystem.h>
 
 
 namespace Game {
@@ -28,6 +28,7 @@ namespace Game {
 		
 		// Systems
 		world->registerSystem(new RenderSystem());
+		world->registerSystem(new GUISystem());
 		world->registerSystem(new KeyPressingSystem());
 		world->registerSystem(new MouseMovingSystem());
 		world->registerSystem(new CameraMovingSystem(cameraPos));

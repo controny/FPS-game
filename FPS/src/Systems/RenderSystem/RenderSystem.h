@@ -1,20 +1,7 @@
 #pragma once
-#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
-#include <iostream>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <Shader.h>
-#include <Camera.h>
-
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <vector>
+#include "Shader.h"
 
 #include <ECS.h>
 #include <Components/MeshComponent.h>
@@ -24,13 +11,11 @@
 
 using namespace ECS;
 
-
 // 获取所有的 mesh 组件并渲染
 class RenderSystem : public EntitySystem {
 public:
 
 	Shader objectShader;
-	Camera camera;
 
 	RenderSystem() {
 		objectShader.init("src/Shaders/object.vs", "src/Shaders/object.fs");

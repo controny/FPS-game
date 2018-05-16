@@ -3,24 +3,8 @@
 
 #include <iostream>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <shader.h>
-#include <camera.h>
-
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <vector>
-
-#include <ECS.h>
 #include <Game.h>
 
-
-using namespace std;
 using namespace ECS;
 
 // Init single components
@@ -62,6 +46,8 @@ int main(int argc, char** argv)
 	Game::window = window;
 	Game::init();
 
+	
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -71,6 +57,7 @@ int main(int argc, char** argv)
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 		Game::world->tick(deltaTime);
+
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
