@@ -30,38 +30,71 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\shader.h">
-      <Filter>源文件\shaders</Filter>
+    <ClInclude Include="src\shaders\shader.h">
+      <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\camera.h">
-      <Filter>源文件\camera</Filter>
+    <ClInclude Include="src\Resource.h">
+      <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\mesh.h">
-      <Filter>源文件\objects</Filter>
+    <ClInclude Include="src\MeshComponent.h">
+      <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\model.h">
-      <Filter>源文件\objects</Filter>
+    <ClInclude Include="src\Systems\RenderSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Systems\CameraMovingSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\CameraInfoSingletonComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\WindowInfoSingletonComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\LightingInfoSingletonComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Events\KeyPressEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\MeshComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Systems\GUISystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Events\MouseMovementEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Systems\MouseMovingSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Systems\KeyPressingSystem.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\glad.c">
-      <Filter>源文件\lib</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objects\ground.h">
-      <Filter>源文件\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objects\mesh.cpp">
+    <ClCompile Include="dependencies\include\glad\glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaderPrograms\model_loading.fs">
+    <None Include="src\shaderPrograms\object.fs">
       <Filter>源文件\shaderPrograms</Filter>
     </None>
-    <None Include="src\shaderPrograms\model_loading.vs">
+    <None Include="src\shaderPrograms\object.vs">
       <Filter>源文件\shaderPrograms</Filter>
     </None>
   </ItemGroup>
