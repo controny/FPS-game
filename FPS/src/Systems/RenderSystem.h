@@ -24,6 +24,8 @@
 
 using namespace ECS;
 
+
+// 获取所有的 mesh 组件并渲染
 class RenderSystem : public EntitySystem {
 public:
 
@@ -38,6 +40,7 @@ public:
 	{
 		objectShader.use();
 
+		// 设置着色器要用的变量
 		world->each<CameraInfoSingletonComponent>([&](Entity* ent, ComponentHandle<CameraInfoSingletonComponent> c) -> void {
 			objectShader.setMat4("view", c->CameraViewMatrix);
 			objectShader.setVec3("viewPos", c->CameraPos);
@@ -53,11 +56,15 @@ public:
 		});
 
 		world->each<WindowInfoSingletonComponent>([&](Entity* ent, ComponentHandle<WindowInfoSingletonComponent> c) -> void {
-			glm::mat4 projection = glm::perspective(45.0f, (float)c->Width / (float)c->Height, 0.1f, 100.0f);
+			int window_width, window_height;
+			glfwGetWindowSize(c->Window, &window_width, &window_height);
+
+			glm::mat4 projection = glm::perspective(45.0f, (float)window_width / (float)window_height, 0.1f, 100.0f);
 			objectShader.setMat4("model", glm::mat4());
 			objectShader.setMat4("projection", projection);
 		});
 
+		// 渲染，就是之前 Mesh 类的 Draw()
 		world->each<MeshComponent>([&](Entity* ent, ComponentHandle<MeshComponent> mesh) -> void {
 			unsigned int diffuseNr = 1;
 			unsigned int specularNr = 1;

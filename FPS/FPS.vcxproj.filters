@@ -75,7 +75,10 @@
     <ClInclude Include="src\Camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\Systems\KeyPressSystem.h">
+    <ClInclude Include="src\Systems\MouseMovingSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Systems\KeyPressingSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

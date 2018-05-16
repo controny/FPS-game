@@ -7,7 +7,8 @@
 #include <iostream>
 using namespace ECS;
 
-class KeyPressSystem : public EntitySystem {
+// 检测键盘哪个键被按下
+class KeyPressingSystem : public EntitySystem {
 public:
 
 	// 每次轮询到时，检测当前按下的按钮，并且 emit 出对应按钮的事件
