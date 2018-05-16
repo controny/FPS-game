@@ -61,9 +61,9 @@ public:
 
 	// 每次轮询到时，就把最新的 camera 位置和视角更新
 	virtual void tick(class World* world, float deltaTime) override {
-		world->each<CameraInfoSingletonComponent>([&](Entity* ent, ComponentHandle<CameraInfoSingletonComponent> c) -> void {
-			c->CameraViewMatrix = camera.GetViewMatrix();
-			c->CameraPos = camera.Position;
-		});
+		ComponentHandle<CameraInfoSingletonComponent> cameraCHandle = world->getSingletonComponent<CameraInfoSingletonComponent>();
+
+		cameraCHandle->CameraViewMatrix = camera.GetViewMatrix();
+		cameraCHandle->CameraPos = camera.Position;
 	}
 };

@@ -399,6 +399,7 @@ namespace ECS
 		using SystemPtrAllocator = std::allocator_traits<Allocator>::template rebind_alloc<EntitySystem*>;
 		using SubscriberPtrAllocator = std::allocator_traits<Allocator>::template rebind_alloc<Internal::BaseEventSubscriber*>;
 		using SubscriberPairAllocator = std::allocator_traits<Allocator>::template rebind_alloc<std::pair<const TypeIndex, std::vector<Internal::BaseEventSubscriber*, SubscriberPtrAllocator>>>;
+		Entity* singletons;
 
 		/**
 		* Use this function to construct the world with a custom allocator.
@@ -410,6 +411,16 @@ namespace ECS
 			std::allocator_traits<WorldAllocator>::construct(worldAlloc, world, alloc);
 
 			return world;
+		}
+
+		template<typename T, typename... Args>
+		void createSingletonComponent(Args&&... args) {
+			this->singletons->assign<T>(args...);
+		}
+
+		template<typename T>
+		ComponentHandle<T> getSingletonComponent() {
+			return this->singletons->get<T>();
 		}
 
 		/**
@@ -435,6 +446,7 @@ namespace ECS
 			systems({}, SystemPtrAllocator(alloc)),
 			subscribers({}, 0, std::hash<TypeIndex>(), std::equal_to<TypeIndex>(), SubscriberPtrAllocator(alloc))
 		{
+			this->singletons = this->create();
 		}
 
 		/**
