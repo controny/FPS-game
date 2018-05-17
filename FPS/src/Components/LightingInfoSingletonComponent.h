@@ -3,7 +3,7 @@
 #include <ECS.h>
 #include <glm/gtc/type_ptr.hpp>
 
-using namespace std;
+using namespace ECS;
 
 // 单例组件；存储全局的光照位置，颜色以及渲染参数
 struct LightingInfoSingletonComponent {

@@ -1,20 +1,7 @@
 #pragma once
-#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
-#include <iostream>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <Shader.h>
-#include <Camera.h>
-
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <vector>
+#include "Shader.h"
 
 #include <ECS.h>
 #include <Components/MeshComponent.h>
@@ -24,13 +11,11 @@
 
 using namespace ECS;
 
-
 // 获取所有的 mesh 组件并渲染
 class RenderSystem : public EntitySystem {
 public:
 
 	Shader objectShader;
-	Camera camera;
 
 	RenderSystem() {
 		objectShader.init("src/Shaders/object.vs", "src/Shaders/object.fs");
@@ -38,31 +23,30 @@ public:
 
 	virtual void tick(class World* world, float deltaTime) override
 	{
+		ComponentHandle<CameraInfoSingletonComponent> cameraCHandle = world->getSingletonComponent<CameraInfoSingletonComponent>();
+		ComponentHandle<WindowInfoSingletonComponent> windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
+		ComponentHandle<LightingInfoSingletonComponent> lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
+
 		objectShader.use();
 
 		// 设置着色器要用的变量
-		world->each<CameraInfoSingletonComponent>([&](Entity* ent, ComponentHandle<CameraInfoSingletonComponent> c) -> void {
-			objectShader.setMat4("view", c->CameraViewMatrix);
-			objectShader.setVec3("viewPos", c->CameraPos);
-		});
+		objectShader.setMat4("view", cameraCHandle->CameraViewMatrix);
+		objectShader.setVec3("viewPos", cameraCHandle->CameraPos);
 
-		world->each<LightingInfoSingletonComponent>([&](Entity* ent, ComponentHandle<LightingInfoSingletonComponent> c) -> void {
-			objectShader.setVec3("lightPos", c->LightPos);
-			objectShader.setVec3("lightColor", c->LightColor);
-			objectShader.setFloat("ambientStrength", c->AmbientStrength);
-			objectShader.setFloat("specularStrength", c->SpecularStrength);
-			objectShader.setFloat("shininess", c->Shininess);
-			objectShader.setFloat("diffuseStrength", c->DiffuseStrength);
-		});
+		objectShader.setVec3("lightPos", lightCHandle->LightPos);
+		objectShader.setVec3("lightColor", lightCHandle->LightColor);
+		objectShader.setFloat("ambientStrength", lightCHandle->AmbientStrength);
+		objectShader.setFloat("specularStrength", lightCHandle->SpecularStrength);
+		objectShader.setFloat("shininess", lightCHandle->Shininess);
+		objectShader.setFloat("diffuseStrength", lightCHandle->DiffuseStrength);
 
-		world->each<WindowInfoSingletonComponent>([&](Entity* ent, ComponentHandle<WindowInfoSingletonComponent> c) -> void {
-			int window_width, window_height;
-			glfwGetWindowSize(c->Window, &window_width, &window_height);
 
-			glm::mat4 projection = glm::perspective(45.0f, (float)window_width / (float)window_height, 0.1f, 100.0f);
-			objectShader.setMat4("model", glm::mat4());
-			objectShader.setMat4("projection", projection);
-		});
+		int window_width, window_height;
+		glfwGetWindowSize(windowCHandle->Window, &window_width, &window_height);
+
+		glm::mat4 projection = glm::perspective(45.0f, (float)window_width / (float)window_height, 0.1f, 100.0f);
+		objectShader.setMat4("model", glm::mat4());
+		objectShader.setMat4("projection", projection);
 
 		// 渲染，就是之前 Mesh 类的 Draw()
 		world->each<MeshComponent>([&](Entity* ent, ComponentHandle<MeshComponent> mesh) -> void {
