@@ -10,7 +10,7 @@
 
 * 地板、墙绘制：主要是处理 resource 生成数据部分和处理纹理。
 * 天空盒：晴天即可。可以把天空盒需要的数据作为 singleton component
-* assimp 模型导入。需要考虑如何用 component 保存数据.
+* assimp 模型导入。需要考虑如何用 component 保存数据。（已完成）
 
 #### 游戏逻辑部分
 
@@ -50,6 +50,10 @@
 * 视角变更：瞄准镜；第一人称第三人称
 
 ## 更新备注
+
+### 5.18 ModelComponent, shift 加速
+MeshComponent 改为 ModelComponent，统一处理 assimp 模型和 cube 原始数据。cube resource 可以生成长方体。
+按住左边的 shift 键可以加速移动。
 
 ### 5.16 新的 singleton component 接口
 
