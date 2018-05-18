@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <Components/MeshComponent.h>
+#include <Components/ObjectComponent.h>
 
 using namespace std;
 

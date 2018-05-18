@@ -4,7 +4,7 @@
 #include "Shader.h"
 
 #include <ECS.h>
-#include <Components/MeshComponent.h>
+#include <Components/ObjectComponent.h>
 #include <Components/CameraInfoSingletonComponent.h>
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Components/LightingInfoSingletonComponent.h>
@@ -49,37 +49,42 @@ public:
 		objectShader.setMat4("projection", projection);
 
 		// 渲染，就是之前 Mesh 类的 Draw()
-		world->each<MeshComponent>([&](Entity* ent, ComponentHandle<MeshComponent> mesh) -> void {
+		world->each<ObjectComponent>([&](Entity* ent, ComponentHandle<ObjectComponent> object) -> void {
 			unsigned int diffuseNr = 1;
 			unsigned int specularNr = 1;
 			unsigned int normalNr = 1;
 			unsigned int heightNr = 1;
-			for (unsigned int i = 0; i < mesh->textures.size(); i++)
-			{
-				glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-												  // retrieve texture number (the N in diffuse_textureN)
-				string number;
-				string name = mesh->textures[i].type;
-				if (name == "texture_diffuse")
-					number = std::to_string(diffuseNr++);
-				else if (name == "texture_specular")
-					number = std::to_string(specularNr++); // transfer unsigned int to stream
-				else if (name == "texture_normal")
-					number = std::to_string(normalNr++); // transfer unsigned int to stream
-				else if (name == "texture_height")
-					number = std::to_string(heightNr++); // transfer unsigned int to stream
+			vector<Mesh>& meshes = object->meshes;
+			for (unsigned int j = 0; j < meshes.size(); j++) {
+				Mesh& mesh = meshes[j];
+				for (unsigned int i = 0; i < mesh.textures.size(); i++)
+				{
+					glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+													  // retrieve texture number (the N in diffuse_textureN)
+					string number;
+					string name = mesh.textures[i].type;
+					if (name == "texture_diffuse")
+						number = std::to_string(diffuseNr++);
+					else if (name == "texture_specular")
+						number = std::to_string(specularNr++); // transfer unsigned int to stream
+					else if (name == "texture_normal")
+						number = std::to_string(normalNr++); // transfer unsigned int to stream
+					else if (name == "texture_height")
+						number = std::to_string(heightNr++); // transfer unsigned int to stream
 
-														 // now set the sampler to the correct texture unit
-				int a = glGetUniformLocation(objectShader.ID, (name + number).c_str());
-				glUniform1i(a, i);
-				// and finally bind the texture
-				glBindTexture(GL_TEXTURE_2D, mesh->textures[i].id);
+															 // now set the sampler to the correct texture unit
+					int a = glGetUniformLocation(objectShader.ID, (name + number).c_str());
+					glUniform1i(a, i);
+					// and finally bind the texture
+					glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
+				}
+				glBindVertexArray(mesh.VAO);
+				glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+				glBindVertexArray(0);
+				glActiveTexture(GL_TEXTURE0);
 			}
 
-			glBindVertexArray(mesh->VAO);
-			glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
-			glBindVertexArray(0);
-			glActiveTexture(GL_TEXTURE0);
+			
 		});
 	}
 };
