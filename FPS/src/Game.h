@@ -4,7 +4,7 @@
 #include <ECS.h>
 
 #include <Resource.h>
-#include <Components/MeshComponent.h>
+#include <Components/ObjectComponent.h>
 #include <Components/CameraInfoSingletonComponent.h>
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Components/LightingInfoSingletonComponent.h>
@@ -41,13 +41,15 @@ namespace Game {
 		// Entities
 		Entity* cube1 = world->create();
 		Entity* cube2 = world->create();
+		Entity* ourModel = world->create();
 
 		// Assign the components to entities
 		Resource::CubeResource cube_resource, cube_resource1;
 		cube_resource.init(glm::vec3(-1.5f, 0.5f, -1.5f), 1.0f);
-		cube1->assign<MeshComponent>(cube_resource.vertices, cube_resource.indices, cube_resource.textures);
+		cube1->assign<ObjectComponent>(cube_resource.vertices, cube_resource.indices, cube_resource.textures);
 		cube_resource1.init(glm::vec3(1.5f, -0.5f, 1.5f), 1.0f);
-		cube2->assign<MeshComponent>(cube_resource1.vertices, cube_resource1.indices, cube_resource1.textures);
+		cube2->assign<ObjectComponent>(cube_resource1.vertices, cube_resource1.indices, cube_resource1.textures);
+		ourModel->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
 	}
 };
 

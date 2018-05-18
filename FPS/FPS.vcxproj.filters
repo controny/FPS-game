@@ -60,9 +60,6 @@
     <ClInclude Include="src\Events\KeyPressEvent.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\Components\MeshComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\Shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -97,6 +94,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\include\ECS.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\ObjectComponent.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

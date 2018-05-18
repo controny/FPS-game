@@ -134,7 +134,7 @@
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
-    <ClInclude Include="src\Components\MeshComponent.h" />
+    <ClInclude Include="src\Components\ObjectComponent.h" />
     <ClInclude Include="src\Components\WindowInfoSingletonComponent.h" />
     <ClInclude Include="src\Events\KeyPressEvent.h" />
     <ClInclude Include="src\Events\MouseMovementEvent.h" />

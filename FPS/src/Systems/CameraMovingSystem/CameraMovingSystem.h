@@ -3,7 +3,7 @@
 
 #include "Camera.h"
 #include <ECS.h>
-#include <Components/MeshComponent.h>
+#include <Components/ObjectComponent.h>
 #include <Components/CameraInfoSingletonComponent.h>
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Components/LightingInfoSingletonComponent.h>
