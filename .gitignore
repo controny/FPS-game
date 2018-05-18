@@ -1,6 +1,7 @@
 /FPS/imgui.ini
 !/FPS/bin/assimp-vc140-mt.dll
 
+bin/
 [Dd]ebug/
 [Rr]elease/
 x64/
