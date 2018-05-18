@@ -42,6 +42,7 @@ namespace Game {
 		Entity* cube1 = world->create();
 		Entity* cube2 = world->create();
 		Entity* ourModel = world->create();
+		Entity* ground = world->create();
 
 		// Assign the components to entities
 		Resource::CubeResource cube_resource, cube_resource1;
@@ -50,6 +51,10 @@ namespace Game {
 		cube_resource1.init(glm::vec3(1.5f, -0.5f, 1.5f), 1.0f);
 		cube2->assign<ObjectComponent>(cube_resource1.vertices, cube_resource1.indices, cube_resource1.textures);
 		ourModel->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
+		
+		Resource::GroundResource ground_resource;
+		ground_resource.init(500);
+		ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);
 	}
 };
 
