@@ -24,7 +24,7 @@ public:
 
 	// 每次轮询到时，如果 GUI 没有在显示，就获得当前鼠标的位置，计算出 offset，并 emit 出鼠标移动的事件
 	virtual void tick(class World* world, float deltaTime) override {
-		ComponentHandle<WindowInfoSingletonComponent> windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
+		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 		
 		if (windowCHandle->showGUI) {
 			firstMouse = true;

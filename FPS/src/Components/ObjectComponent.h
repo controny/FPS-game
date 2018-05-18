@@ -10,7 +10,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <stb\stb_image.h>
+#include <stb/stb_image.h>
 
 #include <string>
 #include <fstream>
@@ -53,8 +53,8 @@ struct Texture {
 		type = _type;
 	}
 };
+
 struct Mesh {
-	ECS_DECLARE_TYPE;
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
 	vector<Texture> textures;
@@ -101,10 +101,10 @@ struct Mesh {
 		glBindVertexArray(0);
 	}
 };
-ECS_DEFINE_TYPE(Mesh);
+
 
 struct ObjectComponent {
-	ECS_DECLARE_TYPE;
+
 	/*  Model Data */
 	vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
 	vector<Mesh> meshes;
@@ -271,6 +271,7 @@ struct ObjectComponent {
 		}
 		return textures;
 	}
+
 	unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false)
 	{
 		string filename = string(path);
@@ -312,4 +313,3 @@ struct ObjectComponent {
 	}
 };
 
-ECS_DEFINE_TYPE(ObjectComponent);

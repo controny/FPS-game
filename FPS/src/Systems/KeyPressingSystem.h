@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include <ECS.h>
-#include <Events/KeyPressEvent.h>
+#include <Events/KeyEvents.h>
 #include <Components/WindowInfoSingletonComponent.h>
 
 using namespace ECS;
@@ -13,7 +13,7 @@ public:
 
 	// 每次轮询到时，如果 GUI 没有在显示，就检测当前按下的按钮，并且 emit 出对应按钮的事件
 	virtual void tick(class World* world, float deltaTime) override {
-		ComponentHandle<WindowInfoSingletonComponent> windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
+		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 
 		if (windowCHandle->showGUI) {
 			return;
@@ -28,5 +28,10 @@ public:
 			world->emit<KeyPressEvent>({ D, deltaTime });
 		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			world->emit<KeyPressEvent>({ ESC, deltaTime });
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+			world->emit<KeyPressEvent>({ LEFT_SHIFT, deltaTime });
+
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+			world->emit<KeyReleaseEvent>({ LEFT_SHIFT, deltaTime });
 	}
 };

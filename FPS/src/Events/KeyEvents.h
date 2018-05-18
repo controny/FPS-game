@@ -9,11 +9,11 @@ enum Key {
 	S,
 	A,
 	D,
-	ESC
+	ESC,
+	LEFT_SHIFT
 };
 
 struct KeyPressEvent {
-	ECS_DECLARE_TYPE;
 
 	KeyPressEvent(Key _key, float _deltaTime)
 		: key(_key), deltaTime(_deltaTime) {};
@@ -22,4 +22,11 @@ struct KeyPressEvent {
 	float deltaTime;
 };
 
-ECS_DEFINE_TYPE(KeyPressEvent);
+struct KeyReleaseEvent {
+
+	KeyReleaseEvent(Key _key, float _deltaTime)
+		: key(_key), deltaTime(_deltaTime) {};
+
+	Key key;
+	float deltaTime;
+};

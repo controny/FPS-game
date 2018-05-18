@@ -66,6 +66,7 @@ struct Resource {
 	struct TextureResource {
 		Texture container_diffuse;
 		Texture container_specular;
+
 		// textures for ground
 		Texture ground_diffuse;
 		Texture ground_specular;
@@ -230,6 +231,7 @@ struct Resource {
 				0.0f, 0.0f,
 				0.0f, 1.0f
 			};
+
 			for (int i = 0; i < 36; i++) {
 				vertices.push_back(Vertex(glm::vec3(coords[i * 3], coords[i * 3 + 1], coords[i * 3 + 2]),
 					glm::vec3(normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2]), glm::vec2(tex_coords[i * 2], tex_coords[i * 2 + 1])));
@@ -246,8 +248,6 @@ struct Resource {
 	void init() {
 		
 	}
-
-	//CubeResource cubeResource;
 };
 
 
