@@ -9,5 +9,5 @@ x86/
 
 *.pdb
 *.ilk
-*.exe
+/FPS/bin/FPS.exe
 *.APS

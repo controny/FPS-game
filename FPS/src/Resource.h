@@ -189,49 +189,49 @@ struct Resource {
 			textures.push_back(specular_texture);
 
 			float tex_coords[] = {
-				// Back face
-				0.0f, 0.0f, // Bottom-left
-				1.0f, 1.0f, // top-right
-				1.0f, 0.0f, // bottom-right         
-				1.0f, 1.0f,  // top-right
-				0.0f, 0.0f,  // bottom-left
-				0.0f, 1.0f,
-				// Front face
-				0.0f, 0.0f, // bottom-left
-				1.0f, 0.0f,  // bottom-right
-				1.0f, 1.0f,  // top-right
-				1.0f, 1.0f, // top-right
-				0.0f, 1.0f,  // top-left
 				0.0f, 0.0f,
-				// Left face
-				1.0f, 0.0f, // top-right
-				1.0f, 1.0f, // top-left
-				0.0f, 1.0f,  // bottom-left
-				0.0f, 1.0f, // bottom-left
-				0.0f, 0.0f,  // bottom-right
 				1.0f, 0.0f,
-				// Right face
-				1.0f, 0.0f, // top-left
-				0.0f, 1.0f, // bottom-right
-				1.0f, 1.0f, // top-right         
-				0.0f, 1.0f,  // bottom-right
-				1.0f, 0.0f,  // top-left
-				0.0f, 0.0f,
-				// Bottom face
-				0.0f, 1.0f, // top-right
-				1.0f, 1.0f, // top-left
-				1.0f, 0.0f,// bottom-left
-				1.0f, 0.0f, // bottom-left
-				0.0f, 0.0f, // bottom-right
+				1.0f, 1.0f,
+				1.0f, 1.0f,
 				0.0f, 1.0f,
-				// Top face
-				0.0f, 1.0f,// top-left
-				1.0f, 0.0f, // bottom-right
-				1.0f, 1.0f, // top-right     
-				1.0f, 0.0f, // bottom-right
-				0.0f, 1.0f,// top-left
-				0.0f, 0.0f
+				0.0f, 0.0f,
+
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+				1.0f, 1.0f,
+				1.0f, 1.0f,
+				0.0f, 1.0f,
+				0.0f, 0.0f,
+
+				1.0f, 0.0f,
+				1.0f, 1.0f,
+				0.0f, 1.0f,
+				0.0f, 1.0f,
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+
+				1.0f, 0.0f,
+				1.0f, 1.0f,
+				0.0f, 1.0f,
+				0.0f, 1.0f,
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+
+				0.0f, 1.0f,
+				1.0f, 1.0f,
+				1.0f, 0.0f,
+				1.0f, 0.0f,
+				0.0f, 0.0f,
+				0.0f, 1.0f,
+
+				0.0f, 1.0f,
+				1.0f, 1.0f,
+				1.0f, 0.0f,
+				1.0f, 0.0f,
+				0.0f, 0.0f,
+				0.0f, 1.0f
 			};
+
 			for (int i = 0; i < 36; i++) {
 				vertices.push_back(Vertex(glm::vec3(coords[i * 3], coords[i * 3 + 1], coords[i * 3 + 2]),
 					glm::vec3(normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2]), glm::vec2(tex_coords[i * 2], tex_coords[i * 2 + 1])));
