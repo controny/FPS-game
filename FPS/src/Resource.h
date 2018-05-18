@@ -66,6 +66,7 @@ struct Resource {
 	struct TextureResource {
 		Texture container_diffuse;
 		Texture container_specular;
+
 		// textures for ground
 		Texture ground_diffuse;
 		Texture ground_specular;
@@ -247,8 +248,6 @@ struct Resource {
 	void init() {
 		
 	}
-
-	//CubeResource cubeResource;
 };
 
 

@@ -8,14 +8,15 @@
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Components/LightingInfoSingletonComponent.h>
 #include <Events/MouseMovementEvent.h>
-#include <Events/KeyPressEvent.h>
+#include <Events/KeyEvents.h>
 
 using namespace ECS;
 
 // 更新 camera 的位置和仰角等信息，并负责更新 pos 和 viewmatrix 的 component 信息
 class CameraMovingSystem : public EntitySystem, 
 	public EventSubscriber<MouseMovementEvent>,
-	public EventSubscriber<KeyPressEvent> {
+	public EventSubscriber<KeyPressEvent>,
+	public EventSubscriber<KeyReleaseEvent> {
 public:
 
 	Camera camera;
@@ -25,6 +26,7 @@ public:
 		// 记得注册需要接受的事件！
 		world->subscribe<MouseMovementEvent>(this);
 		world->subscribe<KeyPressEvent>(this);
+		world->subscribe<KeyReleaseEvent>(this);
 	}
 
 	virtual void unconfigure(class World* world) override
@@ -49,6 +51,14 @@ public:
 			camera.ProcessKeyboard(LEFT, event.deltaTime);
 		if (event.key == D)
 			camera.ProcessKeyboard(RIGHT, event.deltaTime);
+		if (event.key == LEFT_SHIFT)
+			camera.doubleSpeed();
+	}
+
+	virtual void receive(class World* world, const KeyReleaseEvent& event) override
+	{
+		if (event.key == LEFT_SHIFT)
+			camera.resetSpeed();
 	}
 
 	CameraMovingSystem(glm::vec3 _cameraPosition) {
@@ -61,7 +71,7 @@ public:
 
 	// 每次轮询到时，就把最新的 camera 位置和视角更新
 	virtual void tick(class World* world, float deltaTime) override {
-		ComponentHandle<CameraInfoSingletonComponent> cameraCHandle = world->getSingletonComponent<CameraInfoSingletonComponent>();
+		auto cameraCHandle = world->getSingletonComponent<CameraInfoSingletonComponent>();
 
 		cameraCHandle->CameraViewMatrix = camera.GetViewMatrix();
 		cameraCHandle->CameraPos = camera.Position;

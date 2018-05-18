@@ -6,7 +6,6 @@ using namespace ECS;
 
 // 单例组件；存储全局的渲染窗口的信息
 struct WindowInfoSingletonComponent {
-	ECS_DECLARE_TYPE;
 
 	//int Width;
 	//int Height;
@@ -21,5 +20,3 @@ struct WindowInfoSingletonComponent {
 		showGUI = false;
 	}
 };
-
-ECS_DEFINE_TYPE(WindowInfoSingletonComponent);
