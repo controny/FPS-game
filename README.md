@@ -73,4 +73,6 @@ ComponentHandle<T> getSingletonComponent() {
 #### 备注
 目前只有 `MeshComponent` 不是 singleton 的，即可以被实体所拥有。可以参考 `RenderSystem` 中获得和使用非 singleton 组件的例子。以后应该大部分的 component 都不是 singleton 的。
 
-### 5.18更新：把Mesh归入ObjectComponent;修改RenderSystem,只需渲染ObjectComponent；把Model加入game；把使用“MeshComponent.h”的Headers改为"ObjectComponent.h"
+### 5.18更新：
+1. 把Mesh归入ObjectComponent;修改RenderSystem,只需渲染ObjectComponent；把Model加入game；把使用“MeshComponent.h”的Headers改为"ObjectComponent.h"
+2. 修改CubeResource，其init函数以中心位置、长宽高以及贴图对象作为参数，可用于实现地板和墙。

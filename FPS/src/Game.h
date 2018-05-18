@@ -39,22 +39,25 @@ namespace Game {
 		world->createSingletonComponent<WindowInfoSingletonComponent>(window);
 
 		// Entities
-		Entity* cube1 = world->create();
-		Entity* cube2 = world->create();
+		Entity* wall = world->create();
 		Entity* ourModel = world->create();
 		Entity* ground = world->create();
 
+		// ³õÊ¼»¯ÎÆÀíResource
+		Resource::TextureResource textureResource;
+		textureResource.init();
+
 		// Assign the components to entities
-		Resource::CubeResource cube_resource, cube_resource1;
-		cube_resource.init(glm::vec3(-1.5f, 0.5f, -1.5f), 1.0f);
-		cube1->assign<ObjectComponent>(cube_resource.vertices, cube_resource.indices, cube_resource.textures);
-		cube_resource1.init(glm::vec3(1.5f, -0.5f, 1.5f), 1.0f);
-		cube2->assign<ObjectComponent>(cube_resource1.vertices, cube_resource1.indices, cube_resource1.textures);
-		ourModel->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
+		Resource::CubeResource wall_resource, ground_resource;
+		wall_resource.init(glm::vec3(5.0f, 5.0f, 15.0f), 10.0f, 2.0f, 30.0f,
+			textureResource.container_diffuse, textureResource.container_specular);
+		wall->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
 		
-		Resource::GroundResource ground_resource;
-		ground_resource.init(500);
+		ground_resource.init(glm::vec3(0.0f, 0.0f, 0.0f), 500.0f, 500.0f, 0.0f,
+			textureResource.ground_diffuse, textureResource.ground_specular);
 		ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);
+
+		ourModel->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
 	}
 };
 

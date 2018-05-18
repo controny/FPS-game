@@ -64,33 +64,31 @@ unsigned int Load(const char * path)
 struct Resource {
 
 	struct TextureResource {
-		Texture container;
+		Texture container_diffuse;
 		Texture container_specular;
 		// textures for ground
-		Texture ground;
+		Texture ground_diffuse;
 		Texture ground_specular;
 
 		void init() {
-			container = Texture(Load("resources/textures/container2.png"), "texture_diffuse");
+			container_diffuse = Texture(Load("resources/textures/container2.png"), "texture_diffuse");
 			container_specular = Texture(Load("resources/textures/container2_specular.png"), "texture_specular");
 
-			ground = Texture(Load("resources/textures/woodDiffuse.jpg"), "texture_diffuse");
+			ground_diffuse = Texture(Load("resources/textures/woodDiffuse.jpg"), "texture_diffuse");
 			ground_specular = Texture(Load("resources/textures/woodSpecular.jpg"), "texture_specular");
 		}
 	};
-
 	
 
 	// 生成 cube 所需要的 meshcomponent 中需要的数据
 	struct CubeResource {
 		
-		TextureResource textureResource;
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 		std::vector<Texture> textures;
 
-		void init(glm::vec3 center = glm::vec3(), float length = 1) {
-			textureResource.init();
+		void init(glm::vec3 center, float length, float width, float height,
+			Texture diffuse_texture, Texture specular_texture) {
 
 			float coords[] = {
 				-0.5f, -0.5f, -0.5f,
@@ -137,10 +135,9 @@ struct Resource {
 			};
 
 			for (int i = 0; i < 36 * 3; ++i) {
-				coords[i] = coords[i] * length;
-				if ((i + 1) % 3 == 1) coords[i] += center.x;
-				else if ((i + 1) % 3 == 2) coords[i] += center.y;
-				else coords[i] += center.z;
+				if ((i + 1) % 3 == 1) coords[i] = coords[i] * length + center.x;
+				else if ((i + 1) % 3 == 2) coords[i] = coords[i] * height + center.y;
+				else coords[i] = coords[i] * width + center.z;
 			}
 
 			float normals[] = {
@@ -187,8 +184,8 @@ struct Resource {
 				0.0f,  1.0f,  0.0f
 			};
   
-			textures.push_back(textureResource.container);
-			textures.push_back(textureResource.container_specular);
+			textures.push_back(diffuse_texture);
+			textures.push_back(specular_texture);
 
 			float tex_coords[] = {
 				// Back face
@@ -240,37 +237,6 @@ struct Resource {
 			}
 			for (int i = 0; i < 36; ++i)
 				indices.push_back(i);
-		}
-	};
-
-	struct GroundResource {
-
-		TextureResource textureResource;
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-		std::vector<Texture> textures;
-
-		void init(const int &length) {
-			textureResource.init();
-
-			glm::vec3 LB = glm::vec3(-length, 0, length),
-				RB = glm::vec3(length, 0, length),
-				LT = glm::vec3(-length, 0, -length),
-				RT = glm::vec3(length, 0, -length);
-			glm::vec3 normal = glm::normalize(glm::cross(RB - LB, RT - LB));
-			vertices.push_back(Vertex(LB, normal, glm::vec2(0, 0)));
-			vertices.push_back(Vertex(RB, normal, glm::vec2(length, 0)));
-			vertices.push_back(Vertex(LT, normal, glm::vec2(0, length)));
-			vertices.push_back(Vertex(RT, normal, glm::vec2(length, length)));
-			indices.push_back(0);
-			indices.push_back(1);
-			indices.push_back(2);
-			indices.push_back(1);
-			indices.push_back(3);
-			indices.push_back(2);
-			// load textures
-			textures.push_back(textureResource.ground);
-			textures.push_back(textureResource.ground_specular);
 		}
 	};
 
