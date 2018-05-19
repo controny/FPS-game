@@ -4,6 +4,7 @@
 #include <ECS.h>
 
 #include <Resource.h>
+#include <Components/TextComponent.h>
 #include <Components/ObjectComponent.h>
 #include <Components/CameraInfoSingletonComponent.h>
 #include <Components/WindowInfoSingletonComponent.h>
@@ -42,6 +43,7 @@ namespace Game {
 		Entity* wall = world->create();
 		Entity* ourModel = world->create();
 		Entity* ground = world->create();
+		Entity* text = world->create();
 
 		// ³õÊ¼»¯ÎÆÀíResource
 		Resource::TextureResource textureResource;
@@ -58,6 +60,8 @@ namespace Game {
 		ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);
 
 		ourModel->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
+
+		text->assign<TextComponent>("test", 1.0f, 1.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 	}
 };
 
