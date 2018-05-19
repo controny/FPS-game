@@ -10,7 +10,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <Components/SkyboxComponent.h>
 #include <Components/ObjectComponent.h>
+
 
 using namespace std;
 
@@ -61,6 +63,36 @@ unsigned int Load(const char * path)
 	return texture;
 }
 
+unsigned int loadCubemap(vector<std::string> faces)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	return textureID;
+}
+
 struct Resource {
 
 	struct TextureResource {
@@ -77,6 +109,22 @@ struct Resource {
 
 			ground_diffuse = Texture(Load("resources/textures/woodDiffuse.jpg"), "texture_diffuse");
 			ground_specular = Texture(Load("resources/textures/woodSpecular.jpg"), "texture_specular");
+		}
+	};
+
+	struct SkyTextureResource {
+		SkyTexture cubemapTexture;
+		vector<std::string> faces
+		{
+			"resources/textures/skybox/right.jpg",
+			"resources/textures/skybox/left.jpg",
+			"resources/textures/skybox/top.jpg",
+			"resources/textures/skybox/bottom.jpg",
+			"resources/textures/skybox/back.jpg",
+			"resources/textures/skybox/front.jpg"
+		};
+		void init() {
+			cubemapTexture = SkyTexture(loadCubemap(faces), "texture_diffuse");
 		}
 	};
 	
@@ -239,6 +287,71 @@ struct Resource {
 			for (int i = 0; i < 36; ++i)
 				indices.push_back(i);
 		}
+	};
+
+	struct SkyBoxResource {
+
+		SkyTextureResource skyTextureResource;
+		std::vector<SkyVertex> vertices;
+		std::vector<SkyTexture> textures;
+		std::vector<unsigned int> indices;
+
+		void init() {
+			skyTextureResource.init();
+
+			float coords[] = {
+				// positions          
+				-1.0f,  1.0f, -1.0f,
+				-1.0f, -1.0f, -1.0f,
+				1.0f, -1.0f, -1.0f,
+				1.0f, -1.0f, -1.0f,
+				1.0f,  1.0f, -1.0f,
+				-1.0f,  1.0f, -1.0f,
+
+				-1.0f, -1.0f,  1.0f,
+				-1.0f, -1.0f, -1.0f,
+				-1.0f,  1.0f, -1.0f,
+				-1.0f,  1.0f, -1.0f,
+				-1.0f,  1.0f,  1.0f,
+				-1.0f, -1.0f,  1.0f,
+
+				1.0f, -1.0f, -1.0f,
+				1.0f, -1.0f,  1.0f,
+				1.0f,  1.0f,  1.0f,
+				1.0f,  1.0f,  1.0f,
+				1.0f,  1.0f, -1.0f,
+				1.0f, -1.0f, -1.0f,
+
+				-1.0f, -1.0f,  1.0f,
+				-1.0f,  1.0f,  1.0f,
+				1.0f,  1.0f,  1.0f,
+				1.0f,  1.0f,  1.0f,
+				1.0f, -1.0f,  1.0f,
+				-1.0f, -1.0f,  1.0f,
+
+				-1.0f,  1.0f, -1.0f,
+				1.0f,  1.0f, -1.0f,
+				1.0f,  1.0f,  1.0f,
+				1.0f,  1.0f,  1.0f,
+				-1.0f,  1.0f,  1.0f,
+				-1.0f,  1.0f, -1.0f,
+
+				-1.0f, -1.0f, -1.0f,
+				-1.0f, -1.0f,  1.0f,
+				1.0f, -1.0f, -1.0f,
+				1.0f, -1.0f, -1.0f,
+				-1.0f, -1.0f,  1.0f,
+				1.0f, -1.0f,  1.0f
+			};
+
+			textures.push_back(skyTextureResource.cubemapTexture);
+
+			for (int i = 0; i < 36; i++) {
+				vertices.push_back(SkyVertex(glm::vec3(coords[i * 3], coords[i * 3 + 1], coords[i * 3 + 2])));
+			}
+			for (int i = 0; i < 36; ++i)
+				indices.push_back(i);
+		 }
 	};
 
 	Resource() {
