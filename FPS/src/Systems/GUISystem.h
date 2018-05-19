@@ -6,7 +6,7 @@
 
 #include <ECS.h>
 #include <Components/WindowInfoSingletonComponent.h>
-#include <Events/KeyPressEvent.h>
+#include <Events/KeyEvents.h>
 
 using namespace ECS;
 
@@ -48,7 +48,7 @@ public:
 
 	// 如果 ImGui 还没有初始化和绑定到 window，先初始化和绑定
 	virtual void tick(class World* world, float deltaTime) override {
-		ComponentHandle<WindowInfoSingletonComponent> windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
+		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 			
 		if (!initialized) {
 			ImGui::CreateContext();

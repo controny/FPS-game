@@ -136,7 +136,7 @@
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\ObjectComponent.h" />
     <ClInclude Include="src\Components\WindowInfoSingletonComponent.h" />
-    <ClInclude Include="src\Events\KeyPressEvent.h" />
+    <ClInclude Include="src\Events\KeyEvents.h" />
     <ClInclude Include="src\Events\MouseMovementEvent.h" />
     <ClInclude Include="src\MeshComponent.h" />
     <ClInclude Include="src\Resource.h" />

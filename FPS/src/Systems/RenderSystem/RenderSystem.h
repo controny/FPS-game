@@ -23,9 +23,9 @@ public:
 
 	virtual void tick(class World* world, float deltaTime) override
 	{
-		ComponentHandle<CameraInfoSingletonComponent> cameraCHandle = world->getSingletonComponent<CameraInfoSingletonComponent>();
-		ComponentHandle<WindowInfoSingletonComponent> windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
-		ComponentHandle<LightingInfoSingletonComponent> lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
+		auto cameraCHandle = world->getSingletonComponent<CameraInfoSingletonComponent>();
+		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
+		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
 
 		objectShader.use();
 
@@ -49,12 +49,12 @@ public:
 		objectShader.setMat4("projection", projection);
 
 		// 渲染，就是之前 Mesh 类的 Draw()
-		world->each<ObjectComponent>([&](Entity* ent, ComponentHandle<ObjectComponent> object) -> void {
+		world->each<ObjectComponent>([&](Entity* ent, ComponentHandle<ObjectComponent> objectCHandle) -> void {
 			unsigned int diffuseNr = 1;
 			unsigned int specularNr = 1;
 			unsigned int normalNr = 1;
 			unsigned int heightNr = 1;
-			vector<Mesh>& meshes = object->meshes;
+			vector<Mesh>& meshes = objectCHandle->meshes;
 			for (unsigned int j = 0; j < meshes.size(); j++) {
 				Mesh& mesh = meshes[j];
 				for (unsigned int i = 0; i < mesh.textures.size(); i++)

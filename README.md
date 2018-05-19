@@ -10,7 +10,7 @@
 
 * 地板、墙绘制：主要是处理 resource 生成数据部分和处理纹理。
 * 天空盒：晴天即可。可以把天空盒需要的数据作为 singleton component
-* assimp 模型导入。需要考虑如何用 component 保存数据.
+* assimp 模型导入。需要考虑如何用 component 保存数据。（已完成）
 
 #### 游戏逻辑部分
 
@@ -51,6 +51,10 @@
 
 ## 更新备注
 
+### 5.18 ModelComponent, shift 加速
+MeshComponent 改为 ModelComponent，统一处理 assimp 模型和 cube 原始数据。cube resource 可以生成长方体。
+按住左边的 shift 键可以加速移动。
+
 ### 5.16 新的 singleton component 接口
 
 相当于 world 的全局变量，不被某实体所拥有。
@@ -73,4 +77,6 @@ ComponentHandle<T> getSingletonComponent() {
 #### 备注
 目前只有 `MeshComponent` 不是 singleton 的，即可以被实体所拥有。可以参考 `RenderSystem` 中获得和使用非 singleton 组件的例子。以后应该大部分的 component 都不是 singleton 的。
 
-### 5.18更新：把Mesh归入ObjectComponent;修改RenderSystem,只需渲染ObjectComponent；把Model加入game；把使用“MeshComponent.h”的Headers改为"ObjectComponent.h"
+### 5.18更新：
+1. 把Mesh归入ObjectComponent;修改RenderSystem,只需渲染ObjectComponent；把Model加入game；把使用“MeshComponent.h”的Headers改为"ObjectComponent.h"
+2. 修改CubeResource，其init函数以中心位置、长宽高以及贴图对象作为参数，可用于实现地板和墙。
