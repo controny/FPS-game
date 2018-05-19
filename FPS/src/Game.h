@@ -42,6 +42,7 @@ namespace Game {
 		Entity* wall = world->create();
 		Entity* ourModel = world->create();
 		Entity* ground = world->create();
+		Entity* skybox = world->create();
 
 		// ³õÊ¼»¯ÎÆÀíResource
 		Resource::TextureResource textureResource;
@@ -58,6 +59,10 @@ namespace Game {
 		ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);
 
 		ourModel->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
+
+		Resource::SkyBoxResource skybox_resource;
+		skybox_resource.init();
+		skybox->assign<SkyboxComponent>(skybox_resource.vertices, skybox_resource.indices, skybox_resource.textures);
 	}
 };
 
