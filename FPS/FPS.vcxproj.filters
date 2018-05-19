@@ -99,6 +99,12 @@
     <ClInclude Include="src\Events\KeyEvents.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\Components\TextComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\include\ft2build.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -124,5 +130,7 @@
     <None Include="src\shaderPrograms\object.vs">
       <Filter>源文件\shaderPrograms</Filter>
     </None>
+    <None Include="src\Shaders\text.vs" />
+    <None Include="src\Shaders\text.fs" />
   </ItemGroup>
 </Project>

@@ -83,7 +83,9 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -131,10 +133,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\include\ECS.h" />
+    <ClInclude Include="dependencies\include\ft2build.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\ObjectComponent.h" />
+    <ClInclude Include="src\Components\TextComponent.h" />
     <ClInclude Include="src\Components\WindowInfoSingletonComponent.h" />
     <ClInclude Include="src\Events\KeyEvents.h" />
     <ClInclude Include="src\Events\MouseMovementEvent.h" />
@@ -157,6 +161,8 @@
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />
     <None Include="src\shaderPrograms\object.vs" />
+    <None Include="src\Shaders\text.fs" />
+    <None Include="src\Shaders\text.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
