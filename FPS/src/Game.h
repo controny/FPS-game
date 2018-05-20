@@ -4,11 +4,11 @@
 #include <ECS.h>
 
 #include <Resource.h>
-#include <Components/TextComponent.h>
 #include <Components/ObjectComponent.h>
 #include <Components/CameraInfoSingletonComponent.h>
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Components/LightingInfoSingletonComponent.h>
+#include <Components/SkyboxInfoSingletonComponent.h>
 #include <Systems/RenderSystem/RenderSystem.h>
 #include <Systems/CameraMovingSystem/CameraMovingSystem.h>
 #include <Systems/KeyPressingSystem.h>
@@ -26,6 +26,8 @@ namespace Game {
 	void init() {
 		// Get the data
 		Resource resource = Resource();
+		Resource::SkyBoxResource skybox_resource;
+		skybox_resource.init();
 		
 		// Systems
 		world->registerSystem(new RenderSystem());
@@ -38,15 +40,15 @@ namespace Game {
 		world->createSingletonComponent<CameraInfoSingletonComponent>(cameraPos);
 		world->createSingletonComponent<LightingInfoSingletonComponent>();
 		world->createSingletonComponent<WindowInfoSingletonComponent>(window);
+		world->createSingletonComponent<SkyboxInfoSingletonComponent>(skybox_resource.vertices, skybox_resource.indices, skybox_resource.textures);
 
 		// Entities
 		Entity* wall = world->create();
 		Entity* ourModel = world->create();
 		Entity* ground = world->create();
-		Entity* skybox = world->create();
-		Entity* text = world->create();
+		//Entity* skybox = world->create();
 
-		// Â³ÃµÃŠÂ¼Â»Â¯ÃŽÃ†Ã€Ã­Resource
+		// ³õÊ¼»¯ÎÆÀíResource
 		Resource::TextureResource textureResource;
 		textureResource.init();
 
@@ -62,11 +64,9 @@ namespace Game {
 
 		ourModel->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
 
-		Resource::SkyBoxResource skybox_resource;
-		skybox_resource.init();
-		skybox->assign<SkyboxComponent>(skybox_resource.vertices, skybox_resource.indices, skybox_resource.textures);
-    
-		text->assign<TextComponent>("test", 1.0f, 1.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+		//Resource::SkyBoxResource skybox_resource;
+		//skybox_resource.init();
+		//skybox->assign<SkyboxComponent>(skybox_resource.vertices, skybox_resource.indices, skybox_resource.textures);
 	}
 };
 
