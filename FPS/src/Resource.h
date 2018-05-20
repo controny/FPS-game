@@ -9,8 +9,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include <Components/SkyboxComponent.h>
 #include <Components/ObjectComponent.h>
 
 
@@ -113,7 +111,7 @@ struct Resource {
 	};
 
 	struct SkyTextureResource {
-		SkyTexture cubemapTexture;
+		Texture cubemapTexture;
 		vector<std::string> faces
 		{
 			"resources/textures/skybox/right.jpg",
@@ -124,12 +122,12 @@ struct Resource {
 			"resources/textures/skybox/front.jpg"
 		};
 		void init() {
-			cubemapTexture = SkyTexture(loadCubemap(faces), "texture_diffuse");
+			cubemapTexture = Texture(loadCubemap(faces), "texture_diffuse");
 		}
 	};
 	
 
-	// 生成 cube 所需要的 meshcomponent 中需要的数据
+	// 鐢熸垚 cube 鎵�闇�瑕佺殑 meshcomponent 涓渶瑕佺殑鏁版嵁
 	struct CubeResource {
 		
 		std::vector<Vertex> vertices;
@@ -292,8 +290,8 @@ struct Resource {
 	struct SkyBoxResource {
 
 		SkyTextureResource skyTextureResource;
-		std::vector<SkyVertex> vertices;
-		std::vector<SkyTexture> textures;
+		std::vector<Vertex> vertices;
+		std::vector<Texture> textures;
 		std::vector<unsigned int> indices;
 
 		void init() {
@@ -347,7 +345,7 @@ struct Resource {
 			textures.push_back(skyTextureResource.cubemapTexture);
 
 			for (int i = 0; i < 36; i++) {
-				vertices.push_back(SkyVertex(glm::vec3(coords[i * 3], coords[i * 3 + 1], coords[i * 3 + 2])));
+				vertices.push_back(Vertex(glm::vec3(coords[i * 3], coords[i * 3 + 1], coords[i * 3 + 2])));
 			}
 			for (int i = 0; i < 36; ++i)
 				indices.push_back(i);
