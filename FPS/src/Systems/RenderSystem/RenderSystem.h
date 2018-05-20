@@ -20,11 +20,13 @@ public:
 	Shader objectShader;
 	Shader textShader;
 	Shader skyboxShader;
+	Shader postShader;
 
 	RenderSystem() {
 		objectShader.init("src/Shaders/object.vs", "src/Shaders/object.fs");
 		textShader.init("src/Shaders/text.vs", "src/Shaders/text.fs");
 		skyboxShader.init("src/Shaders/skybox.vs", "src/Shaders/skybox.fs");
+		postShader.init("src/Shaders/post.vs", "src/Shaders/post.fs");
 	}
 
 	virtual void tick(class World* world, float deltaTime) override
@@ -47,7 +49,6 @@ public:
 		objectShader.setFloat("specularStrength", lightCHandle->SpecularStrength);
 		objectShader.setFloat("shininess", lightCHandle->Shininess);
 		objectShader.setFloat("diffuseStrength", lightCHandle->DiffuseStrength);
-
 
 		int window_width, window_height;
 		glfwGetWindowSize(windowCHandle->Window, &window_width, &window_height);
@@ -198,5 +199,20 @@ public:
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		});
+
+
+		/* ----------- render post -----------*/
+		postShader.use();
+		world->each<PostComponent>([&](Entity* ent, ComponentHandle<PostComponent> postCHandle) {
+			postShader.setVec3("color", postCHandle->Color);
+			glBindVertexArray(postCHandle->line_VAO);
+			glLineWidth(2);
+			glDrawArrays(GL_LINES, 0, 8);
+			glBindVertexArray(postCHandle->point_VAO);
+			glPointSize(2);
+			glDrawArrays(GL_POINTS, 0, 1);
+			glBindVertexArray(0);
+		});
+		
 	}
 };

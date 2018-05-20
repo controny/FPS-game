@@ -1,6 +1,6 @@
 # FPS-game
 
-5.18 Update
+5.20 Update
 
 ## 任务说明
 
@@ -8,14 +8,14 @@
 
 #### 场景搭建部分
 
-* 地板、墙绘制：主要是处理 resource 生成数据部分和处理纹理。
-* 天空盒：晴天即可。可以把天空盒需要的数据作为 singleton component
+* 地板、墙绘制：主要是处理 resource 生成数据部分和处理纹理。（已完成）
+* 天空盒：晴天即可。可以把天空盒需要的数据作为 singleton component（已完成）
 * assimp 模型导入。需要考虑如何用 component 保存数据。（已完成）
 
 #### 游戏逻辑部分
 
 * **物理系统：物体三维移动（速度系统）；可以参考使用的 ECS 那个库的 github README 里的示例，给 entity 附上 velocity component。**
-* 文字渲染与准星。要处理 FreeType 库以及渲染文字的 system 和着色器。
+* 文字渲染与准星。要处理 FreeType 库以及渲染文字的 system 和着色器。（已完成）
 
 ### 之后的重要任务
 

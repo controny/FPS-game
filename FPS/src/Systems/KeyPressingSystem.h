@@ -30,8 +30,13 @@ public:
 			world->emit<KeyPressEvent>({ ESC, deltaTime });
 		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 			world->emit<KeyPressEvent>({ LEFT_SHIFT, deltaTime });
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_SPACE) == GLFW_PRESS)
+			world->emit<KeyPressEvent>({ SPACE, deltaTime });
 
 		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
 			world->emit<KeyReleaseEvent>({ LEFT_SHIFT, deltaTime });
+
+		if (glfwGetMouseButton(windowCHandle->Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+			world->emit<MousePressEvent>({ MOUSE_LEFT, deltaTime });
 	}
 };
