@@ -11,3 +11,7 @@ x86/
 *.ilk
 /FPS/bin/FPS.exe
 *.APS
+
+FPS.VC.db
+FPS.VC.VC.opendb
+
