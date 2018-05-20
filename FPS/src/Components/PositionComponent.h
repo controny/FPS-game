@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <cstdio>
 
-// PositioinComponent: store the position of each entity
+// PositioinComponent: store the position of a entity's center
 struct PositionComponent {
 
     glm::vec3 Position;
@@ -14,6 +14,6 @@ struct PositionComponent {
     }
 
     void Print() {
-        printf("(%f, %f, %f)", Position.x, Position.y, Position.z);
+        printf("(%f, %f, %f)\n", Position.x, Position.y, Position.z);
     }
 };
