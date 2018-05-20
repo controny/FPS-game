@@ -108,6 +108,12 @@
     <ClInclude Include="src\Components\SkyboxInfoSingletonComponent.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\Components\PostComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Systems\RecoilSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -139,5 +145,7 @@
     <None Include="src\Shaders\object.vs" />
     <None Include="src\Shaders\skybox.fs" />
     <None Include="src\Shaders\skybox.vs" />
+    <None Include="src\Shaders\post.vs" />
+    <None Include="src\Shaders\post.fs" />
   </ItemGroup>
 </Project>

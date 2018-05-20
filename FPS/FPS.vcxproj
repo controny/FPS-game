@@ -138,6 +138,7 @@
     <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\ObjectComponent.h" />
+    <ClInclude Include="src\Components\PostComponent.h" />
     <ClInclude Include="src\Components\SkyboxInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\TextComponent.h" />
     <ClInclude Include="src\Components\WindowInfoSingletonComponent.h" />
@@ -152,6 +153,7 @@
     <ClInclude Include="src\Systems\CameraMovingSystem\CameraMovingSystem.h" />
     <ClInclude Include="src\Systems\KeyPressingSystem.h" />
     <ClInclude Include="src\Systems\MouseMovingSystem.h" />
+    <ClInclude Include="src\Systems\RecoilSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Systems\GUISystem.h" />
@@ -164,6 +166,8 @@
     <None Include="src\shaderPrograms\object.vs" />
     <None Include="src\Shaders\object.fs" />
     <None Include="src\Shaders\object.vs" />
+    <None Include="src\Shaders\post.fs" />
+    <None Include="src\Shaders\post.vs" />
     <None Include="src\Shaders\skybox.fs" />
     <None Include="src\Shaders\skybox.vs" />
     <None Include="src\Shaders\text.fs" />

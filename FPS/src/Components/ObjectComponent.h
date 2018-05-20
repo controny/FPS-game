@@ -116,7 +116,7 @@ struct ObjectComponent {
 		meshes.push_back(Mesh(vertices, indices, textures));
 		textures_loaded = textures;
 	}
-
+	 
 	//加载模型的情况
 	ObjectComponent(string const &path, bool gamma = false) : gammaCorrection(gamma)
 	{

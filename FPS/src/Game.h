@@ -10,11 +10,13 @@
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Components/LightingInfoSingletonComponent.h>
 #include <Components/SkyboxInfoSingletonComponent.h>
+#include <Components/PostComponent.h>
 #include <Systems/RenderSystem/RenderSystem.h>
 #include <Systems/CameraMovingSystem/CameraMovingSystem.h>
 #include <Systems/KeyPressingSystem.h>
 #include <Systems/MouseMovingSystem.h>
 #include <Systems/GUISystem.h>
+#include <Systems/RecoilSystem.h>
 
 
 namespace Game {
@@ -36,6 +38,7 @@ namespace Game {
 		world->registerSystem(new KeyPressingSystem());
 		world->registerSystem(new MouseMovingSystem());
 		world->registerSystem(new CameraMovingSystem(cameraPos));
+		//world->registerSystem(new RecoilSystem());
 
 		// Singleton components
 		world->createSingletonComponent<CameraInfoSingletonComponent>(cameraPos);
@@ -48,6 +51,7 @@ namespace Game {
 		Entity* ourModel = world->create();
 		Entity* ground = world->create();
 		Entity* text = world->create();
+		Entity* test_post = world->create();  // 以后 post 赋给 gun 的 entity，现在只是测试
 
 		// Load texture resource
 		Resource::TextureResource textureResource;
@@ -66,6 +70,8 @@ namespace Game {
 		ourModel->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
 
 		text->assign<TextComponent>("test", 1.0f, 1.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+
+		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 	}
 };
 
