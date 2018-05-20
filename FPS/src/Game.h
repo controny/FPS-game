@@ -46,7 +46,7 @@ namespace Game {
 		Entity* skybox = world->create();
 		Entity* text = world->create();
 
-		// ³õÊ¼»¯ÎÆÀíResource
+		// Load texture resource
 		Resource::TextureResource textureResource;
 		textureResource.init();
 

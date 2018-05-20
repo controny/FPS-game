@@ -107,8 +107,8 @@ struct Resource {
 			container_diffuse = Texture(Load("resources/textures/container2.png"), "texture_diffuse");
 			container_specular = Texture(Load("resources/textures/container2_specular.png"), "texture_specular");
 
-			ground_diffuse = Texture(Load("resources/textures/woodDiffuse.jpg"), "texture_diffuse");
-			ground_specular = Texture(Load("resources/textures/woodSpecular.jpg"), "texture_specular");
+			ground_diffuse = Texture(Load("resources/textures/wood.png"), "texture_diffuse");
+			ground_specular = Texture(Load("resources/textures/wood_specular.jpg"), "texture_specular");
 		}
 	};
 
