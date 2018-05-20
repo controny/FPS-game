@@ -105,8 +105,8 @@ struct Resource {
 			container_diffuse = Texture(Load("resources/textures/container2.png"), "texture_diffuse");
 			container_specular = Texture(Load("resources/textures/container2_specular.png"), "texture_specular");
 
-			ground_diffuse = Texture(Load("resources/textures/woodDiffuse.jpg"), "texture_diffuse");
-			ground_specular = Texture(Load("resources/textures/woodSpecular.jpg"), "texture_specular");
+			ground_diffuse = Texture(Load("resources/textures/wood.png"), "texture_diffuse");
+			ground_specular = Texture(Load("resources/textures/wood_specular.jpg"), "texture_specular");
 		}
 	};
 
@@ -127,7 +127,7 @@ struct Resource {
 	};
 	
 
-	// 生成 cube 所需要的 meshcomponent 中需要的数据
+	// 鐢熸垚 cube 鎵�闇�瑕佺殑 meshcomponent 涓渶瑕佺殑鏁版嵁
 	struct CubeResource {
 		
 		std::vector<Vertex> vertices;

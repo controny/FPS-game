@@ -46,7 +46,9 @@ namespace Game {
 		Entity* wall = world->create();
 		Entity* ourModel = world->create();
 		Entity* ground = world->create();
-		// ³õÊ¼»¯ÎÆÀíResource
+		Entity* text = world->create();
+
+		// Load texture resource
 		Resource::TextureResource textureResource;
 		textureResource.init();
 
