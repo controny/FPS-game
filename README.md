@@ -1,24 +1,32 @@
 # FPS-game
 
-5.20 Update
+5.21 Update
 
 ## 任务说明
 
-### 当前重要任务（下周日5月27日前）
+### 当前重要任务（下周日 5 月 27 日前）
 
 #### 场景搭建部分
 
 * **粒子系统（可以借助 velocity component）：火焰。场景中的火炬、火堆。烟雾。可以先做一个 sample，之后结合碰撞系统生成效果（血可以作为用特定参数的烟雾模拟），爆炸。**
 
-* 生成player entity，将camera与其绑定。
+* 生成 player entity，将 camera 与其视角绑定，并借助物理系统限制行动。
 
-* 骨骼动画（如：player移动时手拿枪动画）。
+  http://api.unrealengine.com/CHN/Resources/SampleGames/ShooterGame/index.html
+
+* 骨骼动画。用 assimp 导入；最好能找到专门用于 FPS 游戏的动画，有拿枪移动动画、开火后坐力动画，跳跃、蹲下、死亡等动画，[开瞄准镜镜动画]（没有也可以，有更好，就能做开镜）。
+
+   <http://wiki.jikexueyuan.com/project/modern-opengl-tutorial/tutorial38.html>
 
 #### 游戏逻辑部分
 
 * **物理系统：碰撞检测；包括人物跳上物体，子弹碰撞(点击左键发射子弹)。**
 
-* 后坐力系统：准心大小变化， camera视角移动。
+* 后坐力系统：准心大小变化， 开火时瞄准位置（camera 视角）变化以及恢复；连续开枪时的处理。
+
+  http://tieba.baidu.com/p/2417368972
+
+  https://bbs.125.la/thread-14118624-1-1.html
 
 ---
 
@@ -27,20 +35,16 @@
 #### 场景搭建部分
 
 * 阴影。
-
 * 高级光照：不同物体材质，光照贴图，多光源（场景中的火焰），泛光
-
 * GUI 控制不同天气：阴天、傍晚天气，更换天空盒和光照颜色；雾天，更换天空盒，更改光照着色器 https://blog.csdn.net/u010223072/article/details/45022745。
-
 * 树的绘制：最好能用分形来绘制。
-
 * 草的绘制：简单贴图。
 
 
 
 #### 游戏逻辑部分
 
-* 视角变更：瞄准镜；第一人称第三人称
+* 视角变更：瞄准镜 http://tieba.baidu.com/p/5200318856；第一人称第三人称
 
 ---
 
@@ -68,8 +72,9 @@
 #### 用法
 对要移动的实体assign一个MovementComponent（指明速度和加速度），即可实现移动。
 
-### 5.18 ModelComponent, shift 加速
-MeshComponent 改为 ModelComponent，统一处理 assimp 模型和 cube 原始数据。cube resource 可以生成长方体。
+### 5.18 ObjectComponent, shift 加速
+MeshComponent 改为 ObjectComponent，统一处理 assimp 模型和 cube 原始数据。cube resource 可以生成长方体。
+
 按住左边的 shift 键可以加速移动。
 
 ### 5.16 新的 singleton component 接口
