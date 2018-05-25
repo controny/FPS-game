@@ -58,6 +58,7 @@ namespace Game {
 		Entity* ground = world->create();
 		Entity* text = world->create();
 		Entity* test_post = world->create();  // 以后 post 赋给 gun 的 entity，现在只是测试
+		Entity* particles = world->create();
 
 		// Load texture resource
 		Resource::TextureResource textureResource;
@@ -79,6 +80,8 @@ namespace Game {
 		text->assign<TextComponent>("test", 1.0f, 1.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
+
+		particles->assign<ParticleComponent>(10000);
 	}
 };
 
