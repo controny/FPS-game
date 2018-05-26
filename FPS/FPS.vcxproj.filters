@@ -114,6 +114,9 @@
     <ClInclude Include="src\Systems\RecoilSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\Components\ParticleComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -147,5 +150,7 @@
     <None Include="src\Shaders\skybox.vs" />
     <None Include="src\Shaders\post.vs" />
     <None Include="src\Shaders\post.fs" />
+    <None Include="src\Shaders\particle.vs" />
+    <None Include="src\Shaders\particle.fs" />
   </ItemGroup>
 </Project>
