@@ -1,6 +1,6 @@
 # FPS-game
 
-5.21 Update
+5.26 Update
 
 ## 任务说明
 
@@ -64,6 +64,10 @@
 ---
 
 ## 更新备注
+
+### 5.26 粒子系统
+- 新增 ParticleComponent, 提供接口设置粒子个数、喷射位置、喷射方向、粒子颜色等，可模拟不同的粒子效果。
+- RenderSystem新增particle的渲染。
 
 ### 5.20 物体移动
 新增 PositionComponent, MovementComponent

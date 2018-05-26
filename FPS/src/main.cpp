@@ -48,7 +48,6 @@ int main(int argc, char** argv)
 
 	
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
