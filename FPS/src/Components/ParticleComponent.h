@@ -22,6 +22,13 @@ struct Particle {
 struct ParticleComponent {
 	int maxParticles;
 	int lastUsedParticle = 0;
+	glm::vec3 position;
+	float life;
+	// color settings
+	int max_r, max_g, max_b;
+	// main direction of explosion
+	glm::vec3 maindir;
+
 	GLfloat* g_particule_position_size_data;
 	GLubyte* g_particule_color_data;
 	GLuint particles_position_buffer;
@@ -31,9 +38,10 @@ struct ParticleComponent {
 
 	Particle* container;
 
-	ParticleComponent(int _maxParticles)
+	ParticleComponent(int _maxParticles, glm::vec3 _position, float _life,
+		glm::vec3 _maindir = glm::vec3(0.0f, 5.0f, 0.0f), int _max_r = 256, int _max_g = 256, int _max_b = 256)
+		: maxParticles(_maxParticles), position(_position), life(_life), maindir(_maindir), max_r(_max_r), max_g(_max_g), max_b(_max_b)
 	{
-		maxParticles = _maxParticles;
 		container = new Particle[maxParticles];
 		g_particule_position_size_data = new GLfloat[maxParticles * 4];
 		g_particule_color_data = new GLubyte[maxParticles * 4];
@@ -69,4 +77,5 @@ struct ParticleComponent {
 		// Initialize with empty (NULL) buffer : it will be updated later, each frame.
 		glBufferData(GL_ARRAY_BUFFER, maxParticles * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	}
+
 };

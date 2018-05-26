@@ -220,6 +220,13 @@ public:
 		
 		/* ----------- render particles -----------*/
 		world->each<ParticleComponent>([&](Entity* ent, ComponentHandle<ParticleComponent> particleCHandle) {
+			// Accept fragment if it closer to the camera than the former one
+			glDepthFunc(GL_LESS);
+
+			GLuint VertexArrayID;
+			glGenVertexArrays(1, &VertexArrayID);
+			glBindVertexArray(VertexArrayID);
+
 			// Generate 10 new particule each millisecond,
 			// but limit this to 16 ms (60 fps), or if you have 1 long frame (1sec),
 			// newparticles will be huge and the next frame even longer.
@@ -256,18 +263,19 @@ public:
 			particleShader.setInt("myTextureSampler", 0);
 
 			// Same as the billboards tutorial
-			particleShader.setVec3("CameraRight_worldspace",
-				cameraCHandle->CameraViewMatrix[0][0],
-				cameraCHandle->CameraViewMatrix[1][0],
-				cameraCHandle->CameraViewMatrix[2][0]);
-			particleShader.setVec3("CameraUp_worldspace",
-				cameraCHandle->CameraViewMatrix[0][1],
-				cameraCHandle->CameraViewMatrix[1][1],
-				cameraCHandle->CameraViewMatrix[2][1]);
+			glm::mat4 viewMatrix = cameraCHandle->CameraViewMatrix;
 			// Projection matrix : 45?Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 			glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
-			glm::mat4 viewProjectionMatrix = cameraCHandle->CameraViewMatrix * projectionMatrix;
-			particleShader.setVec4("VP", viewProjectionMatrix[0]);
+			glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
+			particleShader.setVec3("CameraRight_worldspace",
+				viewMatrix[0][0],
+				viewMatrix[1][0],
+				viewMatrix[2][0]);
+			particleShader.setVec3("CameraUp_worldspace",
+				viewMatrix[0][1],
+				viewMatrix[1][1],
+				viewMatrix[2][1]);
+			particleShader.setMat4("VP", viewProjectionMatrix);
 
 			// 1rst attribute buffer : vertices
 			glEnableVertexAttribArray(0);
@@ -332,14 +340,14 @@ private:
 	// (i.e. life < 0);
 	int FindUnusedParticle(ComponentHandle<ParticleComponent> particleCHandle) {
 
-		for (int i = particleCHandle->lastUsedParticle; i<particleCHandle->maxParticles; i++) {
+		for (int i = particleCHandle->lastUsedParticle; i < particleCHandle->maxParticles; i++) {
 			if (particleCHandle->container[i].life < 0) {
 				particleCHandle->lastUsedParticle = i;
 				return i;
 			}
 		}
 
-		for (int i = 0; i<particleCHandle->lastUsedParticle; i++) {
+		for (int i = 0; i < particleCHandle->lastUsedParticle; i++) {
 			if (particleCHandle->container[i].life < 0) {
 				particleCHandle->lastUsedParticle = i;
 				return i;
@@ -356,11 +364,10 @@ private:
 	void generateNewParticles(ComponentHandle<ParticleComponent> particleCHandle, int newparticles) {
 		for (int i = 0; i < newparticles; i++) {
 			int particleIndex = FindUnusedParticle(particleCHandle);
-			particleCHandle->container[particleIndex].life = 5.0f; // This particle will live 5 seconds.
-			particleCHandle->container[particleIndex].pos = glm::vec3(0, 0, -20.0f);
+			particleCHandle->container[particleIndex].life = particleCHandle->life;
+			particleCHandle->container[particleIndex].pos = particleCHandle->position;
 
 			float spread = 1.5f;
-			glm::vec3 maindir = glm::vec3(0.0f, 10.0f, 0.0f);
 			// Very bad way to generate a random direction; 
 			// See for instance http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution instead,
 			// combined with some user-controlled parameters (main direction, spread, etc)
@@ -370,16 +377,13 @@ private:
 				(rand() % 2000 - 1000.0f) / 1000.0f
 			);
 
-			particleCHandle->container[particleIndex].speed = maindir + randomdir * spread;
+			particleCHandle->container[particleIndex].speed = particleCHandle->maindir + randomdir * spread;
 
 
 			// Very bad way to generate a random color
-			//particleCHandle->container[particleIndex].r = rand() % 256;
-			//particleCHandle->container[particleIndex].g = rand() % 256;
-			//particleCHandle->container[particleIndex].b = rand() % 256;
-			particleCHandle->container[particleIndex].r = rand() % 256;
-			particleCHandle->container[particleIndex].g = 0;
-			particleCHandle->container[particleIndex].b = 0;
+			particleCHandle->container[particleIndex].r = rand() % particleCHandle->max_r;
+			particleCHandle->container[particleIndex].g = rand() % particleCHandle->max_g;
+			particleCHandle->container[particleIndex].b = rand() % particleCHandle->max_b;
 			particleCHandle->container[particleIndex].a = (rand() % 256) / 3;
 
 			particleCHandle->container[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
