@@ -61,6 +61,10 @@
 
 ## 更新备注
 
+### 5.26 修改object渲染方式 & MovementSystem
+移动时, `ObjectComponent` 在GPU中的vertices数据不实时更新，而是在着色器中通过原始vertices数据 + `PositionComponent` 中的Position数据（作为model矩阵的位移值）来确定渲染位置。
+因此，对于每一个assign了 `ObjectComponent` 的实体，都需要assign一个 `PositionComponent` 来确定其在世界坐标中的位置，否则无法正常将其渲染。
+
 ### 5.20 物体移动
 新增 PositionComponent, MovementComponent
 新增 MovementSystem

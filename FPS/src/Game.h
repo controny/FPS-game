@@ -31,7 +31,9 @@ namespace Game {
 	glm::vec3 cameraPos(0.0f, 3.0f, 5.0f);
 
 	void init() {
-		// Get the data
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        
+        // Get the data
 		Resource resource = Resource();
 		Resource::SkyBoxResource skybox_resource;
 		skybox_resource.init();
@@ -65,17 +67,19 @@ namespace Game {
 
 		// Assign the components to entities
 		Resource::CubeResource wall_resource, ground_resource;
-		wall_resource.init(glm::vec3(5.0f, 5.0f, 15.0f), 10.0f, 2.0f, 30.0f,
-			textureResource.container_diffuse, textureResource.container_specular);
+		wall_resource.init(10.0f, 2.0f, 30.0f, textureResource.container_diffuse, textureResource.container_specular);
 		wall->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
+        wall->assign<PositionComponent>(glm::vec3(10.0f, 0.0f, 0.0f));
         wall->assign<MovementComponent>(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
-		ground_resource.init(glm::vec3(0.0f, 0.0f, 0.0f), 500.0f, 500.0f, 1.0f,
-			textureResource.ground_diffuse, textureResource.ground_specular);
+		ground_resource.init(500.0f, 500.0f, 1.0f, textureResource.ground_diffuse, textureResource.ground_specular);
 		ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);
+        ground->assign<PositionComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
 
 		ourModel->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
-        
+        ourModel->assign<PositionComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
+        ourModel->assign<MovementComponent>(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+
 		text->assign<TextComponent>("test", 1.0f, 1.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
