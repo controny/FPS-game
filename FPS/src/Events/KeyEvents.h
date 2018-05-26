@@ -10,7 +10,18 @@ enum Key {
 	A,
 	D,
 	ESC,
-	LEFT_SHIFT
+	LEFT_SHIFT,
+	SPACE,
+
+	MOUSE_LEFT
+};
+
+struct MousePressEvent {
+	MousePressEvent(Key _key, float _deltaTime)
+		: key(_key), deltaTime(_deltaTime) {};
+
+	Key key;
+	float deltaTime;
 };
 
 struct KeyPressEvent {
