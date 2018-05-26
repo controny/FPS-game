@@ -232,7 +232,7 @@ struct Resource {
 		std::vector<unsigned int> indices;
 		std::vector<Texture> textures;
 
-		void init(glm::vec3 center, float length, float width, float height,
+		void init(float length, float width, float height,
 			Texture diffuse_texture, Texture specular_texture) {
 
 			float coords[] = {
@@ -280,9 +280,9 @@ struct Resource {
 			};
 
 			for (int i = 0; i < 36 * 3; ++i) {
-				if ((i + 1) % 3 == 1) coords[i] = coords[i] * length + center.x;
-				else if ((i + 1) % 3 == 2) coords[i] = coords[i] * height + center.y;
-				else coords[i] = coords[i] * width + center.z;
+				if ((i + 1) % 3 == 1) coords[i] = coords[i] * length;
+				else if ((i + 1) % 3 == 2) coords[i] = coords[i] * height;
+				else coords[i] = coords[i] * width;
 			}
 
 			float normals[] = {
