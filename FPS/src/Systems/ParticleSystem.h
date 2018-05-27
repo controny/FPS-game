@@ -15,7 +15,10 @@ public:
 	virtual ~ParticleSystem() {}
 
 	virtual void tick(class World* world, float deltaTime) override {
-		world->each<ParticleComponent>([&](Entity* ent, ComponentHandle<ParticleComponent> particleCHandle) {
+		world->each<ParticleComponent, PositionComponent>([&](
+			Entity* ent,
+			ComponentHandle<ParticleComponent> particleCHandle,
+			ComponentHandle<PositionComponent> positionCHandle) {
 			// Generate 10 new particule each millisecond,
 			// but limit this to 16 ms (60 fps), or if you have 1 long frame (1sec),
 			// newparticles will be huge and the next frame even longer.
@@ -23,7 +26,7 @@ public:
 			if (newparticles > (int)(0.016f*10000.0))
 				newparticles = (int)(0.016f*10000.0);
 
-			generateNewParticles(particleCHandle, newparticles);
+			generateNewParticles(particleCHandle, positionCHandle, newparticles);
 			auto cameraCHandle = world->getSingletonComponent<CameraInfoSingletonComponent>();
 			simulateAllParticles(particleCHandle, cameraCHandle, deltaTime);
 
@@ -57,11 +60,14 @@ private:
 		std::sort(&particleCHandle->container[0], &particleCHandle->container[particleCHandle->maxParticles]);
 	}
 
-	void generateNewParticles(ComponentHandle<ParticleComponent> particleCHandle, int newparticles) {
+	void generateNewParticles(
+		ComponentHandle<ParticleComponent> particleCHandle,
+		ComponentHandle<PositionComponent> positionCHandle,
+		int newparticles) {
 		for (int i = 0; i < newparticles; i++) {
 			int particleIndex = FindUnusedParticle(particleCHandle);
 			particleCHandle->container[particleIndex].life = particleCHandle->life;
-			particleCHandle->container[particleIndex].pos = particleCHandle->position;
+			particleCHandle->container[particleIndex].pos = positionCHandle->Position;
 
 			float spread = 1.5f;
 			// Very bad way to generate a random direction; 
