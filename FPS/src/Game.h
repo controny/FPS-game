@@ -21,6 +21,7 @@
 #include <Systems/GUISystem.h>
 #include <Systems/MovementSystem.h>
 #include <Systems/RecoilSystem.h>
+#include <Systems/ParticleSystem.h>
 
 
 namespace Game {
@@ -43,6 +44,7 @@ namespace Game {
 		world->registerSystem(new CameraMovingSystem(cameraPos));
 		//world->registerSystem(new RecoilSystem());
         world->registerSystem(new MovementSystem());
+        world->registerSystem(new ParticleSystem());
 		world->registerSystem(new RenderSystem());
 		world->registerSystem(new GUISystem());  // Must place after render system
 

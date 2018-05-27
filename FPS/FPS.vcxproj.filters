@@ -126,6 +126,9 @@
     <ClInclude Include="src\Systems\MovementSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\Systems\ParticleSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

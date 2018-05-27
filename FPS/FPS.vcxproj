@@ -158,6 +158,7 @@
     <ClInclude Include="src\Systems\KeyPressingSystem.h" />
     <ClInclude Include="src\Systems\MouseMovingSystem.h" />
     <ClInclude Include="src\Systems\MovementSystem.h" />
+    <ClInclude Include="src\Systems\ParticleSystem.h" />
     <ClInclude Include="src\Systems\RecoilSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Game.h" />

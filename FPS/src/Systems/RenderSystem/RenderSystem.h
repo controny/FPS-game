@@ -231,27 +231,14 @@ public:
 			glGenVertexArrays(1, &VertexArrayID);
 			glBindVertexArray(VertexArrayID);
 
-			// Generate 10 new particule each millisecond,
-			// but limit this to 16 ms (60 fps), or if you have 1 long frame (1sec),
-			// newparticles will be huge and the next frame even longer.
-			int newparticles = (int)(deltaTime*10000.0);
-			if (newparticles > (int)(0.016f*10000.0))
-				newparticles = (int)(0.016f*10000.0);
-
-			generateNewParticles(particleCHandle, newparticles);
-			int ParticlesCount = simulateAllParticles(particleCHandle, cameraCHandle, deltaTime);
-
 			// Update the buffers that OpenGL uses for rendering.
-			// There are much more sophisticated means to stream data from the CPU to the GPU, 
-			// but this is outside the scope of this tutorial.
-			// http://www.opengl.org/wiki/Buffer_Object_Streaming
 			glBindBuffer(GL_ARRAY_BUFFER, particleCHandle->particles_position_buffer);
 			glBufferData(GL_ARRAY_BUFFER, particleCHandle->maxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
-			glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLfloat) * 4, particleCHandle->g_particule_position_size_data);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, particleCHandle->particlesCount * sizeof(GLfloat) * 4, particleCHandle->g_particule_position_size_data);
 
 			glBindBuffer(GL_ARRAY_BUFFER, particleCHandle->particles_color_buffer);
 			glBufferData(GL_ARRAY_BUFFER, particleCHandle->maxParticles * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
-			glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLubyte) * 4, particleCHandle->g_particule_color_data);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, particleCHandle->particlesCount * sizeof(GLubyte) * 4, particleCHandle->g_particule_color_data);
 
 
 			glEnable(GL_BLEND);
@@ -328,9 +315,9 @@ public:
 										 // Draw the particules !
 										 // This draws many times a small triangle_strip (which looks like a quad).
 										 // This is equivalent to :
-										 // for(i in ParticlesCount) : glDrawArrays(GL_TRIANGLE_STRIP, 0, 4), 
+										 // for(i in particleCHandle->particlesCount) : glDrawArrays(GL_TRIANGLE_STRIP, 0, 4), 
 										 // but faster.
-			glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, ParticlesCount);
+			glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particleCHandle->particlesCount);
 
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);
@@ -338,112 +325,4 @@ public:
 		});
 	}
 
-private:
-	/* ----------- private methods for rendering particles -----------*/
-	// Finds a Particle in particleCHandle->container which isn't used yet.
-	// (i.e. life < 0);
-	int FindUnusedParticle(ComponentHandle<ParticleComponent> particleCHandle) {
-
-		for (int i = particleCHandle->lastUsedParticle; i < particleCHandle->maxParticles; i++) {
-			if (particleCHandle->container[i].life < 0) {
-				particleCHandle->lastUsedParticle = i;
-				return i;
-			}
-		}
-
-		for (int i = 0; i < particleCHandle->lastUsedParticle; i++) {
-			if (particleCHandle->container[i].life < 0) {
-				particleCHandle->lastUsedParticle = i;
-				return i;
-			}
-		}
-
-		return 0; // All particles are taken, override the first one
-	}
-
-	void SortParticles(ComponentHandle<ParticleComponent> particleCHandle) {
-		std::sort(&particleCHandle->container[0], &particleCHandle->container[particleCHandle->maxParticles]);
-	}
-
-	void generateNewParticles(ComponentHandle<ParticleComponent> particleCHandle, int newparticles) {
-		for (int i = 0; i < newparticles; i++) {
-			int particleIndex = FindUnusedParticle(particleCHandle);
-			particleCHandle->container[particleIndex].life = particleCHandle->life;
-			particleCHandle->container[particleIndex].pos = particleCHandle->position;
-
-			float spread = 1.5f;
-			// Very bad way to generate a random direction; 
-			// See for instance http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution instead,
-			// combined with some user-controlled parameters (main direction, spread, etc)
-			glm::vec3 randomdir = glm::vec3(
-				(rand() % 2000 - 1000.0f) / 1000.0f,
-				(rand() % 2000 - 1000.0f) / 1000.0f,
-				(rand() % 2000 - 1000.0f) / 1000.0f
-			);
-
-			particleCHandle->container[particleIndex].speed = particleCHandle->maindir + randomdir * spread;
-
-
-			// Very bad way to generate a random color
-			particleCHandle->container[particleIndex].r = rand() % particleCHandle->max_r;
-			particleCHandle->container[particleIndex].g = rand() % particleCHandle->max_g;
-			particleCHandle->container[particleIndex].b = rand() % particleCHandle->max_b;
-			particleCHandle->container[particleIndex].a = (rand() % 256) / 3;
-
-			particleCHandle->container[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
-
-		}
-	}
-
-	// Simulate all particles
-	int simulateAllParticles(
-		ComponentHandle<ParticleComponent> particleCHandle,
-		ComponentHandle<CameraInfoSingletonComponent> cameraCHandle,
-		float deltaTime) {
-
-		int ParticlesCount = 0;
-		for (int i = 0; i < particleCHandle->maxParticles; i++) {
-
-			Particle& p = particleCHandle->container[i]; // shortcut
-
-			if (p.life > 0.0f) {
-
-				// Decrease life
-				p.life -= deltaTime;
-				if (p.life > 0.0f) {
-
-					// Simulate simple physics : gravity only, no collisions
-					p.speed += glm::vec3(0.0f, -9.81f, 0.0f) * (float)deltaTime * 0.5f;
-					p.pos += p.speed * (float)deltaTime;
-					p.cameradistance = glm::length2(p.pos - cameraCHandle->CameraPos);
-					//particleCHandle->container[i].pos += glm::vec3(0.0f,10.0f, 0.0f) * (float)delta;
-
-					// Fill the GPU buffer
-					particleCHandle->g_particule_position_size_data[4 * ParticlesCount + 0] = p.pos.x;
-					particleCHandle->g_particule_position_size_data[4 * ParticlesCount + 1] = p.pos.y;
-					particleCHandle->g_particule_position_size_data[4 * ParticlesCount + 2] = p.pos.z;
-
-					particleCHandle->g_particule_position_size_data[4 * ParticlesCount + 3] = p.size;
-
-					particleCHandle->g_particule_color_data[4 * ParticlesCount + 0] = p.r;
-					particleCHandle->g_particule_color_data[4 * ParticlesCount + 1] = p.g;
-					particleCHandle->g_particule_color_data[4 * ParticlesCount + 2] = p.b;
-					particleCHandle->g_particule_color_data[4 * ParticlesCount + 3] = p.a;
-
-				}
-				else {
-					// Particles that just died will be put at the end of the buffer in SortParticles();
-					p.cameradistance = -1.0f;
-				}
-
-				ParticlesCount++;
-
-			}
-		}
-
-		SortParticles(particleCHandle);
-
-		//printf("%d ",ParticlesCount);
-		return ParticlesCount;
-	}
 };

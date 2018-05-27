@@ -21,6 +21,7 @@ struct Particle {
 
 struct ParticleComponent {
 	int maxParticles;
+	int particlesCount;
 	int lastUsedParticle = 0;
 	glm::vec3 position;
 	float life;
