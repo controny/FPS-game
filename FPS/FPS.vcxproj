@@ -138,8 +138,10 @@
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
+    <ClInclude Include="src\Components\MovementComponent.h" />
     <ClInclude Include="src\Components\ObjectComponent.h" />
     <ClInclude Include="src\Components\ParticleComponent.h" />
+    <ClInclude Include="src\Components\PositionComponent.h" />
     <ClInclude Include="src\Components\PostComponent.h" />
     <ClInclude Include="src\Components\SkyboxInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\TextComponent.h" />
@@ -155,6 +157,7 @@
     <ClInclude Include="src\Systems\CameraMovingSystem\CameraMovingSystem.h" />
     <ClInclude Include="src\Systems\KeyPressingSystem.h" />
     <ClInclude Include="src\Systems\MouseMovingSystem.h" />
+    <ClInclude Include="src\Systems\MovementSystem.h" />
     <ClInclude Include="src\Systems\RecoilSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Game.h" />

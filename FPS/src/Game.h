@@ -27,11 +27,10 @@ namespace Game {
 
 	World* world = World::createWorld();
 	GLFWwindow* window;
-
+	
 	glm::vec3 cameraPos(0.0f, 3.0f, 5.0f);
 
 	void init() {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         
         // Get the data
 		Resource resource = Resource();
@@ -39,13 +38,13 @@ namespace Game {
 		skybox_resource.init();
 		
 		// Systems
-		world->registerSystem(new GUISystem());
 		world->registerSystem(new KeyPressingSystem());
 		world->registerSystem(new MouseMovingSystem());
 		world->registerSystem(new CameraMovingSystem(cameraPos));
 		//world->registerSystem(new RecoilSystem());
         world->registerSystem(new MovementSystem());
 		world->registerSystem(new RenderSystem());
+		world->registerSystem(new GUISystem());  // Must place after render system
 
 
 		// Singleton components
@@ -85,7 +84,7 @@ namespace Game {
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 
-		particles->assign<ParticleComponent>(5000, glm::vec3(0.0f, 3.0f, -10.0f), 5.0f, glm::vec3(0.0f, 8.0f, 0.0f), 128, 1, 1);
+		particles->assign<ParticleComponent>(50, glm::vec3(0.0f, 3.0f, -10.0f), 5.0f, glm::vec3(0.0f, 8.0f, 0.0f), 128, 1, 1);
 	}
 };
 
