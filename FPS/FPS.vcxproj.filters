@@ -124,6 +124,7 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\Events\MouseMovementEvent.h">
+    <ClInclude Include="src\Systems\ParticleSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -22,6 +22,7 @@
 #include <Systems/MovementSystem.h>
 #include <Systems/RecoilSystem.h>
 #include <Systems/PlayerActionSystem.h>
+#include <Systems/ParticleSystem.h>
 
 
 namespace Game {
@@ -45,6 +46,7 @@ namespace Game {
 		//world->registerSystem(new RecoilSystem());
 		world->registerSystem(new PlayerActionSystem());
         world->registerSystem(new MovementSystem());
+        world->registerSystem(new ParticleSystem());
 		world->registerSystem(new RenderSystem());
 		world->registerSystem(new GUISystem());  // Must place after render system
 
@@ -87,7 +89,8 @@ namespace Game {
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 
-		particles->assign<ParticleComponent>(50, glm::vec3(0.0f, 3.0f, -10.0f), 5.0f, glm::vec3(0.0f, 8.0f, 0.0f), 128, 1, 1);
+		particles->assign<ParticleComponent>(500, 5.0f, glm::vec3(0.0f, 8.0f, 0.0f), 128, 1, 1);
+        particles->assign<PositionComponent>(glm::vec3(0.0f, 3.0f, -10.0f));
 	}
 };
 
