@@ -15,7 +15,7 @@
 #include <cmath>
 using namespace ECS;
 
-// 获取所有的 mesh 组件并渲染
+// 获取所有需要渲染的组件件并渲染
 class RenderSystem : public EntitySystem {
 public:
 
@@ -144,12 +144,8 @@ private:
 
 				glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
 				float x = XZ_front.x, z = XZ_front.z;
-
-				//cout << glm::asin(XZ_front.x) << endl;
-				//cout << x << ' ' << z << endl;
-				//cout << glm::acos(z) << endl;
-
-				//model = glm::rotate(model, glm::asin(XZ_front.x), glm::vec3(0.0, 1.0, 0.0));
+				
+				// 根据 Front、Right 向量对 player 的模型进行旋转
 				if (x > 0 && z > 0) {
 					model = glm::rotate(model, glm::acos(z), glm::vec3(0.0, 1.0, 0.0));
 				}

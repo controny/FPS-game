@@ -6,7 +6,6 @@
 
 using namespace ECS;
 
-// 单例组件；存储全局的光照位置，颜色以及渲染参数
 struct SkyboxInfoSingletonComponent {
 	std::vector<Vertex> vertices;
 	std::vector<Texture> textures;

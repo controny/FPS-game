@@ -43,7 +43,7 @@ namespace Game {
 		world->registerSystem(new KeyPressingSystem());
 		world->registerSystem(new MouseMovingSystem());
 		//world->registerSystem(new CameraMovingSystem(cameraPos));
-		//world->registerSystem(new RecoilSystem());
+		world->registerSystem(new RecoilSystem());
 		world->registerSystem(new PlayerActionSystem());
         world->registerSystem(new MovementSystem());
         world->registerSystem(new ParticleSystem());

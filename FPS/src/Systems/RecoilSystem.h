@@ -35,8 +35,8 @@ public:
 	virtual void receive(class World* world, const MousePressEvent& event) override
 	{
 		// 怎么实现后坐力？跳上去之后还能回来？而且过渡自然？
-		/*if (event.key == MOUSE_LEFT)
-			world->emit<MouseMovementEvent>({ 0.5f , 1.5f });*/
+		if (event.key == MOUSE_LEFT)
+			world->emit<MouseMovementEvent>({ 0.5f , 1.5f });
 	}
 
 	RecoilSystem() {
