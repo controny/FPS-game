@@ -12,6 +12,7 @@ const float ZOOM = 45.0f;
 struct CameraComponent {
 
 	// Camera Attributes
+	glm::vec3 Position;  // update by relative position
 	glm::vec3 Relative_position;  // the position relative to entity's position component
 
 	// Euler Angles

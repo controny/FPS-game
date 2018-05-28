@@ -1,10 +1,9 @@
 #pragma once
 #include <GLFW/glfw3.h>
+#include <ECS.h>
 
 #include <Components/ParticleComponent.h>
-#include <Components/CameraInfoSingletonComponent.h>
 
-#include <ECS.h>
 using namespace ECS;
 
 class ParticleSystem : public EntitySystem
@@ -15,6 +14,12 @@ public:
 	virtual ~ParticleSystem() {}
 
 	virtual void tick(class World* world, float deltaTime) override {
+		glm::vec3 CameraPos;
+		world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+			auto cameraCHandle = ent->get<CameraComponent>();
+			CameraPos = cameraCHandle->Position;
+		});
+
 		world->each<ParticleComponent, PositionComponent>([&](
 			Entity* ent,
 			ComponentHandle<ParticleComponent> particleCHandle,
@@ -27,8 +32,7 @@ public:
 				newparticles = (int)(0.016f*10000.0);
 
 			generateNewParticles(particleCHandle, positionCHandle, newparticles);
-			auto cameraCHandle = world->getSingletonComponent<CameraInfoSingletonComponent>();
-			simulateAllParticles(particleCHandle, cameraCHandle, deltaTime);
+			simulateAllParticles(particleCHandle, CameraPos, deltaTime);
 
 		});
 	}
@@ -96,7 +100,7 @@ private:
 	// Simulate all particles
 	void simulateAllParticles(
 		ComponentHandle<ParticleComponent> particleCHandle,
-		ComponentHandle<CameraInfoSingletonComponent> cameraCHandle,
+		glm::vec3 cameraPos,
 		float deltaTime) {
 
 		particleCHandle->particlesCount = 0;
@@ -113,7 +117,7 @@ private:
 					// Simulate simple physics : gravity only, no collisions
 					p.speed += glm::vec3(0.0f, -9.81f, 0.0f) * (float)deltaTime * 0.5f;
 					p.pos += p.speed * (float)deltaTime;
-					p.cameradistance = glm::length2(p.pos - cameraCHandle->CameraPos);
+					p.cameradistance = glm::length2(p.pos - cameraPos);
 					//particleCHandle->container[i].pos += glm::vec3(0.0f,10.0f, 0.0f) * (float)delta;
 
 					// Fill the GPU buffer

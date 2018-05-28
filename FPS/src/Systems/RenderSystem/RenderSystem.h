@@ -37,8 +37,7 @@ public:
 	{
 		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
-		auto SkyboxCHandle = world->getSingletonComponent<SkyboxInfoSingletonComponent>();
-
+		
 		glm::mat4 ViewMatrix;
 		glm::vec3 CameraPos;
 		world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
@@ -49,6 +48,8 @@ public:
 			CameraPos = positionCHandle->Position + glm::vec3(XZ_front.x, cameraCHandle->Relative_position.y, XZ_front.z);
 
 			ViewMatrix = glm::lookAt(CameraPos, CameraPos + positionCHandle->Front, positionCHandle->Up);
+			// 计算出位置后存在里面，这样在其他地方就不用再算一次
+			cameraCHandle->Position = CameraPos;
 		});
 
 		/* ----------- render object -----------*/
@@ -71,42 +72,74 @@ public:
 		glm::mat4 projection = glm::perspective(45.0f, (float)window_width / (float)window_height, 0.1f, 1000.0f);
 		objectShader.setMat4("projection", projection);
 
+		renderMeshes(world, deltaTime);
+
+
+		/* ----------- render skybox -----------*/
+		skyboxShader.use();
+
+		//设置天空盒着色器变量
+		glm::mat4 view = glm::mat4(glm::mat3(ViewMatrix));
+		skyboxShader.setMat4("view", view);
+		skyboxShader.setMat4("projection", projection);
+
+		renderSkybox(world, deltaTime);
+
+
+		/* ----------- render text -----------*/
+		textShader.use();
+		projection = glm::ortho(0.0f, (float)window_width, 0.0f, (float)window_height, -0.001f, 1.0f);
+		textShader.setMat4("projection", projection);
+
+		renderText(world, deltaTime);
+
+
+		/* ----------- render post -----------*/
+		postShader.use();
+		renderPost(world, deltaTime);
+		
+		/* ----------- render particles -----------*/
+		renderParticles(world, deltaTime, ViewMatrix);
+	}
+private:
+	void renderMeshes(class World* world, float deltaTime) {
+
 		// 渲染，就是之前 Mesh 类的 Draw()
-        world->each<ObjectComponent, PositionComponent>(
-        [&](Entity* ent,
-            ComponentHandle<ObjectComponent> objectCHandle,
-            ComponentHandle<PositionComponent> positionCHandle) -> void {
-            unsigned int diffuseNr = 1;
-            unsigned int specularNr = 1;
-            unsigned int normalNr = 1;
-            unsigned int heightNr = 1;
-            vector<Mesh>& meshes = objectCHandle->meshes;
-            for (unsigned int j = 0; j < meshes.size(); j++) {
-                Mesh& mesh = meshes[j];
-                for (unsigned int i = 0; i < mesh.textures.size(); i++)
-                {
-                    glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-                                                      // retrieve texture number (the N in diffuse_textureN)
-                    string number;
-                    string name = mesh.textures[i].type;
-                    if (name == "texture_diffuse")
-                        number = std::to_string(diffuseNr++);
-                    else if (name == "texture_specular")
-                        number = std::to_string(specularNr++); // transfer unsigned int to stream
-                    else if (name == "texture_normal")
-                        number = std::to_string(normalNr++); // transfer unsigned int to stream
-                    else if (name == "texture_height")
-                        number = std::to_string(heightNr++); // transfer unsigned int to stream
+		world->each<ObjectComponent, PositionComponent>(
+			[&](Entity* ent,
+				ComponentHandle<ObjectComponent> objectCHandle,
+				ComponentHandle<PositionComponent> positionCHandle) -> void {
+			unsigned int diffuseNr = 1;
+			unsigned int specularNr = 1;
+			unsigned int normalNr = 1;
+			unsigned int heightNr = 1;
+			vector<Mesh>& meshes = objectCHandle->meshes;
+			for (unsigned int j = 0; j < meshes.size(); j++) {
+				Mesh& mesh = meshes[j];
+				for (unsigned int i = 0; i < mesh.textures.size(); i++)
+				{
+					glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+													  // retrieve texture number (the N in diffuse_textureN)
+					string number;
+					string name = mesh.textures[i].type;
+					if (name == "texture_diffuse")
+						number = std::to_string(diffuseNr++);
+					else if (name == "texture_specular")
+						number = std::to_string(specularNr++); // transfer unsigned int to stream
+					else if (name == "texture_normal")
+						number = std::to_string(normalNr++); // transfer unsigned int to stream
+					else if (name == "texture_height")
+						number = std::to_string(heightNr++); // transfer unsigned int to stream
 
-                                                             // now set the sampler to the correct texture unit
-                    int a = glGetUniformLocation(objectShader.ID, (name + number).c_str());
-                    glUniform1i(a, i);
+															 // now set the sampler to the correct texture unit
+					int a = glGetUniformLocation(objectShader.ID, (name + number).c_str());
+					glUniform1i(a, i);
 
-                    // and finally bind the texture
-                    glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
-                }
-                glm::mat4 model;
-                model = glm::translate(model, positionCHandle->Position);
+					// and finally bind the texture
+					glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
+				}
+				glm::mat4 model;
+				model = glm::translate(model, positionCHandle->Position);
 
 
 				glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
@@ -129,30 +162,24 @@ public:
 				else if (x < 0 && z < 0) {
 					model = glm::rotate(model, float(6.28 - glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
 				}
-				
-                objectShader.setMat4("model", model);
-                glDepthFunc(GL_LEQUAL);
-                glBindVertexArray(mesh.VAO);
-                glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
-                glBindVertexArray(0);
-                glDepthFunc(GL_LESS);
-                glActiveTexture(GL_TEXTURE0);
-            }
-        });
 
+				objectShader.setMat4("model", model);
+				glDepthFunc(GL_LEQUAL);
+				glBindVertexArray(mesh.VAO);
+				glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+				glBindVertexArray(0);
+				glDepthFunc(GL_LESS);
+				glActiveTexture(GL_TEXTURE0);
+			}
+		});
+	}
 
-		/* ----------- render skybox -----------*/
-		skyboxShader.use();
-
-		//设置天空盒着色器变量
-		glm::mat4 view = glm::mat4(glm::mat3(ViewMatrix));
-		skyboxShader.setMat4("view", view);
-		skyboxShader.setMat4("projection", projection);
-
+	void renderSkybox(class World* world, float deltaTime) {
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;
 		unsigned int normalNr = 1;
 		unsigned int heightNr = 1;
+		auto SkyboxCHandle = world->getSingletonComponent<SkyboxInfoSingletonComponent>();
 		vector<Mesh>& meshes = SkyboxCHandle->meshes;
 		for (unsigned int j = 0; j < meshes.size(); j++) {
 			Mesh& mesh = meshes[j];
@@ -186,16 +213,11 @@ public:
 			glDepthFunc(GL_LESS);
 			glActiveTexture(GL_TEXTURE0);
 		}
+	}
 
-
-		/* ----------- render text -----------*/
+	void renderText(class World* world, float deltaTime) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		textShader.use();
-		projection = glm::ortho(0.0f, (float)window_width, 0.0f, (float)window_height, -0.001f, 1.0f);
-		textShader.setMat4("projection", projection);
-
 		world->each<TextComponent>([&](Entity* ent, ComponentHandle<TextComponent> textCHandle) {
 			textShader.setVec3("textColor", textCHandle->color);
 			glActiveTexture(GL_TEXTURE0);
@@ -240,10 +262,9 @@ public:
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		});
+	}
 
-
-		/* ----------- render post -----------*/
-		postShader.use();
+	void renderPost(class World* world, float deltaTime) {
 		world->each<PostComponent>([&](Entity* ent, ComponentHandle<PostComponent> postCHandle) {
 			postShader.setVec3("color", postCHandle->Color);
 			glBindVertexArray(postCHandle->line_VAO);
@@ -254,8 +275,9 @@ public:
 			glDrawArrays(GL_POINTS, 0, 1);
 			glBindVertexArray(0);
 		});
-		
-		/* ----------- render particles -----------*/
+	}
+
+	void renderParticles(class World* world, float deltaTime, glm::mat4 ViewMatrix) {
 		world->each<ParticleComponent>([&](Entity* ent, ComponentHandle<ParticleComponent> particleCHandle) {
 			// Accept fragment if it closer to the camera than the former one
 			glDepthFunc(GL_LESS);
@@ -287,18 +309,18 @@ public:
 			particleShader.setInt("myTextureSampler", 0);
 
 			// Same as the billboards tutorial
-			glm::mat4 viewMatrix = cameraCHandle->CameraViewMatrix;
+			//glm::mat4 viewMatrix = ViewMatrix;
 			// Projection matrix : 45?Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 			glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
-			glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
+			glm::mat4 viewProjectionMatrix = projectionMatrix * ViewMatrix;
 			particleShader.setVec3("CameraRight_worldspace",
-				viewMatrix[0][0],
-				viewMatrix[1][0],
-				viewMatrix[2][0]);
+				ViewMatrix[0][0],
+				ViewMatrix[1][0],
+				ViewMatrix[2][0]);
 			particleShader.setVec3("CameraUp_worldspace",
-				viewMatrix[0][1],
-				viewMatrix[1][1],
-				viewMatrix[2][1]);
+				ViewMatrix[0][1],
+				ViewMatrix[1][1],
+				ViewMatrix[2][1]);
 			particleShader.setMat4("VP", viewProjectionMatrix);
 
 			// 1rst attribute buffer : vertices
@@ -357,5 +379,4 @@ public:
 			glDisableVertexAttribArray(2);
 		});
 	}
-
 };
