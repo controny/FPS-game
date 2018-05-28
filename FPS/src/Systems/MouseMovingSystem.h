@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 
 #include <ECS.h>
-#include <Events/MouseMovementEvent.h>
 #include <Components/WindowInfoSingletonComponent.h>
 
 using namespace ECS;
@@ -48,8 +47,32 @@ public:
 		lastX = xpos;
 		lastY = ypos;
 
-		world->emit<MouseMovementEvent>({ xoffset ,yoffset });
-		
-		
+		// 更新 camera 的数据（之前 camera 的 updateVectors 方法和 processMouseMovement 方法
+		world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+			auto cameraCHandle = ent->get<CameraComponent>();
+			auto positionCHandle = ent->get<PositionComponent>();
+
+			xoffset *= cameraCHandle->MouseSensitivity;
+			yoffset *= cameraCHandle->MouseSensitivity;
+
+			cameraCHandle->Yaw += xoffset;
+			cameraCHandle->Pitch += yoffset;
+
+			// Make sure that when pitch is out of bounds, screen doesn't get flipped
+			if (cameraCHandle->Pitch > 89.0f)
+				cameraCHandle->Pitch = 89.0f;
+			if (cameraCHandle->Pitch < -89.0f)
+				cameraCHandle->Pitch = -89.0f;
+
+			glm::vec3 front;
+			front.x = cos(glm::radians(cameraCHandle->Yaw)) * cos(glm::radians(cameraCHandle->Pitch));
+			front.y = sin(glm::radians(cameraCHandle->Pitch));
+			front.z = sin(glm::radians(cameraCHandle->Yaw)) * cos(glm::radians(cameraCHandle->Pitch));
+
+			positionCHandle->Front = glm::normalize(front);
+
+			positionCHandle->Right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
+			positionCHandle->Up = glm::normalize(glm::cross(positionCHandle->Right, front));
+		});
 	}
 };

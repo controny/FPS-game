@@ -1,16 +1,16 @@
 # FPS-game
 
-5.21 Update
+5.28 Update
 
 ## 任务说明
 
-### 当前重要任务（下周日 5 月 27 日前）
+### 当前重要任务（下周二 5 月 29 日前）
 
 #### 场景搭建部分
 
 * **粒子系统（可以借助 velocity component）：火焰。场景中的火炬、火堆。烟雾。可以先做一个 sample，之后结合碰撞系统生成效果（血可以作为用特定参数的烟雾模拟），爆炸。**
 
-* 生成 player entity，将 camera 与其视角绑定，并借助物理系统限制行动。
+* player entity 根据物理系统限制移动。
 
   http://api.unrealengine.com/CHN/Resources/SampleGames/ShooterGame/index.html
 
@@ -60,24 +60,49 @@
 
 * **~~物理系统：物体三维移动（速度系统）；可以参考使用的 ECS 那个库的 github README 里的示例，给 entity 附上 velocity component。~~**
 * ~~文字渲染与准星。要处理 FreeType 库以及渲染文字的 system 和着色器。~~
+* ~~生成 player entity，将 camera 与其视角绑定。~~
 
 ---
 
 ## 更新备注
 
-### 5.20 物体移动
-新增 PositionComponent, MovementComponent
-新增 MovementSystem
+### 5.28
 
-#### 用法
+#### 分离 Camera.h 逻辑
+
+删除了 `CameraInfoSingletonComponent`, `CameraMovingSystem`, `Camera.h`，改为用 `CameraComponent` 保存 camera 的数据，并把 `Front, Right` 等向量数据保存在 `PositionComponent` 中。
+
+#### 用 PlayerComponent 代表 player entity
+
+拥有 `PlayerComponent` 的 entity 就是 player，component 中可以存放 player 游戏中需要的数据。目前只有这个 entity 拥有 `CameraComponent`，根据这个 entity 的 `PositionComponent` 位置来更新 camera 的位置。这个 entity 的 model 也会根据视角方向 `Front, Right` 来进行旋转；通过视角方向计算出 xz 方向的速度，利用 `MovementComponent` 实现移动。
+
+### 5.26 
+
+#### 物体移动：修改object渲染方式 & MovementSystem
+
+移动时, `ObjectComponent` 在GPU中的 vertices 数据不实时更新，而是在着色器中通过原始 vertices 数据 + `PositionComponent` 中的 Position 数据（作为 model 矩阵的位移值）来确定渲染位置。
+因此，对于每一个 assign 了 `ObjectComponent` 的实体，都需要 assign 一个 `PositionComponent` 来确定其在世界坐标中的位置，否则无法正常将其渲染。
+
 对要移动的实体assign一个MovementComponent（指明速度和加速度），即可实现移动。
 
-### 5.18 ObjectComponent, shift 加速
-MeshComponent 改为 ObjectComponent，统一处理 assimp 模型和 cube 原始数据。cube resource 可以生成长方体。
+#### 粒子系统
+
+- 新增 ParticleComponent, 提供接口设置粒子个数、喷射位置、喷射方向、粒子颜色等，可模拟不同的粒子效果。
+- RenderSystem 新增 particle 的渲染。
+
+### 5.18 
+
+#### ObjectComponent, shift 加速
+
+把 Mesh 归入ObjectComponent；修改 RenderSystem，只需渲染 ObjectComponent；把 Model 加入game；把使用 “MeshComponent.h” 的 Headers 改为 "ObjectComponent.h"
+
+修改CubeResource，其init函数以中心位置、长宽高以及贴图对象作为参数，可用于实现地板和墙。
 
 按住左边的 shift 键可以加速移动。
 
-### 5.16 新的 singleton component 接口
+### 5.16 
+
+#### 新的 singleton component 接口
 
 相当于 world 的全局变量，不被某实体所拥有。
 
@@ -98,7 +123,3 @@ ComponentHandle<T> getSingletonComponent() {
 
 #### 备注
 目前只有 `MeshComponent` 不是 singleton 的，即可以被实体所拥有。可以参考 `RenderSystem` 中获得和使用非 singleton 组件的例子。以后应该大部分的 component 都不是 singleton 的。
-
-### 5.18更新：
-1. 把Mesh归入ObjectComponent;修改RenderSystem,只需渲染ObjectComponent；把Model加入game；把使用“MeshComponent.h”的Headers改为"ObjectComponent.h"
-2. 修改CubeResource，其init函数以中心位置、长宽高以及贴图对象作为参数，可用于实现地板和墙。

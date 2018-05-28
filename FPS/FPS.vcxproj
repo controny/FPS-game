@@ -81,6 +81,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -135,9 +136,13 @@
     <ClInclude Include="dependencies\include\ECS.h" />
     <ClInclude Include="dependencies\include\ft2build.h" />
     <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
+    <ClInclude Include="src\Components\CameraComponent.h" />
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
+    <ClInclude Include="src\Components\MovementComponent.h" />
     <ClInclude Include="src\Components\ObjectComponent.h" />
+    <ClInclude Include="src\Components\ParticleComponent.h" />
+    <ClInclude Include="src\Components\PlayerComponent.h" />
+    <ClInclude Include="src\Components\PositionComponent.h" />
     <ClInclude Include="src\Components\PostComponent.h" />
     <ClInclude Include="src\Components\SkyboxInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\TextComponent.h" />
@@ -149,10 +154,11 @@
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\shaders\shader.h" />
     <ClInclude Include="src\Systems\CameraMovingSystem.h" />
-    <ClInclude Include="src\Systems\CameraMovingSystem\Camera.h" />
-    <ClInclude Include="src\Systems\CameraMovingSystem\CameraMovingSystem.h" />
     <ClInclude Include="src\Systems\KeyPressingSystem.h" />
     <ClInclude Include="src\Systems\MouseMovingSystem.h" />
+    <ClInclude Include="src\Systems\MovementSystem.h" />
+    <ClInclude Include="src\Systems\PlayerActionSystem.h" />
+    <ClInclude Include="src\Systems\ParticleSystem.h" />
     <ClInclude Include="src\Systems\RecoilSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Game.h" />
@@ -166,6 +172,8 @@
     <None Include="src\shaderPrograms\object.vs" />
     <None Include="src\Shaders\object.fs" />
     <None Include="src\Shaders\object.vs" />
+    <None Include="src\Shaders\particle.fs" />
+    <None Include="src\Shaders\particle.vs" />
     <None Include="src\Shaders\post.fs" />
     <None Include="src\Shaders\post.vs" />
     <None Include="src\Shaders\skybox.fs" />
