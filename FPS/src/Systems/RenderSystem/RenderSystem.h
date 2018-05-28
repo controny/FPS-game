@@ -212,49 +212,15 @@ private:
 	}
 
 	void renderText(class World* world, float deltaTime) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		world->each<TextComponent>([&](Entity* ent, ComponentHandle<TextComponent> textCHandle) {
 			textShader.setVec3("textColor", textCHandle->color);
 			glActiveTexture(GL_TEXTURE0);
-			glBindVertexArray(textCHandle->VAO);
 
-			// Iterate through all characters
-			float origin_x = textCHandle->x;
-
-			std::string::const_iterator c;
-			for (c = textCHandle->text.begin(); c != textCHandle->text.end(); c++)
-			{
-				Character ch = textCHandle->Characters[*c];
-
-				GLfloat xpos = textCHandle->x + ch.Bearing.x * textCHandle->scale;
-				GLfloat ypos = textCHandle->y - (ch.Size.y - ch.Bearing.y) * textCHandle->scale;
-
-				GLfloat w = ch.Size.x * textCHandle->scale;
-				GLfloat h = ch.Size.y * textCHandle->scale;
-				// Update VBO for each character
-				GLfloat vertices[6][4] = {
-					{ xpos,     ypos + h,   0.0, 0.0 },
-				{ xpos,     ypos,       0.0, 1.0 },
-				{ xpos + w, ypos,       1.0, 1.0 },
-
-				{ xpos,     ypos + h,   0.0, 0.0 },
-				{ xpos + w, ypos,       1.0, 1.0 },
-				{ xpos + w, ypos + h,   1.0, 0.0 }
-				};
-				// Render glyph texture over quad
-				glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-				// Update content of VBO memory
-				glBindBuffer(GL_ARRAY_BUFFER, textCHandle->VBO);
-				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // Be sure to use glBufferSubData and not glBufferData
-
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-				// Render quad
+			for (int i = 0; i < textCHandle->VAOs.size(); i++) {
+				glBindVertexArray(textCHandle->VAOs[i]);
+				glBindTexture(GL_TEXTURE_2D, textCHandle->TextureIDs[i]);
 				glDrawArrays(GL_TRIANGLES, 0, 6);
-				// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-				textCHandle->x += (ch.Advance >> 6) * textCHandle->scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
 			}
-			textCHandle->x = origin_x;
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		});
