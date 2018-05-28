@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 
 #include <ECS.h>
-#include <Components/CameraInfoSingletonComponent.h>
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Events/MouseMovementEvent.h>
 #include <Events/KeyEvents.h>

@@ -8,6 +8,9 @@
 struct PositionComponent {
 
     glm::vec3 Position;
+	glm::vec3 Front;
+	glm::vec3 Right;
+	glm::vec3 Up;
 
     PositionComponent(glm::vec3 _Position) {
         Position = _Position;

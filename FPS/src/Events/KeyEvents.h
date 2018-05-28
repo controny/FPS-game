@@ -33,6 +33,15 @@ struct KeyPressEvent {
 	float deltaTime;
 };
 
+struct KeyRepeatEvent {
+
+	KeyRepeatEvent(Key _key, float _deltaTime)
+		: key(_key), deltaTime(_deltaTime) {};
+
+	Key key;
+	float deltaTime;
+};
+
 struct KeyReleaseEvent {
 
 	KeyReleaseEvent(Key _key, float _deltaTime)

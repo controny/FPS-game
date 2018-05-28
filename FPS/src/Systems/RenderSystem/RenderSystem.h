@@ -8,12 +8,11 @@
 #include <Components/ObjectComponent.h>
 #include <Components/PositionComponent.h>
 #include <Components/TextComponent.h>
-#include <Components/CameraInfoSingletonComponent.h>
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Components/LightingInfoSingletonComponent.h>
 #include <Components/SkyboxInfoSingletonComponent.h>
 #include <Components/ParticleComponent.h>
-
+#include <cmath>
 using namespace ECS;
 
 // 获取所有的 mesh 组件并渲染
@@ -36,17 +35,28 @@ public:
 
 	virtual void tick(class World* world, float deltaTime) override
 	{
-		auto cameraCHandle = world->getSingletonComponent<CameraInfoSingletonComponent>();
 		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
 		auto SkyboxCHandle = world->getSingletonComponent<SkyboxInfoSingletonComponent>();
+
+		glm::mat4 ViewMatrix;
+		glm::vec3 CameraPos;
+		world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+			auto cameraCHandle = ent->get<CameraComponent>();
+			auto positionCHandle = ent->get<PositionComponent>();
+
+			glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
+			CameraPos = positionCHandle->Position + glm::vec3(XZ_front.x, cameraCHandle->Relative_position.y, XZ_front.z);
+
+			ViewMatrix = glm::lookAt(CameraPos, CameraPos + positionCHandle->Front, positionCHandle->Up);
+		});
 
 		/* ----------- render object -----------*/
 		objectShader.use();
 
 		// 设置着色器要用的变量
-		objectShader.setMat4("view", cameraCHandle->CameraViewMatrix);
-		objectShader.setVec3("viewPos", cameraCHandle->CameraPos);
+		objectShader.setMat4("view", ViewMatrix);
+		objectShader.setVec3("viewPos", CameraPos);
 
 		objectShader.setVec3("lightPos", lightCHandle->LightPos);
 		objectShader.setVec3("lightColor", lightCHandle->LightColor);
@@ -97,6 +107,29 @@ public:
                 }
                 glm::mat4 model;
                 model = glm::translate(model, positionCHandle->Position);
+
+
+				glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
+				float x = XZ_front.x, z = XZ_front.z;
+
+				//cout << glm::asin(XZ_front.x) << endl;
+				//cout << x << ' ' << z << endl;
+				//cout << glm::acos(z) << endl;
+
+				//model = glm::rotate(model, glm::asin(XZ_front.x), glm::vec3(0.0, 1.0, 0.0));
+				if (x > 0 && z > 0) {
+					model = glm::rotate(model, glm::acos(z), glm::vec3(0.0, 1.0, 0.0));
+				}
+				else if (x > 0 && z < 0) {
+					model = glm::rotate(model, float(glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+				}
+				else if (x < 0 && z > 0) {
+					model = glm::rotate(model, float(-glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+				}
+				else if (x < 0 && z < 0) {
+					model = glm::rotate(model, float(6.28 - glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+				}
+				
                 objectShader.setMat4("model", model);
                 glDepthFunc(GL_LEQUAL);
                 glBindVertexArray(mesh.VAO);
@@ -112,7 +145,7 @@ public:
 		skyboxShader.use();
 
 		//设置天空盒着色器变量
-		glm::mat4 view = glm::mat4(glm::mat3(cameraCHandle->CameraViewMatrix));
+		glm::mat4 view = glm::mat4(glm::mat3(ViewMatrix));
 		skyboxShader.setMat4("view", view);
 		skyboxShader.setMat4("projection", projection);
 

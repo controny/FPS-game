@@ -16,7 +16,7 @@ public:
     // 每次轮询到时，为每一个添加了MovementComponent的entity计算位移数据，并更新Position数据
     virtual void tick(class World* world, float deltaTime) override {
         world->each<MovementComponent, PositionComponent>(
-        [&](Entity* ent,  
+        [&](Entity* ent,
             ComponentHandle<MovementComponent> movementCHandle,
             ComponentHandle<PositionComponent> positionCHandle) -> void {
             glm::vec3 v = movementCHandle->Velocity;
