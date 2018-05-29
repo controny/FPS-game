@@ -70,6 +70,11 @@
 #### 新增骨骼动画模型
 新建了BoneObjectComponent组件，用于加载骨骼动画模型。在game中加入骨骼模型，在rendersystem中渲染
 
+#### 新增AABB碰撞检测
+
+- 新增 `CollisionComponent` 和 `CollisionSystem`，对需要进行碰撞检测的实体assign一个 `CollisionComponent` （指明宽度，深度和高度），即可进行碰撞检测；
+- 按空格键可以实现player的跳跃。
+
 ### 5.28
 
 #### 分离 Camera.h 逻辑

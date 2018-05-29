@@ -13,10 +13,12 @@ struct MovementComponent {
 
     glm::vec3 Velocity;
     glm::vec3 Acceleration;
+    glm::vec3 shift;
 
     MovementComponent(glm::vec3 _Velocity, glm::vec3 _Acceleration) {
         Velocity     = _Velocity;
         Acceleration = _Acceleration;
+        shift        = glm::vec3(0.0f, 0.0f, 0.0f);
     }
 
     void Print() {

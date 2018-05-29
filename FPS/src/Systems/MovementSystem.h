@@ -5,12 +5,13 @@
 #include <Components/PositionComponent.h>
 #include <Components/MovementComponent.h>
 
+//#define DEBUG_MOVE
+
 using namespace ECS;
 
 // 根据Movement数据，更新entity的Position数据
 class MovementSystem : public EntitySystem {
 public:
-
     MovementSystem() {}
 
     // 每次轮询到时，为每一个添加了MovementComponent的entity计算位移数据，并更新Position数据
@@ -22,8 +23,18 @@ public:
             glm::vec3 v = movementCHandle->Velocity;
             glm::vec3 a = movementCHandle->Acceleration;
             glm::vec3 shift = v * deltaTime;
+            movementCHandle->shift = shift;
             movementCHandle->Velocity = v + a * deltaTime;
+
+#ifdef DEBUG_MOVE
+            positionCHandle->Print();
+#endif
+
             positionCHandle->Position += shift;
+            
+#ifdef DEBUG_MOVE
+            positionCHandle->Print();
+#endif
         });
     }
 };
