@@ -54,7 +54,5 @@ public:
 			world->emit<KeyReleaseEvent>({ D, deltaTime });
 		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
 			world->emit<KeyReleaseEvent>({ LEFT_SHIFT, deltaTime });
-
-		
 	}
 };

@@ -135,7 +135,10 @@
   <ItemGroup>
     <ClInclude Include="dependencies\include\ECS.h" />
     <ClInclude Include="dependencies\include\ft2build.h" />
+    <ClInclude Include="dependencies\include\skiningLight.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Components\BoneObjectComponent.h" />
+    <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\CameraComponent.h" />
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\MovementComponent.h" />

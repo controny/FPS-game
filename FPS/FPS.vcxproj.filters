@@ -102,6 +102,10 @@
     <ClInclude Include="src\Systems\RecoilSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\Components\BoneObjectComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\include\skiningLight.h">
     <ClInclude Include="src\Components\ParticleComponent.h">
       <Filter>头文件</Filter>
     </ClInclude>

@@ -2,16 +2,30 @@
 #include <GLFW/glfw3.h>
 
 #include <ECS.h>
+#include <Events/MouseMovementEvent.h>
 #include <Components/WindowInfoSingletonComponent.h>
 
 using namespace ECS;
 
-// 根据鼠标移动改变 camera 视角
-class MouseMovingSystem : public EntitySystem {
+// 根据鼠标移动改变当前 camera 所属的 entity 的 PositionComponent 信息
+class MouseMovingSystem : public EntitySystem, 
+	public EventSubscriber<MouseMovementEvent> {
 public:
 
 	bool firstMouse;
 	float lastX, lastY;
+
+	virtual void configure(class World* world) override
+	{
+		world->subscribe<MouseMovementEvent>(this);
+	}
+
+	virtual void unconfigure(class World* world) override
+	{
+		world->unsubscribeAll(this);
+	}
+
+	
 
 	MouseMovingSystem() {
 		init();
@@ -21,7 +35,12 @@ public:
 		firstMouse = true;
 	}
 
-	// 每次轮询到时，如果 GUI 没有在显示，就获得当前鼠标的位置，计算出 offset，并 emit 出鼠标移动的事件
+	virtual void receive(class World* world, const MouseMovementEvent& event) override
+	{
+		updateCamera(world, event.xoffset, event.yoffset);
+	}
+
+	// 每次轮询到时，如果 GUI 没有在显示，就获得当前鼠标的位置，计算出 offset
 	virtual void tick(class World* world, float deltaTime) override {
 		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 		
@@ -47,7 +66,15 @@ public:
 		lastX = xpos;
 		lastY = ypos;
 
-		// 更新 camera 的数据（之前 camera 的 updateVectors 方法和 processMouseMovement 方法
+		updateCamera(world, xoffset, yoffset);
+	}
+
+private:
+
+	// 更新 player entity 的 camera 和 position 的数据（之前 camera 的 updateVectors 方法和 processMouseMovement 方法）
+	// 主要是更新 Front 和 Right 向量
+	// 不会影响不属于 player entity 的其他 entity 的 PositionComponent
+	void updateCamera(World* world, float xoffset, float yoffset) {
 		world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
 			auto cameraCHandle = ent->get<CameraComponent>();
 			auto positionCHandle = ent->get<PositionComponent>();

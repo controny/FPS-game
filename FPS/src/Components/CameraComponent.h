@@ -9,6 +9,7 @@ const float SPEED = 10.0f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
 
+// 之前的 Camera.h 中的数据。Front、Right、Up 三个向量分离 PositionComponent 中；视角更新逻辑再 MouseMovingSystem中；camera 不再需要考虑移动，每次根据绑定的 entity 的位置来更新位置
 struct CameraComponent {
 
 	// Camera Attributes

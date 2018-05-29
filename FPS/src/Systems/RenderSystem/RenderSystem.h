@@ -1,6 +1,8 @@
 #pragma once
 #include <algorithm>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "Shader.h"
 
@@ -15,7 +17,7 @@
 #include <cmath>
 using namespace ECS;
 
-// 获取所有的 mesh 组件并渲染
+// 获取所有需要渲染的组件件并渲染
 class RenderSystem : public EntitySystem {
 public:
 
@@ -23,13 +25,16 @@ public:
 	Shader textShader;
 	Shader skyboxShader;
 	Shader postShader;
+	Shader boneShader;
 	Shader particleShader;
+
 
 	RenderSystem() {
 		objectShader.init("src/Shaders/object.vs", "src/Shaders/object.fs");
 		textShader.init("src/Shaders/text.vs", "src/Shaders/text.fs");
 		skyboxShader.init("src/Shaders/skybox.vs", "src/Shaders/skybox.fs");
 		postShader.init("src/Shaders/post.vs", "src/Shaders/post.fs");
+		boneShader.init("src/Shaders/skinning.vs", "src/Shaders/skinning.fs");
 		particleShader.init("src/Shaders/particle.vs", "src/Shaders/particle.fs");
 	}
 
@@ -72,8 +77,30 @@ public:
 		glm::mat4 projection = glm::perspective(45.0f, (float)window_width / (float)window_height, 0.1f, 1000.0f);
 		objectShader.setMat4("projection", projection);
 
+
 		renderMeshes(world, deltaTime);
 
+
+		//设置骨骼着色器变量
+		glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
+		
+		boneShader.use();
+		boneShader.setMat4("view", ViewMatrix); 
+		boneShader.setVec3("viewPos", CameraPos);
+
+		boneShader.setVec3("lightPos", lightCHandle->LightPos);
+		boneShader.setVec3("lightColor", lightCHandle->LightColor);
+		boneShader.setFloat("ambientStrength", lightCHandle->AmbientStrength);
+		boneShader.setFloat("specularStrength", lightCHandle->SpecularStrength);
+		boneShader.setFloat("shininess", lightCHandle->Shininess);
+		boneShader.setFloat("diffuseStrength", lightCHandle->DiffuseStrength);
+
+		bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		boneShader.setMat4("model", bonemodel);
+		boneShader.setMat4("projection", projection);
+
+
+		renderBoneObject(world, deltaTime);
 
 		/* ----------- render skybox -----------*/
 		skyboxShader.use();
@@ -144,12 +171,8 @@ private:
 
 				glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
 				float x = XZ_front.x, z = XZ_front.z;
-
-				//cout << glm::asin(XZ_front.x) << endl;
-				//cout << x << ' ' << z << endl;
-				//cout << glm::acos(z) << endl;
-
-				//model = glm::rotate(model, glm::asin(XZ_front.x), glm::vec3(0.0, 1.0, 0.0));
+				
+				// 根据 Front、Right 向量对 player 的模型进行旋转
 				if (x > 0 && z > 0) {
 					model = glm::rotate(model, glm::acos(z), glm::vec3(0.0, 1.0, 0.0));
 				}
@@ -174,6 +197,39 @@ private:
 		});
 	}
 
+
+
+	void renderBoneObject(class World* world, float deltaTime) {
+		// 渲染骨骼模型
+		world->each<BoneObjectComponent>([&](Entity* ent, ComponentHandle<BoneObjectComponent> BoneobjectCHandle) -> void {
+			BoneobjectCHandle->m_pScene= BoneobjectCHandle->m_Importer.ReadFile(BoneobjectCHandle->filename, ASSIMP_LOAD_FLAGS);
+			static vector<Matrix4f> Transforms;
+			static int renderCount = 0;
+			//float RunningTime = GetRunningTime();
+			static float RunningTime = 0.5;
+			RunningTime += 0.1;
+			if (renderCount == 0) {
+				BoneobjectCHandle->BoneTransform(RunningTime, Transforms);
+				renderCount++;
+			}
+			BoneobjectCHandle->BoneTransform(RunningTime, Transforms);
+			renderCount++;
+			GLuint m_boneLocation[100];
+			for (unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(m_boneLocation); i++) {
+				char Name[128];
+				memset(Name, 0, sizeof(Name));
+				SNPRINTF(Name, sizeof(Name), "gBones[%d]", i);
+				m_boneLocation[i] = glGetUniformLocation(boneShader.ID, Name);
+			}
+			for (uint i = 0; i < Transforms.size(); i++) {
+				//m_pEffect->SetBoneTransform(i, Transforms[i]);
+				glUniformMatrix4fv(m_boneLocation[i], 1, GL_TRUE, (const GLfloat*)Transforms[i]);
+			}
+			
+			
+			BoneobjectCHandle->Render();
+		});
+	}
 	void renderSkybox(class World* world, float deltaTime) {
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;
@@ -216,49 +272,15 @@ private:
 	}
 
 	void renderText(class World* world, float deltaTime) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		world->each<TextComponent>([&](Entity* ent, ComponentHandle<TextComponent> textCHandle) {
 			textShader.setVec3("textColor", textCHandle->color);
 			glActiveTexture(GL_TEXTURE0);
-			glBindVertexArray(textCHandle->VAO);
 
-			// Iterate through all characters
-			float origin_x = textCHandle->x;
-
-			std::string::const_iterator c;
-			for (c = textCHandle->text.begin(); c != textCHandle->text.end(); c++)
-			{
-				Character ch = textCHandle->Characters[*c];
-
-				GLfloat xpos = textCHandle->x + ch.Bearing.x * textCHandle->scale;
-				GLfloat ypos = textCHandle->y - (ch.Size.y - ch.Bearing.y) * textCHandle->scale;
-
-				GLfloat w = ch.Size.x * textCHandle->scale;
-				GLfloat h = ch.Size.y * textCHandle->scale;
-				// Update VBO for each character
-				GLfloat vertices[6][4] = {
-					{ xpos,     ypos + h,   0.0, 0.0 },
-				{ xpos,     ypos,       0.0, 1.0 },
-				{ xpos + w, ypos,       1.0, 1.0 },
-
-				{ xpos,     ypos + h,   0.0, 0.0 },
-				{ xpos + w, ypos,       1.0, 1.0 },
-				{ xpos + w, ypos + h,   1.0, 0.0 }
-				};
-				// Render glyph texture over quad
-				glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-				// Update content of VBO memory
-				glBindBuffer(GL_ARRAY_BUFFER, textCHandle->VBO);
-				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // Be sure to use glBufferSubData and not glBufferData
-
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-				// Render quad
+			for (int i = 0; i < textCHandle->VAOs.size(); i++) {
+				glBindVertexArray(textCHandle->VAOs[i]);
+				glBindTexture(GL_TEXTURE_2D, textCHandle->TextureIDs[i]);
 				glDrawArrays(GL_TRIANGLES, 0, 6);
-				// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-				textCHandle->x += (ch.Advance >> 6) * textCHandle->scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
 			}
-			textCHandle->x = origin_x;
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		});

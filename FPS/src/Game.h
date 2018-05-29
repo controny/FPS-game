@@ -14,6 +14,7 @@
 #include <Components/LightingInfoSingletonComponent.h>
 #include <Components/SkyboxInfoSingletonComponent.h>
 #include <Components/PostComponent.h>
+#include <Components/BoneObjectComponent.h>
 #include <Components/PlayerComponent.h>
 #include <Components/CameraComponent.h>
 #include <Systems/RenderSystem/RenderSystem.h>
@@ -45,7 +46,7 @@ namespace Game {
 		world->registerSystem(new KeyPressingSystem());
 		world->registerSystem(new MouseMovingSystem());
 		//world->registerSystem(new CameraMovingSystem(cameraPos));
-		//world->registerSystem(new RecoilSystem());
+		world->registerSystem(new RecoilSystem());
 		world->registerSystem(new PlayerActionSystem());
         world->registerSystem(new MovementSystem());
         world->registerSystem(new CollisionSystem()); // Must place after movement system
@@ -65,6 +66,7 @@ namespace Game {
 		Entity* ground = world->create();
 		Entity* text = world->create();
 		Entity* test_post = world->create();  // 以后 post 赋给 gun 的 entity，现在只是测试
+		Entity* skeleton_model = world->create();
 		Entity* particles = world->create();
 
 		// Load texture resource
@@ -90,9 +92,11 @@ namespace Game {
 		player->assign<CameraComponent>(glm::vec3(0.0f, 14.0f, 1.0f));
         player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
 
-		text->assign<TextComponent>("test", 1.0f, 1.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+		text->assign<TextComponent>("test", 15.0f, 8.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
+		
+		skeleton_model->assign<BoneObjectComponent>("resources/bone/boblampclean.md5mesh");
 
 		particles->assign<ParticleComponent>(500, 5.0f, glm::vec3(0.0f, 8.0f, 0.0f), 128, 1, 1);
         particles->assign<PositionComponent>(glm::vec3(0.0f, 3.0f, -10.0f));
