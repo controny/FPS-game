@@ -180,3 +180,4 @@ struct aiMatrix3x3 {
 #include "./Compiler/poppack1.h"
 
 #endif // AI_MATRIX3x3_H_INC
+#include <assimp/matrix3x3.inl>
