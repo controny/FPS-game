@@ -18,7 +18,7 @@ class PlayerActionSystem : public EntitySystem,
 public:
 
 	float speed_multiples;
-	bool forward, backward, left, right, speed_up;
+	bool forward, backward, left, right, speed_up, jump;
 
 	virtual void configure(class World* world) override
 	{
@@ -44,6 +44,12 @@ public:
 			this->left = true;
 		if (event.key == D)
 			this->right = true;
+
+        if (event.key == SPACE) {
+            world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+                this->jump = !playerCHandle->isJumping;
+            });
+        }
 	}
 
 	virtual void receive(class World* world, const KeyReleaseEvent& event) override
@@ -73,8 +79,18 @@ public:
 			glm::vec3 unit_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z)) * 10.0f;
 			glm::vec3 unit_right = glm::normalize(glm::vec3(positionCHandle->Right.x, 0.0f, positionCHandle->Right.z)) * 10.0f;
 
+            float y_velocity = movementCHandle->Velocity.y;
 			movementCHandle->Velocity = (float)forward * unit_front - (float)backward * unit_front + (float)right * unit_right - (float)left * unit_right;
-			movementCHandle->Velocity += movementCHandle->Velocity * (float)speed_up * 3.0f;
+            movementCHandle->Velocity += movementCHandle->Velocity * (float)speed_up * 3.0f;
+            movementCHandle->Velocity.y = y_velocity;
+            
+            if (jump) {
+                printf("jump\n");
+                jump = false;
+                playerCHandle->isJumping = true;
+                movementCHandle->Velocity += glm::vec3(0.0, 40.0f, 0.0f);
+                movementCHandle->Acceleration = glm::vec3(0.0f, -60.0f, 0.0f);
+            }                                                             
 		});
 	}
 };

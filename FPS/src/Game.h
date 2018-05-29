@@ -4,6 +4,7 @@
 #include <ECS.h>
 
 #include <Resource.h>
+#include <Components/CollisionComponent.h>
 #include <Components/MovementComponent.h>
 #include <Components/PositionComponent.h>
 #include <Components/TextComponent.h>
@@ -23,6 +24,7 @@
 #include <Systems/RecoilSystem.h>
 #include <Systems/PlayerActionSystem.h>
 #include <Systems/ParticleSystem.h>
+#include <Systems/CollisionSystem.h>
 
 
 namespace Game {
@@ -46,6 +48,7 @@ namespace Game {
 		//world->registerSystem(new RecoilSystem());
 		world->registerSystem(new PlayerActionSystem());
         world->registerSystem(new MovementSystem());
+        world->registerSystem(new CollisionSystem()); // Must place after movement system
         world->registerSystem(new ParticleSystem());
 		world->registerSystem(new RenderSystem());
 		world->registerSystem(new GUISystem());  // Must place after render system
@@ -70,20 +73,22 @@ namespace Game {
 
 		// Assign the components to entities
 		Resource::CubeResource wall_resource, ground_resource;
-		wall_resource.init(10.0f, 2.0f, 30.0f, textureResource.container_diffuse, textureResource.container_specular);
-		wall->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
-        wall->assign<PositionComponent>(glm::vec3(10.0f, 0.0f, 0.0f));
-        wall->assign<MovementComponent>(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        wall_resource.init(20.0f, 20.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
+        wall->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
+        wall->assign<PositionComponent>(glm::vec3(30.0f, 5.0f, 0.0f));
+        wall->assign<CollisionComponent>(20.0f, 20.0f, 10.0f);
 
 		ground_resource.init(500.0f, 500.0f, 1.0f, textureResource.ground_diffuse, textureResource.ground_specular);
 		ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);
         ground->assign<PositionComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
+        ground->assign<CollisionComponent>(500.0f, 500.0f, 1.0f);
 
 		player->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
-		player->assign<PositionComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
-		player->assign<MovementComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		player->assign<PositionComponent>(glm::vec3(0.0f, 0.6f, 0.0f));
+		player->assign<MovementComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));
 		player->assign<PlayerComponent>();
 		player->assign<CameraComponent>(glm::vec3(0.0f, 14.0f, 1.0f));
+        player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
 
 		text->assign<TextComponent>("test", 1.0f, 1.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 
@@ -93,5 +98,3 @@ namespace Game {
         particles->assign<PositionComponent>(glm::vec3(0.0f, 3.0f, -10.0f));
 	}
 };
-
-

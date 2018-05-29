@@ -51,6 +51,7 @@ public:
 		world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
 			auto cameraCHandle = ent->get<CameraComponent>();
 			auto positionCHandle = ent->get<PositionComponent>();
+            auto collisionCHandle = ent->get<CollisionComponent>();
 
 			xoffset *= cameraCHandle->MouseSensitivity;
 			yoffset *= cameraCHandle->MouseSensitivity;
@@ -68,8 +69,35 @@ public:
 			front.x = cos(glm::radians(cameraCHandle->Yaw)) * cos(glm::radians(cameraCHandle->Pitch));
 			front.y = sin(glm::radians(cameraCHandle->Pitch));
 			front.z = sin(glm::radians(cameraCHandle->Yaw)) * cos(glm::radians(cameraCHandle->Pitch));
-
+            
 			positionCHandle->Front = glm::normalize(front);
+
+            // unfinished
+            //float x = positionCHandle->Front.x;
+            //float z = positionCHandle->Front.z;
+            //float angle;				
+            //if (x > 0 && z > 0) {            
+            //    angle = fmod(glm::acos(z), 1.57);              
+            //}
+            //else if (x > 0 && z < 0) {
+            //    angle = fmod(float(glm::acos(z)), 1.57);
+            //}
+            //else if (x < 0 && z > 0) {
+            //    angle = fmod(float(-glm::acos(z)), 1.57);
+            //}
+            //else if (x < 0 && z < 0) {
+            //    angle = fmod(float(6.28 - glm::acos(z)), 1.57);
+            //}
+            //// update collision body
+            ////x = xcos¦È + zsin¦È
+            ////z = xsin¦È + zcos¦È
+            //float original_width = collisionCHandle->original_width;
+            //float original_depth = collisionCHandle->original_depth;
+            //float new_width = original_width * cos(angle) + original_depth * sin(angle);
+            //float new_depth = original_width * sin(angle) + original_depth * cos(angle);
+            //collisionCHandle->updateBody(new_width, new_depth);
+            //printf("angle: %f\n", angle);
+            //collisionCHandle->Print();
 
 			positionCHandle->Right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
 			positionCHandle->Up = glm::normalize(glm::cross(positionCHandle->Right, front));
