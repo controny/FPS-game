@@ -39,9 +39,9 @@ public:
 	virtual void receive(class World* world, const KeyPressEvent& event) override
 	{
 		if (event.key == ESC) {
-			world->each<WindowInfoSingletonComponent>([&](Entity* ent, ComponentHandle<WindowInfoSingletonComponent> c) -> void {
-				c->showGUI = true;
-			});
+			auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
+			windowCHandle->showGUI = true;
+			glfwSetInputMode(windowCHandle->Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 	}
 
@@ -70,6 +70,8 @@ public:
 
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+		} else {
+			glfwSetInputMode(windowCHandle->Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
 	}
 };

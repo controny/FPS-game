@@ -48,9 +48,6 @@
     <ClInclude Include="src\Systems\CameraMovingSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\Components\CameraInfoSingletonComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\Components\WindowInfoSingletonComponent.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -61,9 +58,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\Systems\GUISystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Events\MouseMovementEvent.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera.h">
@@ -82,12 +76,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\Systems\RenderSystem\Shader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\CameraMovingSystem\CameraMovingSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\CameraMovingSystem\Camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\include\ECS.h">
@@ -114,10 +102,36 @@
     <ClInclude Include="src\Systems\RecoilSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="src\Components\BoneObjectComponent.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\include\skiningLight.h">
+=======
+    <ClInclude Include="src\Components\ParticleComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\PositionComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\MovementComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Systems\MovementSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\CameraComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Components\PlayerComponent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Systems\PlayerActionSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Events\MouseMovementEvent.h">
+    <ClInclude Include="src\Systems\ParticleSystem.h">
+>>>>>>> 85d26b4761318c77f290e9a832f6d84ca057e104
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -153,5 +167,7 @@
     <None Include="src\Shaders\skybox.vs" />
     <None Include="src\Shaders\post.vs" />
     <None Include="src\Shaders\post.fs" />
+    <None Include="src\Shaders\particle.vs" />
+    <None Include="src\Shaders\particle.fs" />
   </ItemGroup>
 </Project>

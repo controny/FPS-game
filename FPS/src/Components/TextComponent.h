@@ -11,6 +11,7 @@
 #include FT_FREETYPE_H
 
 #include <map>
+#include <vector>
 #include <iostream>
 
 
@@ -24,22 +25,15 @@ struct Character {
 struct TextComponent {
 
 	static std::map<char, Character> Characters;
-	GLuint VAO, VBO;
+	vector<GLuint> VAOs, VBOs, TextureIDs;
 
-	string text;
-	float x, y;
-	float scale;
 	glm::vec3 color;
 
-	TextComponent(std::string _text, GLfloat _x, GLfloat _y, GLfloat _scale, glm::vec3 _color) {
-		init(_text, _x, _y, _scale, _color);
+	TextComponent(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 _color) {
+		init(text, x, y, scale, _color);
 	}
 
-	void init(std::string _text, GLfloat _x, GLfloat _y, GLfloat _scale, glm::vec3 _color) {
-		text = _text;
-		x = _x;
-		y = _y;
-		scale = _scale;
+	void init(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 _color) {
 		color = _color;
 
 		// init ft
@@ -103,15 +97,62 @@ struct TextComponent {
 			FT_Done_FreeType(ft);
 		}
 		
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		VAOs.resize(text.size());
+		VBOs.resize(text.size());
+		TextureIDs.resize(text.size());
+
+		for (int i = 0; i < text.size(); i++) {
+			glGenVertexArrays(1, &VAOs[i]);
+			glGenBuffers(1, &VBOs[i]);
+			glBindVertexArray(VAOs[i]);
+			glBindBuffer(GL_ARRAY_BUFFER, VBOs[i]);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindVertexArray(0);
+		}
+
+		// init VAOs, VBOs
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		for (int i = 0; i < text.size(); i++)
+		{
+			glBindVertexArray(this->VAOs[i]);
+			Character ch = this->Characters[text[i]];
+			TextureIDs[i] = this->Characters[text[i]].TextureID;
+
+			GLfloat xpos = x + ch.Bearing.x * scale;
+			GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+			GLfloat w = ch.Size.x * scale;
+			GLfloat h = ch.Size.y * scale;
+			// Update VBO for each character
+			GLfloat vertices[6][4] = {
+				{ xpos,     ypos + h,   0.0, 0.0 },
+			{ xpos,     ypos,       0.0, 1.0 },
+			{ xpos + w, ypos,       1.0, 1.0 },
+
+			{ xpos,     ypos + h,   0.0, 0.0 },
+			{ xpos + w, ypos,       1.0, 1.0 },
+			{ xpos + w, ypos + h,   1.0, 0.0 }
+			};
+			// Render glyph texture over quad
+			glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+			// Update content of VBO memory
+			glBindBuffer(GL_ARRAY_BUFFER, this->VBOs[i]);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, vertices, GL_STATIC_DRAW);// Be sure to use glBufferSubData and not glBufferData
+			//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+			// Render quad
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+			x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+		}
+
 		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 };
 

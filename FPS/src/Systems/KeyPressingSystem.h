@@ -32,11 +32,27 @@ public:
 			world->emit<KeyPressEvent>({ LEFT_SHIFT, deltaTime });
 		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_SPACE) == GLFW_PRESS)
 			world->emit<KeyPressEvent>({ SPACE, deltaTime });
-
-		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
-			world->emit<KeyReleaseEvent>({ LEFT_SHIFT, deltaTime });
-
 		if (glfwGetMouseButton(windowCHandle->Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 			world->emit<MousePressEvent>({ MOUSE_LEFT, deltaTime });
+
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_W) == GLFW_REPEAT)
+			world->emit<KeyRepeatEvent>({ W, deltaTime });
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_S) == GLFW_REPEAT)
+			world->emit<KeyRepeatEvent>({ S, deltaTime });
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_A) == GLFW_REPEAT)
+			world->emit<KeyRepeatEvent>({ A, deltaTime });
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_D) == GLFW_REPEAT)
+			world->emit<KeyRepeatEvent>({ D, deltaTime });
+
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_W) == GLFW_RELEASE)
+			world->emit<KeyReleaseEvent>({ W, deltaTime });
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_S) == GLFW_RELEASE)
+			world->emit<KeyReleaseEvent>({ S, deltaTime });
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_A) == GLFW_RELEASE)
+			world->emit<KeyReleaseEvent>({ A, deltaTime });
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_D) == GLFW_RELEASE)
+			world->emit<KeyReleaseEvent>({ D, deltaTime });
+		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+			world->emit<KeyReleaseEvent>({ LEFT_SHIFT, deltaTime });
 	}
 };
