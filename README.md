@@ -1,6 +1,6 @@
 # FPS-game
 
-5.28 Update
+5.29 Update
 
 ## 任务说明
 
@@ -65,6 +65,10 @@
 ---
 
 ## 更新备注
+
+### 5.29
+#### 新增骨骼动画模型
+新建了BoneObjectComponent组件，用于加载骨骼动画模型。在game中加入骨骼模型，在rendersystem中渲染
 
 ### 5.28
 
