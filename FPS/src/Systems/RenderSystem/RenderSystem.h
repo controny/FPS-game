@@ -1,6 +1,8 @@
 #pragma once
 #include <algorithm>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "Shader.h"
 
@@ -83,8 +85,8 @@ public:
 		glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
 		
 		boneShader.use();
-		boneShader.setMat4("view", cameraCHandle->CameraViewMatrix);
-		boneShader.setVec3("viewPos", cameraCHandle->CameraPos);
+		boneShader.setMat4("view", ViewMatrix); 
+		boneShader.setVec3("viewPos", CameraPos);
 
 		boneShader.setVec3("lightPos", lightCHandle->LightPos);
 		boneShader.setVec3("lightColor", lightCHandle->LightColor);
@@ -128,7 +130,6 @@ public:
 	}
 private:
 	void renderMeshes(class World* world, float deltaTime) {
->>>>>>> 85d26b4761318c77f290e9a832f6d84ca057e104
 
 		// 渲染，就是之前 Mesh 类的 Draw()
 		world->each<ObjectComponent, PositionComponent>(
@@ -198,7 +199,7 @@ private:
 
 
 
-	void renderBoneObject(class class World* world, float deltaTime) {
+	void renderBoneObject(class World* world, float deltaTime) {
 		// 渲染骨骼模型
 		world->each<BoneObjectComponent>([&](Entity* ent, ComponentHandle<BoneObjectComponent> BoneobjectCHandle) -> void {
 			BoneobjectCHandle->m_pScene= BoneobjectCHandle->m_Importer.ReadFile(BoneobjectCHandle->filename, ASSIMP_LOAD_FLAGS);
