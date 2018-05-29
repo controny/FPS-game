@@ -102,12 +102,10 @@
     <ClInclude Include="src\Systems\RecoilSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="src\Components\BoneObjectComponent.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\include\skiningLight.h">
-=======
     <ClInclude Include="src\Components\ParticleComponent.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -131,7 +129,6 @@
     </ClInclude>
     <ClInclude Include="src\Events\MouseMovementEvent.h">
     <ClInclude Include="src\Systems\ParticleSystem.h">
->>>>>>> 85d26b4761318c77f290e9a832f6d84ca057e104
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
