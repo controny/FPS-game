@@ -43,7 +43,7 @@ namespace Game {
 		world->registerSystem(new KeyPressingSystem());
 		world->registerSystem(new MouseMovingSystem());
 		//world->registerSystem(new CameraMovingSystem(cameraPos));
-		//world->registerSystem(new RecoilSystem());
+		world->registerSystem(new RecoilSystem());
 		world->registerSystem(new PlayerActionSystem());
         world->registerSystem(new MovementSystem());
         world->registerSystem(new ParticleSystem());
@@ -85,7 +85,7 @@ namespace Game {
 		player->assign<PlayerComponent>();
 		player->assign<CameraComponent>(glm::vec3(0.0f, 14.0f, 1.0f));
 
-		text->assign<TextComponent>("test", 1.0f, 1.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+		text->assign<TextComponent>("test", 15.0f, 8.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 
