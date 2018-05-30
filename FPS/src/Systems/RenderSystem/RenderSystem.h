@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Shader.h"
+#include <Game.h>
 
 #include <ECS.h>
 #include <Components/ObjectComponent.h>
@@ -15,6 +16,7 @@
 #include <Components/SkyboxInfoSingletonComponent.h>
 #include <Components/ParticleComponent.h>
 #include <cmath>
+
 using namespace ECS;
 
 // 获取所有需要渲染的组件件并渲染
@@ -29,13 +31,13 @@ public:
 	Shader particleShader;
 
 
-	RenderSystem() {
-		objectShader.init("src/Shaders/object.vs", "src/Shaders/object.fs");
-		textShader.init("src/Shaders/text.vs", "src/Shaders/text.fs");
-		skyboxShader.init("src/Shaders/skybox.vs", "src/Shaders/skybox.fs");
-		postShader.init("src/Shaders/post.vs", "src/Shaders/post.fs");
-		boneShader.init("src/Shaders/skinning.vs", "src/Shaders/skinning.fs");
-		particleShader.init("src/Shaders/particle.vs", "src/Shaders/particle.fs");
+	RenderSystem(string shader_dir) {
+		objectShader.init("object.vs", "object.fs", shader_dir);
+		textShader.init("text.vs", "text.fs", shader_dir);
+		skyboxShader.init("skybox.vs", "skybox.fs", shader_dir);
+		postShader.init("post.vs", "post.fs", shader_dir);
+		boneShader.init("skinning.vs", "skinning.fs", shader_dir);
+		particleShader.init("particle.vs", "particle.fs", shader_dir);
 	}
 
 	virtual void tick(class World* world, float deltaTime) override

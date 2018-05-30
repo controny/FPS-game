@@ -1,9 +1,14 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <ECS.h>
+#include <string>
+
+#include <Winbase.h>
+#include <Shlwapi.h>
+
 
 #include <Resource.h>
+#include <ECS.h>
 #include <Components/CollisionComponent.h>
 #include <Components/MovementComponent.h>
 #include <Components/PositionComponent.h>
@@ -28,17 +33,30 @@
 #include <Systems/CollisionSystem.h>
 
 
-namespace Game {
+class Game {
+public:
+	string gameRootPath;
 
-	World* world = World::createWorld();
+	World* world;
 	GLFWwindow* window;
-	
-	glm::vec3 cameraPos(0.0f, 3.0f, 5.0f);
 
-	void init() {
-        
+	Game(GLFWwindow* _window) {
+		init(_window);
+	}
+
+	void init(GLFWwindow* _window) {
+		world = World::createWorld();
+		window = _window;
+
+		char exeFullPath[MAX_PATH]; // Full path
+		GetModuleFileName(NULL, exeFullPath, MAX_PATH);
+		PathRemoveFileSpec(exeFullPath);
+		PathRemoveFileSpec(exeFullPath);  // remove bin/FPS.exe
+		gameRootPath = (string)exeFullPath;
+		std::replace(gameRootPath.begin(), gameRootPath.end(), '\\', '/');
+
         // Get the data
-		Resource resource = Resource();
+		Resource resource = Resource(gameRootPath + "/resources/");
 		Resource::SkyBoxResource skybox_resource;
 		skybox_resource.init();
 		
@@ -51,7 +69,7 @@ namespace Game {
         world->registerSystem(new MovementSystem());
         world->registerSystem(new CollisionSystem()); // Must place after movement system
         world->registerSystem(new ParticleSystem());
-		world->registerSystem(new RenderSystem());
+		world->registerSystem(new RenderSystem(gameRootPath + "/src/Shaders/"));
 		world->registerSystem(new GUISystem());  // Must place after render system
 
 
@@ -85,20 +103,20 @@ namespace Game {
         ground->assign<PositionComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
         ground->assign<CollisionComponent>(500.0f, 500.0f, 1.0f);
 
-		player->assign<ObjectComponent>("resources/objects/nanosuit/nanosuit.obj");
+		player->assign<ObjectComponent>(gameRootPath + "/resources/objects/nanosuit/nanosuit.obj");
 		player->assign<PositionComponent>(glm::vec3(0.0f, 0.6f, 0.0f));
 		player->assign<MovementComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));
 		player->assign<PlayerComponent>();
 		player->assign<CameraComponent>(glm::vec3(0.0f, 14.0f, 1.0f));
         player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
 
-		text->assign<TextComponent>("test", 15.0f, 8.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+		text->assign<TextComponent>("test", 15.0f, 8.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 		
-		skeleton_model->assign<BoneObjectComponent>("resources/bone/boblampclean.md5mesh");
+		//skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
 
-		particles->assign<ParticleComponent>(500, 5.0f, glm::vec3(0.0f, 8.0f, 0.0f), 128, 1, 1);
+		particles->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 500, 5.0f, glm::vec3(0.0f, 8.0f, 0.0f), 128, 1, 1);
         particles->assign<PositionComponent>(glm::vec3(0.0f, 3.0f, -10.0f));
 	}
 };

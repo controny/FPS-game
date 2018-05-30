@@ -43,11 +43,8 @@ int main(int argc, char** argv)
 
 	glEnable(GL_DEPTH_TEST);
 	
-	Game::window = window;
-	Game::init();
-
+	Game game(window);
 	
-
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -56,7 +53,7 @@ int main(int argc, char** argv)
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-		Game::world->tick(deltaTime);
+		game.world->tick(deltaTime);
 
 
 		glfwSwapBuffers(window);
