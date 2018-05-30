@@ -1,8 +1,11 @@
 #pragma once
 #include <algorithm>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "Shader.h"
+#include <Game.h>
 
 #include <ECS.h>
 #include <Components/ObjectComponent.h>
@@ -13,6 +16,7 @@
 #include <Components/SkyboxInfoSingletonComponent.h>
 #include <Components/ParticleComponent.h>
 #include <cmath>
+
 using namespace ECS;
 
 // 获取所有需要渲染的组件件并渲染
@@ -23,14 +27,17 @@ public:
 	Shader textShader;
 	Shader skyboxShader;
 	Shader postShader;
+	Shader boneShader;
 	Shader particleShader;
 
-	RenderSystem() {
-		objectShader.init("src/Shaders/object.vs", "src/Shaders/object.fs");
-		textShader.init("src/Shaders/text.vs", "src/Shaders/text.fs");
-		skyboxShader.init("src/Shaders/skybox.vs", "src/Shaders/skybox.fs");
-		postShader.init("src/Shaders/post.vs", "src/Shaders/post.fs");
-		particleShader.init("src/Shaders/particle.vs", "src/Shaders/particle.fs");
+
+	RenderSystem(string shader_dir) {
+		objectShader.init("object.vs", "object.fs", shader_dir);
+		textShader.init("text.vs", "text.fs", shader_dir);
+		skyboxShader.init("skybox.vs", "skybox.fs", shader_dir);
+		postShader.init("post.vs", "post.fs", shader_dir);
+		boneShader.init("skinning.vs", "skinning.fs", shader_dir);
+		particleShader.init("particle.vs", "particle.fs", shader_dir);
 	}
 
 	virtual void tick(class World* world, float deltaTime) override
@@ -72,8 +79,30 @@ public:
 		glm::mat4 projection = glm::perspective(45.0f, (float)window_width / (float)window_height, 0.1f, 1000.0f);
 		objectShader.setMat4("projection", projection);
 
+
 		renderMeshes(world, deltaTime);
 
+
+		//设置骨骼着色器变量
+		glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
+		
+		boneShader.use();
+		boneShader.setMat4("view", ViewMatrix); 
+		boneShader.setVec3("viewPos", CameraPos);
+
+		boneShader.setVec3("lightPos", lightCHandle->LightPos);
+		boneShader.setVec3("lightColor", lightCHandle->LightColor);
+		boneShader.setFloat("ambientStrength", lightCHandle->AmbientStrength);
+		boneShader.setFloat("specularStrength", lightCHandle->SpecularStrength);
+		boneShader.setFloat("shininess", lightCHandle->Shininess);
+		boneShader.setFloat("diffuseStrength", lightCHandle->DiffuseStrength);
+
+		bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+		boneShader.setMat4("model", bonemodel);
+		boneShader.setMat4("projection", projection);
+
+
+		renderBoneObject(world, deltaTime);
 
 		/* ----------- render skybox -----------*/
 		skyboxShader.use();
@@ -170,6 +199,39 @@ private:
 		});
 	}
 
+
+
+	void renderBoneObject(class World* world, float deltaTime) {
+		// 渲染骨骼模型
+		world->each<BoneObjectComponent>([&](Entity* ent, ComponentHandle<BoneObjectComponent> BoneobjectCHandle) -> void {
+			BoneobjectCHandle->m_pScene= BoneobjectCHandle->m_Importer.ReadFile(BoneobjectCHandle->filename, ASSIMP_LOAD_FLAGS);
+			static vector<Matrix4f> Transforms;
+			static int renderCount = 0;
+			//float RunningTime = GetRunningTime();
+			static float RunningTime = 0.5;
+			RunningTime += 0.1;
+			if (renderCount == 0) {
+				BoneobjectCHandle->BoneTransform(RunningTime, Transforms);
+				renderCount++;
+			}
+			BoneobjectCHandle->BoneTransform(RunningTime, Transforms);
+			renderCount++;
+			GLuint m_boneLocation[100];
+			for (unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(m_boneLocation); i++) {
+				char Name[128];
+				memset(Name, 0, sizeof(Name));
+				SNPRINTF(Name, sizeof(Name), "gBones[%d]", i);
+				m_boneLocation[i] = glGetUniformLocation(boneShader.ID, Name);
+			}
+			for (uint i = 0; i < Transforms.size(); i++) {
+				//m_pEffect->SetBoneTransform(i, Transforms[i]);
+				glUniformMatrix4fv(m_boneLocation[i], 1, GL_TRUE, (const GLfloat*)Transforms[i]);
+			}
+			
+			
+			BoneobjectCHandle->Render();
+		});
+	}
 	void renderSkybox(class World* world, float deltaTime) {
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;

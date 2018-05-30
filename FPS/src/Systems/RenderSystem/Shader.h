@@ -24,7 +24,7 @@ public:
 
 	}
 	
-	void init(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr) {
+	void init(const char* vertexFileName, const char* fragmentFileName, string dir, const char* geometryPath = nullptr) {
 		// 1. retrieve the vertex/fragment source code from filePath
 		std::string vertexCode;
 		std::string fragmentCode;
@@ -39,8 +39,10 @@ public:
 		try
 		{
 			// open files
-			vShaderFile.open(vertexPath);
-			fShaderFile.open(fragmentPath);
+			string vs(dir + vertexFileName);
+			string fs(dir + fragmentFileName);
+			vShaderFile.open(vs.c_str());
+			fShaderFile.open(fs.c_str());
 			std::stringstream vShaderStream, fShaderStream;
 			// read file's buffer contents into streams
 			vShaderStream << vShaderFile.rdbuf();

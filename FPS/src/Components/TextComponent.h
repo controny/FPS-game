@@ -29,11 +29,11 @@ struct TextComponent {
 
 	glm::vec3 color;
 
-	TextComponent(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 _color) {
-		init(text, x, y, scale, _color);
+	TextComponent(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 _color, string font_dir) {
+		init(text, x, y, scale, _color, font_dir);
 	}
 
-	void init(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 _color) {
+	void init(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 _color, string font_dir) {
 		color = _color;
 
 		// init ft
@@ -45,7 +45,7 @@ struct TextComponent {
 
 			// Load font as face
 			FT_Face face;
-			if (FT_New_Face(ft, "resources/fonts/arial.ttf", 0, &face))
+			if (FT_New_Face(ft, (font_dir + "arial.ttf").c_str(), 0, &face))
 				std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
 
 			// Set size to load glyphs as

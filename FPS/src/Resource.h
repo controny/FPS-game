@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <string>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -191,6 +192,8 @@ GLuint loadDDS(const char * imagepath) {
 
 struct Resource {
 
+	static string resource_dir;
+
 	struct TextureResource {
 		Texture container_diffuse;
 		Texture container_specular;
@@ -200,11 +203,11 @@ struct Resource {
 		Texture ground_specular;
 
 		void init() {
-			container_diffuse = Texture(Load("resources/textures/container2.png"), "texture_diffuse");
-			container_specular = Texture(Load("resources/textures/container2_specular.png"), "texture_specular");
+			container_diffuse = Texture(Load((resource_dir + "textures/container2.png").c_str()), "texture_diffuse");
+			container_specular = Texture(Load((resource_dir + "textures/container2_specular.png").c_str()), "texture_specular");
 
-			ground_diffuse = Texture(Load("resources/textures/wood.png"), "texture_diffuse");
-			ground_specular = Texture(Load("resources/textures/wood_specular.jpg"), "texture_specular");
+			ground_diffuse = Texture(Load((resource_dir + "textures/wood.png").c_str()), "texture_diffuse");
+			ground_specular = Texture(Load((resource_dir + "textures/wood_specular.jpg").c_str()), "texture_specular");
 		}
 	};
 
@@ -212,12 +215,12 @@ struct Resource {
 		Texture cubemapTexture;
 		vector<std::string> faces
 		{
-			"resources/textures/skybox/right.jpg",
-			"resources/textures/skybox/left.jpg",
-			"resources/textures/skybox/top.jpg",
-			"resources/textures/skybox/bottom.jpg",
-			"resources/textures/skybox/back.jpg",
-			"resources/textures/skybox/front.jpg"
+			resource_dir + "textures/skybox/right.jpg",
+			resource_dir + "textures/skybox/left.jpg",
+			resource_dir + "textures/skybox/top.jpg",
+			resource_dir + "textures/skybox/bottom.jpg",
+			resource_dir + "textures/skybox/back.jpg",
+			resource_dir + "textures/skybox/front.jpg"
 		};
 		void init() {
 			cubemapTexture = Texture(loadCubemap(faces), "texture_diffuse");
@@ -450,14 +453,16 @@ struct Resource {
 		 }
 	};
 
-	Resource() {
-		init();
+	Resource(string _resource_dir) {
+		init(_resource_dir);
 	}
 
-	void init() {
-		
+	void init(string _resource_dir) {
+		resource_dir = _resource_dir;
 	}
 };
+
+string Resource::resource_dir = "";
 
 
 

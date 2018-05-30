@@ -245,3 +245,4 @@ struct aiMatrix4x4 {
 #include "./Compiler/poppack1.h"
 
 #endif // AI_MATRIX4X4_H_INC
+#include <assimp/matrix4x4.inl>

@@ -82,9 +82,10 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;Shlwapi.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>
@@ -135,7 +136,10 @@
   <ItemGroup>
     <ClInclude Include="dependencies\include\ECS.h" />
     <ClInclude Include="dependencies\include\ft2build.h" />
+    <ClInclude Include="dependencies\include\skiningLight.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Components\BoneObjectComponent.h" />
+    <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\CameraComponent.h" />
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\MovementComponent.h" />
