@@ -59,8 +59,10 @@
 
 #### 新增AABB碰撞检测
 
-- 新增 `CollisionComponent` 和 `CollisionSystem`，对需要进行碰撞检测的实体assign一个 `CollisionComponent` （指明宽度，深度和高度），即可进行碰撞检测；
-- 按空格键可以实现 player 的跳跃。
+- 新增 `CollisionComponent` 和 `CollisionSystem`，对需要进行碰撞检测的实体assign一个 `CollisionComponent` （指明宽度，深度和高度 或者 直接指明body的八个值 x_min, x_max, y_min, y_max, z_min, z_max），即可进行碰撞检测；
+- 按空格键可以实现player的跳跃。
+
+注：由于碰撞检测的需要，Player需要有个**向下且较小**的Y轴初速度。
 
 ### 5.28
 
