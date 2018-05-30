@@ -15,6 +15,8 @@ const unsigned int SCR_HEIGHT = 600;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
 int main(int argc, char** argv)
 {
 	glfwInit();
@@ -34,6 +36,7 @@ int main(int argc, char** argv)
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -60,5 +63,10 @@ int main(int argc, char** argv)
 		glfwPollEvents();
 	}
 	glfwTerminate();
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
 }
 
