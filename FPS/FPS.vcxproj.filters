@@ -1,170 +1,62 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="源文件\shaders">
-      <UniqueIdentifier>{4d3b634b-c540-4d52-8b05-d242da2481d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\lib">
-      <UniqueIdentifier>{103190ea-6859-440e-8021-23b6c71c3932}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\shaderPrograms">
-      <UniqueIdentifier>{ae209f55-9e52-45ff-9054-8ea562fb5772}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\objects">
-      <UniqueIdentifier>{7ace2d15-ea09-49f6-b56a-85bb558318f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\camera">
-      <UniqueIdentifier>{218075ef-3f8e-4cb1-8244-b7aa33c19e22}</UniqueIdentifier>
-    </Filter>
+    <ClCompile Include="dependencies\include\glad\glad.c" />
+    <ClCompile Include="dependencies\include\imgui\imgui.cpp" />
+    <ClCompile Include="dependencies\include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dependencies\include\imgui\imgui_impl_glfw_gl3.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\shaders\shader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MeshComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\RenderSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\CameraMovingSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\WindowInfoSingletonComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\LightingInfoSingletonComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Shader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\GUISystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Camera.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\MouseMovingSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\KeyPressingSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\RenderSystem\Camera.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\RenderSystem\RenderSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\RenderSystem\Shader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\ECS.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\ObjectComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Events\KeyEvents.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\TextComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\ft2build.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\SkyboxInfoSingletonComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\PostComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\RecoilSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\BoneObjectComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\include\skiningLight.h">
-    <ClInclude Include="src\Components\ParticleComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\PositionComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\MovementComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\MovementSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\CameraComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\PlayerComponent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Systems\PlayerActionSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Events\MouseMovementEvent.h">
-    <ClInclude Include="src\Systems\ParticleSystem.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClInclude Include="dependencies\include\ECS.h" />
+    <ClInclude Include="dependencies\include\ft2build.h" />
+    <ClInclude Include="dependencies\include\skiningLight.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Components\BoneObjectComponent.h" />
+    <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
+    <ClInclude Include="src\Components\CameraComponent.h" />
+    <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
+    <ClInclude Include="src\Components\MovementComponent.h" />
+    <ClInclude Include="src\Components\ObjectComponent.h" />
+    <ClInclude Include="src\Components\ParticleComponent.h" />
+    <ClInclude Include="src\Components\PlayerComponent.h" />
+    <ClInclude Include="src\Components\PositionComponent.h" />
+    <ClInclude Include="src\Components\PostComponent.h" />
+    <ClInclude Include="src\Components\SkyboxInfoSingletonComponent.h" />
+    <ClInclude Include="src\Components\TextComponent.h" />
+    <ClInclude Include="src\Components\WindowInfoSingletonComponent.h" />
+    <ClInclude Include="src\Events\KeyEvents.h" />
+    <ClInclude Include="src\Events\MouseMovementEvent.h" />
+    <ClInclude Include="src\MeshComponent.h" />
+    <ClInclude Include="src\Resource.h" />
+    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\shaders\shader.h" />
+    <ClInclude Include="src\Systems\CameraMovingSystem.h" />
+    <ClInclude Include="src\Systems\KeyPressingSystem.h" />
+    <ClInclude Include="src\Systems\MouseMovingSystem.h" />
+    <ClInclude Include="src\Systems\MovementSystem.h" />
+    <ClInclude Include="src\Systems\PlayerActionSystem.h" />
+    <ClInclude Include="src\Systems\ParticleSystem.h" />
+    <ClInclude Include="src\Systems\RecoilSystem.h" />
+    <ClInclude Include="src\Systems\RenderSystem.h" />
+    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Systems\GUISystem.h" />
+    <ClInclude Include="src\Systems\RenderSystem\Camera.h" />
+    <ClInclude Include="src\Systems\RenderSystem\RenderSystem.h" />
+    <ClInclude Include="src\Systems\RenderSystem\Shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="dependencies\include\glad\glad.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="dependencies\include\imgui\imgui_impl_glfw_gl3.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="dependencies\include\imgui\imgui_draw.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="dependencies\include\imgui\imgui.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\shaderPrograms\object.fs">
-      <Filter>源文件\shaderPrograms</Filter>
-    </None>
-    <None Include="src\shaderPrograms\object.vs">
-      <Filter>源文件\shaderPrograms</Filter>
-    </None>
-    <None Include="src\Shaders\text.vs" />
-    <None Include="src\Shaders\text.fs" />
+    <None Include="src\shaderPrograms\object.fs" />
+    <None Include="src\shaderPrograms\object.vs" />
     <None Include="src\Shaders\object.fs" />
     <None Include="src\Shaders\object.vs" />
+    <None Include="src\Shaders\particle.fs" />
+    <None Include="src\Shaders\particle.vs" />
+    <None Include="src\Shaders\post.fs" />
+    <None Include="src\Shaders\post.vs" />
     <None Include="src\Shaders\skybox.fs" />
     <None Include="src\Shaders\skybox.vs" />
-    <None Include="src\Shaders\post.vs" />
-    <None Include="src\Shaders\post.fs" />
-    <None Include="src\Shaders\particle.vs" />
-    <None Include="src\Shaders\particle.fs" />
+    <None Include="src\Shaders\text.fs" />
+    <None Include="src\Shaders\text.vs" />
   </ItemGroup>
 </Project>

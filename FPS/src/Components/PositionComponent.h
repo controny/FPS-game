@@ -19,6 +19,6 @@ struct PositionComponent {
     }
 
     void Print() {
-        printf("(%f, %f, %f)\n", Position.x, Position.y, Position.z);
+        printf("Position: (%f, %f, %f)\n", Position.x, Position.y, Position.z);
     }
 };

@@ -38,7 +38,7 @@ struct ParticleComponent {
 
 	Particle* container;
 
-	ParticleComponent(int _maxParticles, float _life,
+	ParticleComponent(string path, int _maxParticles, float _life,
 		glm::vec3 _maindir = glm::vec3(0.0f, 5.0f, 0.0f), int _max_r = 256, int _max_g = 256, int _max_b = 256)
 		: maxParticles(_maxParticles), life(_life), maindir(_maindir), max_r(_max_r), max_g(_max_g), max_b(_max_b)
 	{
@@ -46,7 +46,7 @@ struct ParticleComponent {
 		g_particule_position_size_data = new GLfloat[maxParticles * 4];
 		g_particule_color_data = new GLubyte[maxParticles * 4];
 		
-		texture = loadDDS("resources/textures/particle.DDS");
+		texture = loadDDS((path + "particle.DDS").c_str());
 
 		for (int i = 0; i<maxParticles; i++) {
 			container[i].life = -1.0f;
