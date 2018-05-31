@@ -64,6 +64,8 @@ namespace Game {
 		Entity* text = world->create();
 		Entity* test_post = world->create();  // 以后 post 赋给 gun 的 entity，现在只是测试
 		Entity* skeleton_model = world->create();
+		//Entity* gun_model = world->create();
+
 		Entity* particles = world->create();
 
 		// Load texture resource
