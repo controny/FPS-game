@@ -5,8 +5,11 @@
 #include <Components/CollisionComponent.h>
 #include <Components/PositionComponent.h>
 #include <Components/MovementComponent.h>
+#include <Components/PlayerComponent.h>
+#include <Events/HitEvent.h>
 
 //#define DEBUG_CHECK_COLLISION
+//#define DEBUG_CHECK_RAY_COLLISION
 
 using namespace ECS;
 
@@ -22,13 +25,77 @@ struct CollisionState {
     }
 };
 
+struct Ray {
+    glm::vec3 origin, direction;
+
+    Ray() {
+        origin = glm::vec3(0);
+        direction = glm::vec3(0);
+    }
+
+    Ray(glm::vec3 origin, glm::vec3 direction) {
+        this->origin = origin;
+        this->direction = direction;
+    }
+
+    glm::vec3 getPoint(float t) {
+        return origin + t * direction;
+    }
+};
+
 // Åö×²¼ì²â
-class CollisionSystem : public EntitySystem {
+class CollisionSystem : public EntitySystem,
+    public EventSubscriber<MousePressEvent> {
 public:
 
     CollisionSystem() {}
 
-    CollisionState checkCollision(Entity* entity1, Entity* entity2) {
+    virtual void configure(class World* world) override
+    {
+        world->subscribe<MousePressEvent>(this);
+    }
+
+    virtual void unconfigure(class World* world) override
+    {
+        world->unsubscribeAll(this);
+    }
+
+    virtual void receive(class World* world, const MousePressEvent& event) override
+    {
+        world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+            auto positionCHandle = ent->get<PositionComponent>();
+            glm::vec3 origin = ent->get<CameraComponent>()->Position;
+            glm::vec3 direction = positionCHandle->Front;
+            //printf("origin: (%f, %f, %f)\n", origin.x, origin.y, origin.z);
+            //printf("direction: (%f, %f, %f)\n", direction.x, direction.y, direction.z);
+            Ray ray(origin, direction);
+            bool shooted = false;
+            world->each<CollisionComponent>(
+                [&](Entity* other_ent,
+                    ComponentHandle<CollisionComponent> collisionCHandle) -> void {
+                if (ent->getEntityId() == other_ent->getEntityId() || shooted)
+                    return;
+                // check collision between ray and AABB body
+                glm::vec2 t = checkRayBodyCollision(ray, getCurrentBody(other_ent));
+                if (t[0] < t[1] && t[0] > 0.0f) {
+                    glm::vec3 hitPos = ray.getPoint(t[0]);
+                    shooted = true;
+
+#ifdef DEBUG_CHECK_RAY_COLLISION
+                    printf("----------------------\n");
+                    printf("ray hit body(entity id: %d)\n", other_ent->getEntityId());
+                    printf("hit position: (%f, %f, %f)\n", hitPos.x, hitPos.y, hitPos.z);
+                    printf("----------------------\n");
+#endif // DEBUG_CHECK_RAY_COLLISION
+
+                    world->emit<HitEvent>({ other_ent, hitPos });
+                }
+
+            });
+        });
+    }
+
+    CollisionState checkBodyCollision(Entity* entity1, Entity* entity2) {
         AABB curBody1 = getCurrentBody(entity1);
         AABB curBody2 = getCurrentBody(entity2);
         // collision detection on the XYZ axes after moving
@@ -65,6 +132,36 @@ public:
 #endif
 
         return CollisionState{ collisionInX, collisionInY, collisionInZ };
+    }
+
+    glm::vec2 checkRayBodyCollision(Ray& ray, AABB& body) {
+        if (abs(ray.direction.x) < 0.000001f) //If the ray parallel to the YZ plane  
+        {
+            //If the ray is not within AABB box, then no collision
+            if (ray.origin.x < body.x_min || ray.origin.x > body.x_max)
+                return glm::vec2(1.0f, 0.0f);
+        }
+        if (abs(ray.direction.y) < 0.000001f) //If the ray parallel to the XZ plane  
+        {
+            //If the ray is not within AABB box, then no collision
+            if (ray.origin.y < body.y_min || ray.origin.y > body.y_max)
+                return glm::vec2(1.0f, 0.0f);
+        }
+        if (abs(ray.direction.z) < 0.000001f) //If the ray parallel to the XY plane  
+        {
+            //If the ray is not within AABB box, then no collision
+            if (ray.origin.z < body.z_min || ray.origin.z > body.z_max)
+                return glm::vec2(1.0f, 0.0f);
+        }
+        glm::vec3 inv_dir = 1.0f / ray.direction;
+        glm::vec3 tMin = (body.getMinCoord() - ray.origin) * inv_dir;
+        glm::vec3 tMax = (body.getMaxCoord() - ray.origin) * inv_dir;
+        glm::vec3 t1 = glm::min(tMin, tMax);
+        glm::vec3 t2 = glm::max(tMin, tMax);
+        float tNear = max(max(t1.x, t1.y), t1.z);
+        float tFar = min(min(t2.x, t2.y), t2.z);
+
+        return glm::vec2(tNear, tFar);
     }
 
     AABB getPreviousBody(Entity* entity, AABB curBody) {
@@ -120,8 +217,8 @@ public:
                 ComponentHandle<CollisionComponent> collisionCHandle) -> void {             
                 if (ent->getEntityId() == other_ent->getEntityId())
                     return;
-                // check collision between two entities
-                CollisionState state = checkCollision(ent, other_ent);
+                // check collision between two entities with CollisionComponent
+                CollisionState state = checkBodyCollision(ent, other_ent);
                 if (state.collisionInX || state.collisionInY || state.collisionInZ) {
                     //printf("collision\n");
                     stopMoving(ent, state);
