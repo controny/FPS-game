@@ -51,8 +51,8 @@
 
 ### 6.1
 #### 新增子弹碰撞检测  & HitProcessingSystem
-鼠标左键点击后，子弹沿当前准星对准方向射出（没有真正生成子弹实体），进行子弹碰撞检测，若子弹与具有 `CollisionComponent` 的实体碰撞（即相交），会触发 `HitEvent`。
-另外，新增 **HitProcessingSystem** ，用于接收 `HitEvent` 并 进行子弹射中后的处理（如生成流血，爆炸，弹孔等效果）。
+- 鼠标左键点击后，子弹沿当前准星对准方向射出（没有真正生成子弹实体），进行子弹碰撞检测，若子弹与具有 `CollisionComponent` 的实体碰撞（即相交），会触发 `HitEvent`。
+- 另外，新增 `HitProcessingSystem` ，用于接收 `HitEvent` 并 进行子弹射中后的处理（如生成流血，爆炸，弹孔等效果）。
 注：`HitEvent` 中存有被击中的实体对应的指针，以及被击中的位置（世界坐标下）。
 
 ### 5.30
