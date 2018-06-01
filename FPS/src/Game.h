@@ -31,6 +31,7 @@
 #include <Systems/PlayerActionSystem.h>
 #include <Systems/ParticleSystem.h>
 #include <Systems/CollisionSystem.h>
+#include <Systems/HitProcessingSystem.h>
 
 
 class Game {
@@ -68,6 +69,7 @@ public:
 		world->registerSystem(new PlayerActionSystem());
         world->registerSystem(new MovementSystem());
         world->registerSystem(new CollisionSystem()); // Must place after movement system
+        world->registerSystem(new HitProcessingSystem());
         world->registerSystem(new ParticleSystem());
 		world->registerSystem(new RenderSystem(gameRootPath + "/src/Shaders/"));
 		world->registerSystem(new GUISystem());  // Must place after render system
@@ -115,7 +117,7 @@ public:
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 		
-		skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
+		//skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
 
 		particles->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 500, 5.0f, glm::vec3(0.0f, 8.0f, 0.0f), 128, 1, 1);
         particles->assign<PositionComponent>(glm::vec3(0.0f, 3.0f, -10.0f));
