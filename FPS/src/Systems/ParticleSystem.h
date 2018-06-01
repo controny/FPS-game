@@ -27,9 +27,9 @@ public:
 			// Generate 10 new particule each millisecond,
 			// but limit this to 16 ms (60 fps), or if you have 1 long frame (1sec),
 			// newparticles will be huge and the next frame even longer.
-			int newparticles = (int)(deltaTime*10000.0);
-			if (newparticles > (int)(0.016f*10000.0))
-				newparticles = (int)(0.016f*10000.0);
+			int newparticles = (int)(deltaTime * 1000.0 * particleCHandle->newParticlesPerMS);
+			if (newparticles > (int)(16.0f * particleCHandle->newParticlesPerMS))
+				newparticles = (int)(16.0f * particleCHandle->newParticlesPerMS);
 
 			generateNewParticles(particleCHandle, positionCHandle, newparticles);
 			simulateAllParticles(particleCHandle, CameraPos, deltaTime);
@@ -73,7 +73,6 @@ private:
 			particleCHandle->container[particleIndex].life = particleCHandle->life;
 			particleCHandle->container[particleIndex].pos = positionCHandle->Position;
 
-			float spread = 1.5f;
 			// Very bad way to generate a random direction; 
 			// See for instance http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution instead,
 			// combined with some user-controlled parameters (main direction, spread, etc)
@@ -83,14 +82,14 @@ private:
 				(rand() % 2000 - 1000.0f) / 1000.0f
 			);
 
-			particleCHandle->container[particleIndex].speed = particleCHandle->maindir + randomdir * spread;
+			particleCHandle->container[particleIndex].speed = particleCHandle->maindir + randomdir * particleCHandle->spread;
 
 
 			// Very bad way to generate a random color
 			particleCHandle->container[particleIndex].r = rand() % particleCHandle->max_r;
 			particleCHandle->container[particleIndex].g = rand() % particleCHandle->max_g;
 			particleCHandle->container[particleIndex].b = rand() % particleCHandle->max_b;
-			particleCHandle->container[particleIndex].a = (rand() % 256) / 3;
+			particleCHandle->container[particleIndex].a = rand() % particleCHandle->max_a;
 
 			particleCHandle->container[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
 

@@ -85,7 +85,8 @@ public:
 		Entity* text = world->create();
 		Entity* test_post = world->create();  // 以后 post 赋给 gun 的 entity，现在只是测试
 		Entity* skeleton_model = world->create();
-		Entity* particles = world->create();
+		Entity* blood = world->create();
+		Entity* fog = world->create();
 
 		// Load texture resource
 		Resource::TextureResource textureResource;
@@ -116,7 +117,10 @@ public:
 		
 		//skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
 
-		particles->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 500, 5.0f, glm::vec3(0.0f, 8.0f, 0.0f), 128, 1, 1);
-        particles->assign<PositionComponent>(glm::vec3(0.0f, 3.0f, -10.0f));
+		blood->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 500, 0.8f, 30, 3.0f, glm::vec3(5.0f, 0.0f, 1.0f), 256, 1, 1);
+        blood->assign<PositionComponent>(glm::vec3(0.0f, 15.0f, -10.0f));
+
+		fog->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 500, 5.0f, 50, 5.0f, glm::vec3(50.0f, 0.0f, 50.0f), 64, 64, 64, 64);
+        fog->assign<PositionComponent>(glm::vec3(0.0f, 15.0f, 10.0f));
 	}
 };
