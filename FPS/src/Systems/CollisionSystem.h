@@ -134,7 +134,7 @@ public:
         return CollisionState{ collisionInX, collisionInY, collisionInZ };
     }
 
-    glm::vec2 checkRayBodyCollision(Ray& ray, AABB& body) {
+    glm::vec2 checkRayBodyCollision(Ray& ray, AABB body) {
         if (abs(ray.direction.x) < 0.000001f) //If the ray parallel to the YZ plane  
         {
             //If the ray is not within AABB box, then no collision
@@ -164,7 +164,7 @@ public:
         return glm::vec2(tNear, tFar);
     }
 
-    AABB getPreviousBody(Entity* entity, AABB curBody) {
+    AABB getPreviousBody(Entity* entity, AABB& curBody) {
         if (!entity->has<MovementComponent>()) {
             return curBody;
         }
