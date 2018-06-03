@@ -204,18 +204,29 @@ private:
 	void renderBoneObject(class World* world, float deltaTime) {
 		// äÖÈ¾¹Ç÷ÀÄ£ÐÍ
 		world->each<BoneObjectComponent>([&](Entity* ent, ComponentHandle<BoneObjectComponent> BoneobjectCHandle) -> void {
-			BoneobjectCHandle->m_pScene= BoneobjectCHandle->m_Importer.ReadFile(BoneobjectCHandle->filename, ASSIMP_LOAD_FLAGS);
+			static vector<pair<string, const aiScene*> > loadedScenes;
+			bool hasLoaded = false;
+			for (int i = 0; i < loadedScenes.size(); ++i) {
+				if (loadedScenes[i].first == BoneobjectCHandle->filename) {
+					hasLoaded = true;
+					BoneobjectCHandle->m_pScene = loadedScenes[i].second;
+					break;
+				}
+			}
+			if (!hasLoaded) {
+				
+				string file = BoneobjectCHandle->filename;
+				const aiScene* scene = BoneobjectCHandle->m_Importer.ReadFile(BoneobjectCHandle->filename, ASSIMP_LOAD_FLAGS);
+				BoneobjectCHandle->m_pScene = scene;
+				pair<string, const aiScene*> p(file, scene);
+				loadedScenes.push_back(p);
+			}
+			
 			static vector<Matrix4f> Transforms;
-			static int renderCount = 0;
 			//float RunningTime = GetRunningTime();
 			static float RunningTime = 0.5;
 			RunningTime += 0.1;
-			if (renderCount == 0) {
-				BoneobjectCHandle->BoneTransform(RunningTime, Transforms);
-				renderCount++;
-			}
 			BoneobjectCHandle->BoneTransform(RunningTime, Transforms);
-			renderCount++;
 			GLuint m_boneLocation[100];
 			for (unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(m_boneLocation); i++) {
 				char Name[128];

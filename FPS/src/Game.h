@@ -31,6 +31,7 @@
 #include <Systems/PlayerActionSystem.h>
 #include <Systems/ParticleSystem.h>
 #include <Systems/CollisionSystem.h>
+#include <Systems/HitProcessingSystem.h>
 
 
 class Game {
@@ -68,6 +69,7 @@ public:
 		world->registerSystem(new PlayerActionSystem());
         world->registerSystem(new MovementSystem());
         world->registerSystem(new CollisionSystem()); // Must place after movement system
+        world->registerSystem(new HitProcessingSystem());
         world->registerSystem(new ParticleSystem());
 		world->registerSystem(new RenderSystem(gameRootPath + "/src/Shaders/"));
 		world->registerSystem(new GUISystem());  // Must place after render system
@@ -84,9 +86,15 @@ public:
 		Entity* ground = world->create();
 		Entity* text = world->create();
 		Entity* test_post = world->create();  // 以后 post 赋给 gun 的 entity，现在只是测试
+<<<<<<< HEAD
 		//Entity* skeleton_model = world->create();
 		Entity* blood = world->create();
 		Entity* smoke = world->create();
+=======
+		Entity* skeleton_model = world->create();
+
+		Entity* particles = world->create();
+>>>>>>> 04f11e1e7b684e3e7197081160d131308f857b34
 
 		// Load texture resource
 		Resource::TextureResource textureResource;
