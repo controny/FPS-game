@@ -28,7 +28,7 @@ struct ParticleComponent {
 	// number of new particles per millisecond
 	int newParticlesPerMS;
 	// color settings
-	int max_r, max_g, max_b, max_a;
+	int color_r, color_g, color_b, color_a;
 	// main direction of explosion
 	glm::vec3 maindir;
 
@@ -42,9 +42,9 @@ struct ParticleComponent {
 	Particle* container;
 
 	ParticleComponent(string path, int _maxParticles, float _life, int _newParticlesPerMS = 10, float _spread = 1.5f,
-		glm::vec3 _maindir = glm::vec3(0.0f, 5.0f, 0.0f), int _max_r = 256, int _max_g = 256, int _max_b = 256, int _max_a = 128)
+		glm::vec3 _maindir = glm::vec3(0.0f, 5.0f, 0.0f), int _color_r = 256, int _color_g = 256, int _color_b = 256, int _color_a = 128)
 		: maxParticles(_maxParticles), life(_life), newParticlesPerMS(_newParticlesPerMS), spread(_spread),
-		maindir(_maindir), max_r(_max_r), max_g(_max_g), max_b(_max_b), max_a(_max_a)
+		maindir(_maindir), color_r(_color_r), color_g(_color_g), color_b(_color_b), color_a(_color_a)
 	{
 		container = new Particle[maxParticles];
 		g_particule_position_size_data = new GLfloat[maxParticles * 4];

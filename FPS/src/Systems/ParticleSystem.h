@@ -85,11 +85,11 @@ private:
 			particleCHandle->container[particleIndex].speed = particleCHandle->maindir + randomdir * particleCHandle->spread;
 
 
-			// Very bad way to generate a random color
-			particleCHandle->container[particleIndex].r = rand() % particleCHandle->max_r;
-			particleCHandle->container[particleIndex].g = rand() % particleCHandle->max_g;
-			particleCHandle->container[particleIndex].b = rand() % particleCHandle->max_b;
-			particleCHandle->container[particleIndex].a = rand() % particleCHandle->max_a;
+			int maxColorBiase = 10;
+			particleCHandle->container[particleIndex].r = (rand() % (2*maxColorBiase) - maxColorBiase) +  particleCHandle->color_r;
+			particleCHandle->container[particleIndex].g = (rand() % (2*maxColorBiase) - maxColorBiase) +  particleCHandle->color_g;
+			particleCHandle->container[particleIndex].b = (rand() % (2*maxColorBiase) - maxColorBiase) +  particleCHandle->color_b;
+			particleCHandle->container[particleIndex].a = (rand() % (2*maxColorBiase) - maxColorBiase) +  particleCHandle->color_a;
 
 			particleCHandle->container[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
 
