@@ -314,6 +314,9 @@ private:
 
 	void renderParticles(class World* world, float deltaTime, glm::mat4 ViewMatrix) {
 		world->each<ParticleComponent>([&](Entity* ent, ComponentHandle<ParticleComponent> particleCHandle) {
+			// 达到一定数量后就不再渲染
+			if (particleCHandle->producedParticles > particleCHandle->MAX_TOTAL_NUM)
+				return;
 			// Accept fragment if it closer to the camera than the former one
 			glDepthFunc(GL_LESS);
 

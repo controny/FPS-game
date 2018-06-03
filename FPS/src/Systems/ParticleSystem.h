@@ -24,6 +24,8 @@ public:
 			Entity* ent,
 			ComponentHandle<ParticleComponent> particleCHandle,
 			ComponentHandle<PositionComponent> positionCHandle) {
+			if (particleCHandle->producedParticles > particleCHandle->MAX_TOTAL_NUM)
+				return;
 			// Generate 10 new particule each millisecond,
 			// but limit this to 16 ms (60 fps), or if you have 1 long frame (1sec),
 			// newparticles will be huge and the next frame even longer.
@@ -31,10 +33,55 @@ public:
 			if (newparticles > (int)(16.0f * particleCHandle->newParticlesPerMS))
 				newparticles = (int)(16.0f * particleCHandle->newParticlesPerMS);
 
+			particleCHandle->producedParticles += newparticles;
+
 			generateNewParticles(particleCHandle, positionCHandle, newparticles);
 			simulateAllParticles(particleCHandle, CameraPos, deltaTime);
 
 		});
+	}
+
+	static void simulateBlood(class World* world, glm::vec3 pos) {
+		world->each<ParticleComponent, PositionComponent>([&](
+			Entity* ent,
+			ComponentHandle<ParticleComponent> particleCHandle,
+			ComponentHandle<PositionComponent> positionCHandle) {
+
+				positionCHandle->Position = pos;
+
+				particleCHandle->producedParticles = 0;
+				particleCHandle->maxParticles = 50;
+				particleCHandle->life = 1.0f;
+				particleCHandle->newParticlesPerMS = 30;
+				particleCHandle->spread = 3.0f;
+				particleCHandle->maindir = glm::vec3(5.0f, 0.0f, 1.0f);
+				particleCHandle->color_r = 245;
+				particleCHandle->color_g = 10;
+				particleCHandle->color_b = 10;
+				particleCHandle->color_a = 224;
+		});
+
+	}
+	static void simulateSmoke(class World* world, glm::vec3 pos) {
+		world->each<ParticleComponent, PositionComponent>([&](
+			Entity* ent,
+			ComponentHandle<ParticleComponent> particleCHandle,
+			ComponentHandle<PositionComponent> positionCHandle) {
+
+				positionCHandle->Position = pos;
+
+				particleCHandle->producedParticles = 0;
+				particleCHandle->maxParticles = 50;
+				particleCHandle->life = 0.3f;
+				particleCHandle->newParticlesPerMS = 50;
+				particleCHandle->spread = 5.0f;
+				particleCHandle->maindir = glm::vec3(5.0f, 0.0f, 5.0f);
+				particleCHandle->color_r = 64;
+				particleCHandle->color_g = 64;
+				particleCHandle->color_b = 64;
+				particleCHandle->color_a = 224;
+		});
+
 	}
 
 private:

@@ -5,6 +5,8 @@
 #include <Components/MovementComponent.h>
 #include <Components/PlayerComponent.h>
 #include <Components/ObjectComponent.h>
+#include <Systems/ParticleSystem.h>
+
 #include <Events/HitEvent.h>
 
 using namespace ECS;
@@ -35,6 +37,8 @@ public:
         printf("ray hit body(entity id: %d)\n", hit_entity->getEntityId());
         printf("hit position: (%f, %f, %f)\n", hit_position.x, hit_position.y, hit_position.z);
         printf("----------------------\n");
+		ParticleSystem::simulateSmoke(world, hit_position);
+		//ParticleSystem::simulateBlood(world, hit_position);
     }
 
     //virtual void tick(class World* world, float deltaTime) override {
