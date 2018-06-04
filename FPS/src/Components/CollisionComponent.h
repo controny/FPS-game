@@ -40,6 +40,14 @@ struct AABB {
         tmp.z_max = z_max - shift.z;
         return tmp;
     }
+
+    glm::vec3 getMinCoord() {
+        return glm::vec3(x_min, y_min, z_min);
+    }
+
+    glm::vec3 getMaxCoord() {
+        return glm::vec3(x_max, y_max, z_max);
+    }
 };
 
 // CollisionComponent: store the physics body of a entity

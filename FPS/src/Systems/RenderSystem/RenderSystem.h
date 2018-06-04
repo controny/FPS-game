@@ -204,18 +204,29 @@ private:
 	void renderBoneObject(class World* world, float deltaTime) {
 		// 渲染骨骼模型
 		world->each<BoneObjectComponent>([&](Entity* ent, ComponentHandle<BoneObjectComponent> BoneobjectCHandle) -> void {
-			BoneobjectCHandle->m_pScene= BoneobjectCHandle->m_Importer.ReadFile(BoneobjectCHandle->filename, ASSIMP_LOAD_FLAGS);
+			static vector<pair<string, const aiScene*> > loadedScenes;
+			bool hasLoaded = false;
+			for (int i = 0; i < loadedScenes.size(); ++i) {
+				if (loadedScenes[i].first == BoneobjectCHandle->filename) {
+					hasLoaded = true;
+					BoneobjectCHandle->m_pScene = loadedScenes[i].second;
+					break;
+				}
+			}
+			if (!hasLoaded) {
+				
+				string file = BoneobjectCHandle->filename;
+				const aiScene* scene = BoneobjectCHandle->m_Importer.ReadFile(BoneobjectCHandle->filename, ASSIMP_LOAD_FLAGS);
+				BoneobjectCHandle->m_pScene = scene;
+				pair<string, const aiScene*> p(file, scene);
+				loadedScenes.push_back(p);
+			}
+			
 			static vector<Matrix4f> Transforms;
-			static int renderCount = 0;
 			//float RunningTime = GetRunningTime();
 			static float RunningTime = 0.5;
 			RunningTime += 0.1;
-			if (renderCount == 0) {
-				BoneobjectCHandle->BoneTransform(RunningTime, Transforms);
-				renderCount++;
-			}
 			BoneobjectCHandle->BoneTransform(RunningTime, Transforms);
-			renderCount++;
 			GLuint m_boneLocation[100];
 			for (unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(m_boneLocation); i++) {
 				char Name[128];
@@ -303,6 +314,9 @@ private:
 
 	void renderParticles(class World* world, float deltaTime, glm::mat4 ViewMatrix) {
 		world->each<ParticleComponent>([&](Entity* ent, ComponentHandle<ParticleComponent> particleCHandle) {
+			// 达到一定数量后就不再渲染
+			if (particleCHandle->producedParticles > particleCHandle->MAX_TOTAL_NUM)
+				return;
 			// Accept fragment if it closer to the camera than the former one
 			glDepthFunc(GL_LESS);
 

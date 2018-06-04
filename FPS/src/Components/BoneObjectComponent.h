@@ -115,8 +115,6 @@ struct BoneObjectComponent {
 		if (!LoadBoneObjectComponent(Filename)) {
 			cout << "error\n";
 		}
-		cout << m_pScene->mNumAnimations << endl;
-		cout << m_pScene->mNumMeshes << endl;
 	}
 	/*~BoneObjectComponent() {
 		Clear();
