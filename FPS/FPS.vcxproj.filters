@@ -46,6 +46,7 @@
     <ClInclude Include="src\Systems\RenderSystem\Shader.h" />
     <ClInclude Include="src\Systems\CollisionSystem.h" />
     <ClInclude Include="src\Components\CollisionComponent.h" />
+    <ClInclude Include="src\Systems\HitProcessingSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />
@@ -60,5 +61,9 @@
     <None Include="src\Shaders\skybox.vs" />
     <None Include="src\Shaders\text.fs" />
     <None Include="src\Shaders\text.vs" />
+    <None Include="src\Shaders\boneDepth.vs" />
+    <None Include="src\Shaders\skinning.vs" />
+    <None Include="src\Shaders\depth.fs" />
+    <None Include="src\Shaders\depth.vs" />
   </ItemGroup>
 </Project>
