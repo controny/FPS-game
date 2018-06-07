@@ -110,11 +110,12 @@ void main()
     // diffuse
     vec3 lightDir = normalize(-lightDirection);
     vec3 diffuse =  max(dot(lightDir, normal), 0.0) * diffuseStrength * lightColor;
+
     // specular
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, normal);
     vec3 halfwayDir = normalize(lightDir + viewDir);  
-    vec3 specular = pow(max(dot(normal, halfwayDir), 0.0), shininess) * lightColor * texture(texture_specular1, TexCoords).rgb ;    
+    vec3 specular = pow(max(dot(normal, halfwayDir), 0.0), shininess) * specularStrength * lightColor * texture(texture_specular1, TexCoords).rgb;    
     
 	// calculate shadow
 	//float bias = max(0.25 * (1.0 - dot(normal, lightDir)), 0.025);
@@ -123,4 +124,5 @@ void main()
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    
 
 	FragColor = vec4(lighting, 1.0);
+	//FragColor = vec4((Normal + 1) / 2, 1.0);
 }
