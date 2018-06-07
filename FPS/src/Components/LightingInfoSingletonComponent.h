@@ -9,6 +9,7 @@ using namespace ECS;
 struct LightingInfoSingletonComponent {
 
 	glm::vec3 LightPos;
+	glm::vec3 LightDirection;
 	glm::vec3 LightColor;
 
 	float AmbientStrength, SpecularStrength, DiffuseStrength, Shininess;
@@ -17,21 +18,24 @@ struct LightingInfoSingletonComponent {
 	GLuint depthMapFBO;
 	GLuint depthMap;
 	GLuint shadow_width, shadow_height;
+	int shadow_type;
 	glm::mat4 lightSpaceMatrix;
 
 	LightingInfoSingletonComponent() {
-		LightPos = glm::vec3(10.0f, 50.0f, 10.0f);
+		LightPos = glm::vec3(-7.5f, 30.0f, -7.5f);
+		LightDirection = glm::vec3(1.0f, -10.0f, 1.0f);
 		LightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 		AmbientStrength = 0.5f;
 		SpecularStrength = 0.15f;
 		DiffuseStrength = 0.75f;
 		Shininess = 32.0f;
 
+		shadow_type = 0;  // linear
 		init();
 	}
 
 	void init() {
-		shadow_width = shadow_height = 4096;
+		shadow_width = shadow_height = 6000;
 		glGenFramebuffers(1, &depthMapFBO);
 		glGenTextures(1, &depthMap);
 		glBindTexture(GL_TEXTURE_2D, depthMap);

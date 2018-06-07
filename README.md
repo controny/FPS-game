@@ -1,6 +1,6 @@
 # FPS-game
 
-6.1 Update
+6.7 Update
 
 ## 任务说明
 
@@ -16,7 +16,6 @@
 * 骨骼动画
     * 找到能用的人物动画模型
     * 找到能用的敌人模型（合适，能动就行，不用在意细节）
-* 阴影渲染
 
 #### 游戏逻辑部分
 
@@ -26,7 +25,6 @@
 * 后坐力系统
     * 准心大小变化。
     * 准心做成正方形的（现在准心会适配窗口的比例，变成长方形的）。
-    * 随机后坐力计算。
     * 连续开枪时的射速处理。
 
     http://www.te5.com/pubg/2018/284309.html
@@ -40,7 +38,7 @@
 * 模板测试：加入道具，给道具进行描边。
 * 用实例化渲染处理同时渲染多个相同物体。
 * 织物模拟：在场景中弄个旗子之类的东西。
-* 高级光照：不同物体材质，光照贴图，多光源（场景中的火焰），泛光
+* 高级光照：泛光，SSAO
 * GUI 控制不同天气：阴天、傍晚天气，更换天空盒和光照颜色；雾天，更换天空盒，更改光照着色器 https://blog.csdn.net/u010223072/article/details/45022745。
 * 树的绘制：最好能用分形来绘制。
 * 草的绘制：learnopengl -> 高级 OpenGL -> 混合
@@ -52,6 +50,18 @@
 * 视角变更：瞄准镜 http://tieba.baidu.com/p/5200318856；第一人称第三人称
 
 ---
+
+## 已完成知识点
+* Camera Roaming
+* Simple(Blinn-phong) lighting
+* Texture mapping
+* PCSS shadow mapping
+* Model import
+* Sky box
+* Display text
+* Gravity System and Collision Detection
+* Skeletal Animation
+* Partical System
 
 ## 更新备注
 

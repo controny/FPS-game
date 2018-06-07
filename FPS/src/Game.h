@@ -96,10 +96,10 @@ public:
 
 		// Assign the components to entities
 		Resource::CubeResource wall_resource, ground_resource;
-        wall_resource.init(20.0f, 20.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
+        wall_resource.init(20.0f, 20.0f, 30.0f, textureResource.container_diffuse, textureResource.container_specular);
         wall->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
         wall->assign<PositionComponent>(glm::vec3(30.0f, 5.0f, 0.0f));
-        wall->assign<CollisionComponent>(20.0f, 20.0f, 10.0f);
+        wall->assign<CollisionComponent>(20.0f, 20.0f, 30.0f);
 
 		ground_resource.init(500.0f, 500.0f, 1.0f, textureResource.ground_diffuse, textureResource.ground_specular);
 		ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);

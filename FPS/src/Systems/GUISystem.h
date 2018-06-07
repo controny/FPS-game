@@ -66,8 +66,12 @@ public:
 			{
 				ImGui::Begin("Game Menu", &(windowCHandle->showGUI));  // 用右上角的交叉关闭 GUI
 
-				ImGui::Text("Lighting parameters:");
+				ImGui::Text("Shadow type:");
+				ImGui::RadioButton("Linear", &(lightCHandle->shadow_type), 0);
+				ImGui::RadioButton("PCSS (fixed BS region)", &(lightCHandle->shadow_type), 1);
+				ImGui::RadioButton("PCSS", &(lightCHandle->shadow_type), 2);
 
+				ImGui::Text("\nLighting parameters:");
 				ImGui::SliderFloat("Ambient strength", &(lightCHandle->AmbientStrength), 0.0f, 1.0f);
 				ImGui::SliderFloat("Specular strength", &(lightCHandle->SpecularStrength), 0.0f, 1.0f);
 				ImGui::SliderFloat("Diffuse strength", &(lightCHandle->DiffuseStrength), 0.0f, 1.0f);

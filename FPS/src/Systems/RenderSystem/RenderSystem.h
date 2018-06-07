@@ -59,11 +59,11 @@ private:
 
 		glm::mat4 lightProjection, lightView;
 
-		GLfloat near_plane = 1.0f, far_plane = 100.0f;
+		GLfloat near_plane = 1.1f, far_plane = 75.0f;
 
 		//lightProjection = glm::perspective(glm::radians(89.0f), (float)window_width / (float)window_height, near_plane, far_plane);
-		lightProjection = glm::ortho(-300.0f, 300.0f, -300.0f, 300.0f, near_plane, far_plane);
-		lightView = glm::lookAt(lightCHandle->LightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+		lightProjection = glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, near_plane, far_plane);
+		lightView = glm::lookAt(lightCHandle->LightPos, glm::vec3(-4.0f, 0.0f, -4.0f), glm::vec3(0.0, 1.0, 0.0));
 
 		lightCHandle->lightSpaceMatrix = lightProjection * lightView;
 
@@ -108,15 +108,11 @@ private:
 		/* ----------- render object -----------*/
 		objectShader.use();
 
-		GLfloat near_plane = 1.0f, far_plane = 75.0f;
-		glm::mat4 lightProjection = glm::ortho(-45.0f, 45.0f, -45.0f, 45.0f, near_plane, far_plane);
-		glm::mat4 lightView = glm::lookAt(lightCHandle->LightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-
 		// 设置着色器要用的变量
 		objectShader.setMat4("view", ViewMatrix);
 		objectShader.setVec3("viewPos", CameraPos);
 
-		objectShader.setVec3("lightPos", lightCHandle->LightPos);
+		objectShader.setVec3("lightDirection", lightCHandle->LightDirection);
 		objectShader.setVec3("lightColor", lightCHandle->LightColor);
 		objectShader.setFloat("ambientStrength", lightCHandle->AmbientStrength);
 		objectShader.setFloat("specularStrength", lightCHandle->SpecularStrength);
@@ -126,6 +122,7 @@ private:
 		glm::mat4 projection = glm::perspective(45.0f, (float)window_width / (float)window_height, 0.1f, 1000.0f);
 		objectShader.setMat4("projection", projection);
 		objectShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
+		objectShader.setInt("shadow_type", lightCHandle->shadow_type);
 
 		glActiveTexture(GL_TEXTURE31);
 		objectShader.setInt("shadowMap", 31);
@@ -141,7 +138,7 @@ private:
 		boneShader.setMat4("view", ViewMatrix);
 		boneShader.setVec3("viewPos", CameraPos);
 
-		boneShader.setVec3("lightPos", lightCHandle->LightPos);
+		boneShader.setVec3("lightDirection", lightCHandle->LightDirection);
 		boneShader.setVec3("lightColor", lightCHandle->LightColor);
 		boneShader.setFloat("ambientStrength", lightCHandle->AmbientStrength);
 		boneShader.setFloat("specularStrength", lightCHandle->SpecularStrength);
@@ -151,6 +148,7 @@ private:
 		bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 		boneShader.setMat4("model", bonemodel);
 		boneShader.setMat4("projection", projection);
+		boneShader.setInt("shadow_type", lightCHandle->shadow_type);
 
 		glActiveTexture(GL_TEXTURE31);
 		boneShader.setInt("shadowMap", 31);
