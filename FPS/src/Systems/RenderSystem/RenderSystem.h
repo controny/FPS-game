@@ -59,7 +59,7 @@ private:
 
 		glm::mat4 lightProjection, lightView;
 
-		GLfloat near_plane = 1.1f, far_plane = 75.0f;
+		GLfloat near_plane = 1.0f, far_plane = 75.0f;
 
 		//lightProjection = glm::perspective(glm::radians(89.0f), (float)window_width / (float)window_height, near_plane, far_plane);
 		lightProjection = glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, near_plane, far_plane);

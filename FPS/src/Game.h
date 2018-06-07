@@ -81,7 +81,8 @@ public:
 		world->createSingletonComponent<SkyboxInfoSingletonComponent>(skybox_resource.vertices, skybox_resource.indices, skybox_resource.textures);
 
 		// Entities
-		Entity* wall = world->create();
+		Entity* wall_a = world->create();
+		Entity* wall_b = world->create();
 		Entity* player = world->create();
 		Entity* ground = world->create();
 		Entity* text = world->create();
@@ -97,9 +98,14 @@ public:
 		// Assign the components to entities
 		Resource::CubeResource wall_resource, ground_resource;
         wall_resource.init(20.0f, 20.0f, 30.0f, textureResource.container_diffuse, textureResource.container_specular);
-        wall->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
-        wall->assign<PositionComponent>(glm::vec3(30.0f, 5.0f, 0.0f));
-        wall->assign<CollisionComponent>(20.0f, 20.0f, 30.0f);
+        wall_a->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
+        wall_a->assign<PositionComponent>(glm::vec3(30.0f, 5.0f, 0.0f));
+        wall_a->assign<CollisionComponent>(20.0f, 20.0f, 30.0f);
+
+		wall_resource.init(5.0f, 5.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
+		wall_b->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
+		wall_b->assign<PositionComponent>(glm::vec3(45.0f, 5.0f, 5.0f));
+		wall_b->assign<CollisionComponent>(5.0f, 5.0f, 10.0f);
 
 		ground_resource.init(500.0f, 500.0f, 1.0f, textureResource.ground_diffuse, textureResource.ground_specular);
 		ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);
