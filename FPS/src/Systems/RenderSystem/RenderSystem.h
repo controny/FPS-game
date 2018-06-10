@@ -29,6 +29,8 @@ public:
 	Shader postShader;
 	Shader boneShader;
 	Shader particleShader;
+	Shader depthShader;
+	Shader boneDepthShader;
 
 
 	RenderSystem(string shader_dir) {
@@ -36,15 +38,59 @@ public:
 		textShader.init("text.vs", "text.fs", shader_dir);
 		skyboxShader.init("skybox.vs", "skybox.fs", shader_dir);
 		postShader.init("post.vs", "post.fs", shader_dir);
-		boneShader.init("skinning.vs", "skinning.fs", shader_dir);
+		boneShader.init("skinning.vs", "object.fs", shader_dir);
 		particleShader.init("particle.vs", "particle.fs", shader_dir);
+		depthShader.init("depth.vs", "depth.fs", shader_dir);
+		boneDepthShader.init("boneDepth.vs", "depth.fs", shader_dir);
 	}
 
 	virtual void tick(class World* world, float deltaTime) override
 	{
+		renderDepth(world, deltaTime);
+		render(world, deltaTime);
+	}
+
+private:
+	void renderDepth(class World* world, float deltaTime) {
+		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
+		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
+		int window_width, window_height;
+		glfwGetWindowSize(windowCHandle->Window, &window_width, &window_height);
+
+		glm::mat4 lightProjection, lightView;
+
+		GLfloat near_plane = 1.1f, far_plane = 75.0f;
+
+		//lightProjection = glm::perspective(glm::radians(89.0f), (float)window_width / (float)window_height, near_plane, far_plane);
+		lightProjection = glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, near_plane, far_plane);
+		lightView = glm::lookAt(lightCHandle->LightPos, glm::vec3(-4.0f, 0.0f, -4.0f), glm::vec3(0.0, 1.0, 0.0));
+
+		lightCHandle->lightSpaceMatrix = lightProjection * lightView;
+
+		glViewport(0, 0, lightCHandle->shadow_width, lightCHandle->shadow_height);
+		glBindFramebuffer(GL_FRAMEBUFFER, lightCHandle->depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		depthShader.use();
+		depthShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
+		renderMeshes(world, deltaTime, depthShader);
+
+		boneDepthShader.use();
+		boneDepthShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
+		renderBoneObject(world, deltaTime, boneDepthShader);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void render(class World* world, float deltaTime) {
 		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
-		
+
+		int window_width, window_height;
+		glfwGetWindowSize(windowCHandle->Window, &window_width, &window_height);
+		glViewport(0, 0, window_width, window_height);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		glm::mat4 ViewMatrix;
 		glm::vec3 CameraPos;
 		world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
@@ -66,31 +112,33 @@ public:
 		objectShader.setMat4("view", ViewMatrix);
 		objectShader.setVec3("viewPos", CameraPos);
 
-		objectShader.setVec3("lightPos", lightCHandle->LightPos);
+		objectShader.setVec3("lightDirection", lightCHandle->LightDirection);
 		objectShader.setVec3("lightColor", lightCHandle->LightColor);
 		objectShader.setFloat("ambientStrength", lightCHandle->AmbientStrength);
 		objectShader.setFloat("specularStrength", lightCHandle->SpecularStrength);
 		objectShader.setFloat("shininess", lightCHandle->Shininess);
 		objectShader.setFloat("diffuseStrength", lightCHandle->DiffuseStrength);
 
-		int window_width, window_height;
-		glfwGetWindowSize(windowCHandle->Window, &window_width, &window_height);
-
 		glm::mat4 projection = glm::perspective(45.0f, (float)window_width / (float)window_height, 0.1f, 1000.0f);
 		objectShader.setMat4("projection", projection);
+		objectShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
+		objectShader.setInt("shadow_type", lightCHandle->shadow_type);
 
-
-		renderMeshes(world, deltaTime);
+		glActiveTexture(GL_TEXTURE31);
+		objectShader.setInt("shadowMap", 31);
+		glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
+			
+		renderMeshes(world, deltaTime, objectShader);
 
 
 		//设置骨骼着色器变量
 		glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
-		
+
 		boneShader.use();
-		boneShader.setMat4("view", ViewMatrix); 
+		boneShader.setMat4("view", ViewMatrix);
 		boneShader.setVec3("viewPos", CameraPos);
 
-		boneShader.setVec3("lightPos", lightCHandle->LightPos);
+		boneShader.setVec3("lightDirection", lightCHandle->LightDirection);
 		boneShader.setVec3("lightColor", lightCHandle->LightColor);
 		boneShader.setFloat("ambientStrength", lightCHandle->AmbientStrength);
 		boneShader.setFloat("specularStrength", lightCHandle->SpecularStrength);
@@ -100,9 +148,13 @@ public:
 		bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 		boneShader.setMat4("model", bonemodel);
 		boneShader.setMat4("projection", projection);
+		boneShader.setInt("shadow_type", lightCHandle->shadow_type);
 
-
-		renderBoneObject(world, deltaTime);
+		glActiveTexture(GL_TEXTURE31);
+		boneShader.setInt("shadowMap", 31);
+		glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
+		
+		renderBoneObject(world, deltaTime, boneShader);
 
 		/* ----------- render skybox -----------*/
 		skyboxShader.use();
@@ -126,12 +178,12 @@ public:
 		/* ----------- render post -----------*/
 		postShader.use();
 		renderPost(world, deltaTime);
-		
+
 		/* ----------- render particles -----------*/
 		renderParticles(world, deltaTime, ViewMatrix);
 	}
-private:
-	void renderMeshes(class World* world, float deltaTime) {
+
+	void renderMeshes(class World* world, float deltaTime, Shader shader) {
 
 		// 渲染，就是之前 Mesh 类的 Draw()
 		world->each<ObjectComponent, PositionComponent>(
@@ -161,12 +213,13 @@ private:
 						number = std::to_string(heightNr++); // transfer unsigned int to stream
 
 															 // now set the sampler to the correct texture unit
-					int a = glGetUniformLocation(objectShader.ID, (name + number).c_str());
+					int a = glGetUniformLocation(shader.ID, (name + number).c_str());
 					glUniform1i(a, i);
 
 					// and finally bind the texture
 					glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
 				}
+
 				glm::mat4 model;
 				model = glm::translate(model, positionCHandle->Position);
 
@@ -188,22 +241,26 @@ private:
 					model = glm::rotate(model, float(6.28 - glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
 				}
 
-				objectShader.setMat4("model", model);
-				glDepthFunc(GL_LEQUAL);
+				shader.setMat4("model", model);
+				//glDepthFunc(GL_LEQUAL);
 				glBindVertexArray(mesh.VAO);
 				glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
 				glBindVertexArray(0);
-				glDepthFunc(GL_LESS);
-				glActiveTexture(GL_TEXTURE0);
+				//glDepthFunc(GL_LESS);
+				//glActiveTexture(GL_TEXTURE0);
 			}
 		});
 	}
 
 
 
-	void renderBoneObject(class World* world, float deltaTime) {
+	void renderBoneObject(class World* world, float deltaTime, Shader shader) {
+
+
 		// 渲染骨骼模型
-		world->each<BoneObjectComponent>([&](Entity* ent, ComponentHandle<BoneObjectComponent> BoneobjectCHandle) -> void {
+		world->each<BoneObjectComponent, PositionComponent>([&](Entity* ent, 
+			ComponentHandle<BoneObjectComponent> BoneobjectCHandle,
+			ComponentHandle<PositionComponent> positionCHandle) -> void {
 			static vector<pair<string, const aiScene*> > loadedScenes;
 			bool hasLoaded = false;
 			for (int i = 0; i < loadedScenes.size(); ++i) {
@@ -232,14 +289,18 @@ private:
 				char Name[128];
 				memset(Name, 0, sizeof(Name));
 				SNPRINTF(Name, sizeof(Name), "gBones[%d]", i);
-				m_boneLocation[i] = glGetUniformLocation(boneShader.ID, Name);
+				m_boneLocation[i] = glGetUniformLocation(shader.ID, Name);
 			}
 			for (uint i = 0; i < Transforms.size(); i++) {
 				//m_pEffect->SetBoneTransform(i, Transforms[i]);
 				glUniformMatrix4fv(m_boneLocation[i], 1, GL_TRUE, (const GLfloat*)Transforms[i]);
 			}
 			
-			
+			glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
+			bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+			bonemodel = glm::translate(bonemodel, positionCHandle->Position);
+
+			shader.setMat4("model", bonemodel);
 			BoneobjectCHandle->Render();
 		});
 	}
@@ -314,6 +375,9 @@ private:
 
 	void renderParticles(class World* world, float deltaTime, glm::mat4 ViewMatrix) {
 		world->each<ParticleComponent>([&](Entity* ent, ComponentHandle<ParticleComponent> particleCHandle) {
+			// 达到一定数量后就不再渲染
+			if (particleCHandle->producedParticles > particleCHandle->MAX_TOTAL_NUM)
+				return;
 			// Accept fragment if it closer to the camera than the former one
 			glDepthFunc(GL_LESS);
 

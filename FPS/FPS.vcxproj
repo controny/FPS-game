@@ -141,6 +141,7 @@
     <ClInclude Include="src\Components\BoneObjectComponent.h" />
     <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\CameraComponent.h" />
+    <ClInclude Include="src\Components\CollisionComponent.h" />
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\MovementComponent.h" />
     <ClInclude Include="src\Components\ObjectComponent.h" />
@@ -158,6 +159,8 @@
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\shaders\shader.h" />
     <ClInclude Include="src\Systems\CameraMovingSystem.h" />
+    <ClInclude Include="src\Systems\CollisionSystem.h" />
+    <ClInclude Include="src\Systems\HitProcessingSystem.h" />
     <ClInclude Include="src\Systems\KeyPressingSystem.h" />
     <ClInclude Include="src\Systems\MouseMovingSystem.h" />
     <ClInclude Include="src\Systems\MovementSystem.h" />
@@ -174,12 +177,16 @@
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />
     <None Include="src\shaderPrograms\object.vs" />
+    <None Include="src\Shaders\boneDepth.vs" />
+    <None Include="src\Shaders\depth.fs" />
+    <None Include="src\Shaders\depth.vs" />
     <None Include="src\Shaders\object.fs" />
     <None Include="src\Shaders\object.vs" />
     <None Include="src\Shaders\particle.fs" />
     <None Include="src\Shaders\particle.vs" />
     <None Include="src\Shaders\post.fs" />
     <None Include="src\Shaders\post.vs" />
+    <None Include="src\Shaders\skinning.vs" />
     <None Include="src\Shaders\skybox.fs" />
     <None Include="src\Shaders\skybox.vs" />
     <None Include="src\Shaders\text.fs" />
