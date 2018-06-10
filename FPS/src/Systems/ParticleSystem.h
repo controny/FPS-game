@@ -41,7 +41,7 @@ public:
 		});
 	}
 
-	static void simulateBlood(class World* world, glm::vec3 pos) {
+	static void simulateBlood(class World* world, glm::vec3 pos, glm::vec3 hitdir) {
 		world->each<ParticleComponent, PositionComponent>([&](
 			Entity* ent,
 			ComponentHandle<ParticleComponent> particleCHandle,
@@ -50,11 +50,11 @@ public:
 				positionCHandle->Position = pos;
 
 				particleCHandle->producedParticles = 0;
-				particleCHandle->maxParticles = 50;
+				particleCHandle->maxParticles = 30;
 				particleCHandle->life = 1.0f;
 				particleCHandle->newParticlesPerMS = 30;
 				particleCHandle->spread = 3.0f;
-				particleCHandle->maindir = glm::vec3(5.0f, 0.0f, 1.0f);
+				particleCHandle->maindir = -hitdir * 10.0f;
 				particleCHandle->color_r = 245;
 				particleCHandle->color_g = 10;
 				particleCHandle->color_b = 10;
@@ -62,7 +62,7 @@ public:
 		});
 
 	}
-	static void simulateSmoke(class World* world, glm::vec3 pos) {
+	static void simulateSmoke(class World* world, glm::vec3 pos, glm::vec3 hitdir) {
 		world->each<ParticleComponent, PositionComponent>([&](
 			Entity* ent,
 			ComponentHandle<ParticleComponent> particleCHandle,
@@ -71,14 +71,14 @@ public:
 				positionCHandle->Position = pos;
 
 				particleCHandle->producedParticles = 0;
-				particleCHandle->maxParticles = 50;
+				particleCHandle->maxParticles = 30;
 				particleCHandle->life = 0.3f;
 				particleCHandle->newParticlesPerMS = 50;
-				particleCHandle->spread = 5.0f;
-				particleCHandle->maindir = glm::vec3(5.0f, 0.0f, 5.0f);
-				particleCHandle->color_r = 64;
-				particleCHandle->color_g = 64;
-				particleCHandle->color_b = 64;
+				particleCHandle->spread = 1.0f;
+				particleCHandle->maindir = -hitdir * 15.0f;
+				particleCHandle->color_r = 14;
+				particleCHandle->color_g = 14;
+				particleCHandle->color_b = 14;
 				particleCHandle->color_a = 224;
 		});
 
