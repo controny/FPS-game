@@ -49,7 +49,7 @@ public:
 	// 如果 ImGui 还没有初始化和绑定到 window，先初始化和绑定
 	virtual void tick(class World* world, float deltaTime) override {
 		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
-			
+
 		if (!initialized) {
 			ImGui::CreateContext();
 			ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -58,13 +58,25 @@ public:
 			initialized = true;
 		}
 
+
+		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
+
 		if (windowCHandle->showGUI) {
 			ImGui_ImplGlfwGL3_NewFrame();
 			{
 				ImGui::Begin("Game Menu", &(windowCHandle->showGUI));  // 用右上角的交叉关闭 GUI
-				ImGui::Text("dfdfdf");
 
-				ImGui::Text("hhhhhh");
+				ImGui::Text("Shadow type:");
+				ImGui::RadioButton("Linear", &(lightCHandle->shadow_type), 0);
+				ImGui::RadioButton("PCSS (fixed BS region)", &(lightCHandle->shadow_type), 1);
+				ImGui::RadioButton("PCSS", &(lightCHandle->shadow_type), 2);
+
+				ImGui::Text("\nLighting parameters:");
+				ImGui::SliderFloat("Ambient strength", &(lightCHandle->AmbientStrength), 0.0f, 1.0f);
+				ImGui::SliderFloat("Specular strength", &(lightCHandle->SpecularStrength), 0.0f, 1.0f);
+				ImGui::SliderFloat("Diffuse strength", &(lightCHandle->DiffuseStrength), 0.0f, 1.0f);
+				ImGui::SliderFloat("Shininess", &(lightCHandle->Shininess), 0.1f, 64.0f);
+
 				ImGui::End();
 			}
 

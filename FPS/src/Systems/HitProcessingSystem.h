@@ -32,13 +32,15 @@ public:
     {
         Entity* hit_entity = event.hit_entity;
         glm::vec3 hit_position = event.hit_position;
-        printf("receive hit event\n");
+        glm::vec3 hit_direction = event.hit_direction;
+        /*printf("receive hit event\n");
         printf("----------------------\n");
         printf("ray hit body(entity id: %d)\n", hit_entity->getEntityId());
         printf("hit position: (%f, %f, %f)\n", hit_position.x, hit_position.y, hit_position.z);
-        printf("----------------------\n");
-		ParticleSystem::simulateSmoke(world, hit_position);
-		//ParticleSystem::simulateBlood(world, hit_position);
+        printf("hit direction: (%f, %f, %f)\n", hit_direction.x, hit_direction.y, hit_direction.z);
+        printf("----------------------\n");*/
+		ParticleSystem::simulateSmoke(world, hit_position, hit_direction);
+		//ParticleSystem::simulateBlood(world, hit_position, hit_direction);
     }
 
     //virtual void tick(class World* world, float deltaTime) override {

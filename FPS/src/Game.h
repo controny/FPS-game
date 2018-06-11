@@ -86,7 +86,11 @@ public:
 		Entity* ground = world->create();
 		Entity* text = world->create();
 		Entity* test_post = world->create();  // 以后 post 赋给 gun 的 entity，现在只是测试
-		//Entity* skeleton_model = world->create();
+		Entity* skeleton_model = world->create();
+
+		Entity* gun = world->create();
+		Entity* monster = world->create();
+
 		Entity* blood = world->create();
 		Entity* particles = world->create();
 
@@ -96,10 +100,10 @@ public:
 
 		// Assign the components to entities
 		Resource::CubeResource wall_resource, ground_resource;
-        wall_resource.init(20.0f, 20.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
+        wall_resource.init(20.0f, 20.0f, 30.0f, textureResource.container_diffuse, textureResource.container_specular);
         wall->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
         wall->assign<PositionComponent>(glm::vec3(30.0f, 5.0f, 0.0f));
-        wall->assign<CollisionComponent>(20.0f, 20.0f, 10.0f);
+        wall->assign<CollisionComponent>(20.0f, 20.0f, 30.0f);
 
 		ground_resource.init(500.0f, 500.0f, 1.0f, textureResource.ground_diffuse, textureResource.ground_specular);
 		ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);
@@ -108,7 +112,7 @@ public:
 
 		player->assign<ObjectComponent>(gameRootPath + "/resources/objects/nanosuit/nanosuit.obj");
 		player->assign<PositionComponent>(glm::vec3(0.0f, 0.6f, 0.0f));
-		player->assign<MovementComponent>(glm::vec3(0.0f, -0.01f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // 碰撞检测需要，要给个小一点向下的初速度；避免一开始检测不到碰撞掉下去
+		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // 碰撞检测需要，要给个小一点向下的初速度；避免一开始检测不到碰撞掉下去
 		player->assign<PlayerComponent>();
 		player->assign<CameraComponent>(glm::vec3(0.0f, 14.0f, 1.0f));
         player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
@@ -117,7 +121,17 @@ public:
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 		
-		//skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
+
+
+		gun->assign<ObjectComponent>(gameRootPath + "/resources/bone/AK47/AK47.obj");
+		gun->assign<PositionComponent>(glm::vec3(3.0f, 0.0f, 0.0f));
+
+		monster->assign<ObjectComponent>(gameRootPath + "/resources/bone/Etin/Etin.obj");
+		monster->assign<PositionComponent>(glm::vec3(-1.0f, 0.0f, 0.0f));
+
+
+		skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
+		skeleton_model->assign<PositionComponent>(glm::vec3(10.0f, 10.0f, 0.0f));
 
 		particles->assign<ParticleComponent>(gameRootPath + "/resources/textures/");
         particles->assign<PositionComponent>(glm::vec3());
