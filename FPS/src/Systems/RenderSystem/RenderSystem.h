@@ -46,6 +46,7 @@ public:
 
 	virtual void tick(class World* world, float deltaTime) override
 	{
+		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
 		renderDepth(world, deltaTime);
 		render(world, deltaTime);
 	}
@@ -123,6 +124,7 @@ private:
 		objectShader.setMat4("projection", projection);
 		objectShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
 		objectShader.setInt("shadow_type", lightCHandle->shadow_type);
+		objectShader.setBool("shadow_enable", lightCHandle->shadow_enable);
 			
 		renderMeshes(world, deltaTime, objectShader);
 
@@ -256,15 +258,16 @@ private:
 
 
 	void renderBoneObject(class World* world, float deltaTime, Shader shader) {
+
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
 
 		glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
 		bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 
-		shader.setMat4("model", bonemodel);
-
 		// äÖÈ¾¹Ç÷ÀÄ£ÐÍ
-		world->each<BoneObjectComponent>([&](Entity* ent, ComponentHandle<BoneObjectComponent> BoneobjectCHandle) -> void {
+		world->each<BoneObjectComponent, PositionComponent>([&](Entity* ent, 
+			ComponentHandle<BoneObjectComponent> BoneobjectCHandle,
+			ComponentHandle<PositionComponent> positionCHandle) -> void {
 			static vector<pair<string, const aiScene*> > loadedScenes;
 			bool hasLoaded = false;
 			for (int i = 0; i < loadedScenes.size(); ++i) {
@@ -303,7 +306,13 @@ private:
 			glActiveTexture(GL_TEXTURE15);
 			boneShader.setInt("shadowMap", 15);
 			glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
-			
+		
+			glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
+			bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+			bonemodel = glm::translate(bonemodel, positionCHandle->Position);
+
+			shader.setMat4("model", bonemodel);
+
 			BoneobjectCHandle->Render();
 		});
 	}

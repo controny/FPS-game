@@ -88,9 +88,8 @@ public:
                     printf("----------------------\n");
 #endif // DEBUG_CHECK_RAY_COLLISION
 
-                    world->emit<HitEvent>({ other_ent, hitPos });
+                    world->emit<HitEvent>({ other_ent, hitPos, direction });
                 }
-
             });
         });
     }

@@ -85,7 +85,7 @@ public:
             movementCHandle->Velocity.y = y_velocity;
             
             if (jump) {
-                printf("jump\n");
+                //printf("jump\n");
                 jump = false;
                 playerCHandle->isJumping = true;
                 movementCHandle->Velocity += glm::vec3(0.0, 40.0f, 0.0f);
