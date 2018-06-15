@@ -123,7 +123,7 @@ public:
 		player->assign<CameraComponent>(glm::vec3(0.0f, 14.0f, 1.0f));
         player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
 
-		text->assign<TextComponent>("test", 15.0f, 8.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
+		text->assign<TextComponent>("bullet_info", "", 20.0f, 12.0f, 0.5f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 		

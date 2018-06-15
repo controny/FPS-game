@@ -152,6 +152,8 @@
     <ClInclude Include="src\Components\SkyboxInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\TextComponent.h" />
     <ClInclude Include="src\Components\WindowInfoSingletonComponent.h" />
+    <ClInclude Include="src\Events\FireEvent.h" />
+    <ClInclude Include="src\Events\HitEvent.h" />
     <ClInclude Include="src\Events\KeyEvents.h" />
     <ClInclude Include="src\Events\MouseMovementEvent.h" />
     <ClInclude Include="src\MeshComponent.h" />

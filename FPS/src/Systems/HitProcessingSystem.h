@@ -11,7 +11,7 @@
 
 using namespace ECS;
 
-// 根据键盘输入完成行走、跳等操作
+// 处理子弹击中之后的事件
 class HitProcessingSystem : public EntitySystem, public EventSubscriber<HitEvent> {
 public:
 
@@ -32,7 +32,7 @@ public:
     {
         Entity* hit_entity = event.hit_entity;
         glm::vec3 hit_position = event.hit_position;
-        glm::vec3 hit_direction = event.hit_direction;
+        glm::vec3 hit_direction = event.hit_direction;  // 当前摄像机的 front 向量
         /*printf("receive hit event\n");
         printf("----------------------\n");
         printf("ray hit body(entity id: %d)\n", hit_entity->getEntityId());
@@ -43,7 +43,7 @@ public:
 		//ParticleSystem::simulateBlood(world, hit_position, hit_direction);
     }
 
-    //virtual void tick(class World* world, float deltaTime) override {
+    virtual void tick(class World* world, float deltaTime) override {
 
-    //}
+    }
 };
