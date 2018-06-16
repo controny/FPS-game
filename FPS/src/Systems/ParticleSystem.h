@@ -3,15 +3,40 @@
 #include <ECS.h>
 
 #include <Components/ParticleComponent.h>
+#include <Events/KeyEvents.h>
 
 using namespace ECS;
 
-class ParticleSystem : public EntitySystem
+class ParticleSystem : public EntitySystem, public EventSubscriber<MousePressEvent>
 {
 public:
 	ParticleSystem() {}
 
 	virtual ~ParticleSystem() {}
+
+    virtual void configure(class World* world) override
+    {
+        world->subscribe<MousePressEvent>(this);
+    }
+
+    virtual void unconfigure(class World* world) override
+    {
+        world->unsubscribeAll(this);
+    }
+
+	// 点击鼠标开枪时喷射火焰
+	virtual void receive(class World* world, const MousePressEvent& event) override {
+		if (event.key == MOUSE_LEFT)
+		{
+			// TODO 获取player的位置和朝向
+			glm::vec3 CameraPos;
+			world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+				auto cameraCHandle = ent->get<CameraComponent>();
+				CameraPos = cameraCHandle->Position;
+			});
+			ParticleSystem::simulateGunFire(world, CameraPos, glm::vec3(10.0, 0.0, 10.0));
+		}
+	}
 
 	virtual void tick(class World* world, float deltaTime) override {
 		glm::vec3 CameraPos;
@@ -49,6 +74,7 @@ public:
 
 				positionCHandle->Position = pos;
 
+				particleCHandle->texture = loadDDS((particleCHandle->path + "particle.DDS").c_str());
 				particleCHandle->producedParticles = 0;
 				particleCHandle->maxParticles = 30;
 				particleCHandle->life = 1.0f;
@@ -59,9 +85,11 @@ public:
 				particleCHandle->color_g = 10;
 				particleCHandle->color_b = 10;
 				particleCHandle->color_a = 224;
+				particleCHandle->size = 0.1;
 		});
 
 	}
+
 	static void simulateSmoke(class World* world, glm::vec3 pos, glm::vec3 hitdir) {
 		world->each<ParticleComponent, PositionComponent>([&](
 			Entity* ent,
@@ -70,6 +98,7 @@ public:
 
 				positionCHandle->Position = pos;
 
+				particleCHandle->texture = loadDDS((particleCHandle->path + "particle.DDS").c_str());
 				particleCHandle->producedParticles = 0;
 				particleCHandle->maxParticles = 30;
 				particleCHandle->life = 0.3f;
@@ -80,8 +109,33 @@ public:
 				particleCHandle->color_g = 14;
 				particleCHandle->color_b = 14;
 				particleCHandle->color_a = 224;
+				particleCHandle->size = 0.1;
 		});
 
+	}
+
+	static void simulateGunFire(class World* world, glm::vec3 pos, glm::vec3 hitdir) {
+		world->each<ParticleComponent, PositionComponent>([&](
+			Entity* ent,
+			ComponentHandle<ParticleComponent> particleCHandle,
+			ComponentHandle<PositionComponent> positionCHandle) {
+
+			positionCHandle->Position = pos;
+
+			//particleCHandle->texture = loadDDS((particleCHandle->path + "particle.DDS").c_str());
+			particleCHandle->texture = loadPNG((particleCHandle->path + "muzzle-flash.png").c_str(), true);
+			particleCHandle->producedParticles = 0;
+			particleCHandle->maxParticles = 1;
+			particleCHandle->life = 0.1f;
+			particleCHandle->newParticlesPerMS = 80;
+			particleCHandle->spread = 0.0f;
+			particleCHandle->maindir = hitdir * 1.0f;
+			particleCHandle->color_r = 244;
+			particleCHandle->color_g = 244;
+			particleCHandle->color_b = 244;
+			particleCHandle->color_a = 224;
+			particleCHandle->size = 0.5;
+		});
 	}
 
 private:
@@ -138,7 +192,7 @@ private:
 			particleCHandle->container[particleIndex].b = (rand() % (2*maxColorBiase) - maxColorBiase) +  particleCHandle->color_b;
 			particleCHandle->container[particleIndex].a = (rand() % (2*maxColorBiase) - maxColorBiase) +  particleCHandle->color_a;
 
-			particleCHandle->container[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
+			particleCHandle->container[particleIndex].size = (rand() % 500) / 2000.0f + particleCHandle->size;
 
 		}
 	}
