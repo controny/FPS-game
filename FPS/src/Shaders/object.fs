@@ -20,6 +20,7 @@ uniform float diffuseStrength;
 uniform float shininess;
 
 uniform int shadow_type;
+uniform bool shadow_enable;
 
 float random(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898, 78.233))) * 43758.5453);
@@ -55,11 +56,12 @@ float ShadowCalculation(vec4 fragPosLightSpace, float bias)
 		return shadow / 25.0;
 	}
 	
+	// 仍需要调参；等所有场景出来后再根据效果进行调参
 	if (shadow_type != 0) {
 		// blocker search
 		int region = 0;
 		if (shadow_type == 2) {  // PCSS 
-			float light_width = 6.0f;
+			float light_width = 7.0f;
 			region = max(int(light_width * (currentDepth - bias + closestDepth)), 1);
 		} else {
 			region = 3;  // fix blocker search region
@@ -83,7 +85,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, float bias)
 			float blockerDistance = dist / blockers;
 
 			// PCF width
-			int penumbraWidth = min(max(int((currentDepth - blockerDistance) / blockerDistance * 4.0), 1), 6);
+			int penumbraWidth = min(max(int((currentDepth - blockerDistance) / blockerDistance * 2.0), 1), 6);
 			//penumbraWidth = 2;
 
 			for(int x = -penumbraWidth; x <= penumbraWidth; ++x) {
@@ -110,17 +112,27 @@ void main()
     // diffuse
     vec3 lightDir = normalize(-lightDirection);
     vec3 diffuse =  max(dot(lightDir, normal), 0.0) * diffuseStrength * lightColor;
+
     // specular
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, normal);
     vec3 halfwayDir = normalize(lightDir + viewDir);  
-    vec3 specular = pow(max(dot(normal, halfwayDir), 0.0), shininess) * lightColor * texture(texture_specular1, TexCoords).rgb ;    
+    vec3 specular = pow(max(dot(normal, halfwayDir), 0.0), shininess) * specularStrength * lightColor * texture(texture_specular1, TexCoords).rgb;    
     
 	// calculate shadow
 	//float bias = max(0.25 * (1.0 - dot(normal, lightDir)), 0.025);
-    float bias = max(0.005 * pow(1.0 - dot(normal, lightDir), 2), 0.0005f);
-    float shadow = ShadowCalculation(FragPosLightSpace, bias);                  
-    vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    
+    float bias = max(0.01 * pow(1.0 - dot(normal, lightDir), 2), 0.001f);
+    float shadow;
+	vec3 lighting;
+
+	if (shadow_enable) {
+		shadow = ShadowCalculation(FragPosLightSpace, bias); 
+		lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;
+	} else {
+		lighting = (ambient + diffuse + specular) * color;
+	}
+        
 
 	FragColor = vec4(lighting, 1.0);
+	//FragColor = vec4((Normal + 1) / 2, 1.0);
 }

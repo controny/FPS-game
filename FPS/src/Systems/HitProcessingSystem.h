@@ -39,8 +39,8 @@ public:
         printf("hit position: (%f, %f, %f)\n", hit_position.x, hit_position.y, hit_position.z);
         printf("hit direction: (%f, %f, %f)\n", hit_direction.x, hit_direction.y, hit_direction.z);
         printf("----------------------\n");*/
-		//ParticleSystem::simulateSmoke(world, hit_position, hit_direction);
-		ParticleSystem::simulateBlood(world, hit_position, hit_direction);
+		ParticleSystem::simulateSmoke(world, hit_position, hit_direction);
+		//ParticleSystem::simulateBlood(world, hit_position, hit_direction);
     }
 
     //virtual void tick(class World* world, float deltaTime) override {

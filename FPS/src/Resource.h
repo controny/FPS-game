@@ -299,6 +299,10 @@ struct Resource {
 		void init(float length, float width, float height,
 			Texture diffuse_texture, Texture specular_texture) {
 
+			vertices.clear();
+			indices.clear();
+			textures.clear();
+
 			float coords[] = {
 				-0.5f, -0.5f, -0.5f,
 				0.5f, -0.5f, -0.5f,
@@ -392,7 +396,7 @@ struct Resource {
 				0.0f,  1.0f,  0.0f,
 				0.0f,  1.0f,  0.0f
 			};
-  
+			
 			textures.push_back(diffuse_texture);
 			textures.push_back(specular_texture);
 
