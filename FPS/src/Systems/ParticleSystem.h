@@ -28,13 +28,14 @@ public:
 	virtual void receive(class World* world, const MousePressEvent& event) override {
 		if (event.key == MOUSE_LEFT)
 		{
-			// TODO 获取player的位置和朝向
-			glm::vec3 CameraPos;
+			// 获取player的位置和朝向
+			glm::vec3 pos;
+			glm::vec3 front;
 			world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
-				auto cameraCHandle = ent->get<CameraComponent>();
-				CameraPos = cameraCHandle->Position;
+				pos = ent->get<CameraComponent>()->Position;
+				front = ent->get<PositionComponent>()->Front;
 			});
-			ParticleSystem::simulateGunFire(world, CameraPos, glm::vec3(10.0, 0.0, 10.0));
+			ParticleSystem::simulateGunFire(world, pos, front);
 		}
 	}
 
@@ -114,7 +115,7 @@ public:
 
 	}
 
-	static void simulateGunFire(class World* world, glm::vec3 pos, glm::vec3 hitdir) {
+	static void simulateGunFire(class World* world, glm::vec3 pos, glm::vec3 dir) {
 		world->each<ParticleComponent, PositionComponent>([&](
 			Entity* ent,
 			ComponentHandle<ParticleComponent> particleCHandle,
@@ -122,19 +123,18 @@ public:
 
 			positionCHandle->Position = pos;
 
-			//particleCHandle->texture = loadDDS((particleCHandle->path + "particle.DDS").c_str());
 			particleCHandle->texture = loadPNG((particleCHandle->path + "muzzle-flash.png").c_str(), true);
 			particleCHandle->producedParticles = 0;
 			particleCHandle->maxParticles = 1;
 			particleCHandle->life = 0.1f;
-			particleCHandle->newParticlesPerMS = 80;
+			particleCHandle->newParticlesPerMS = 100;
 			particleCHandle->spread = 0.0f;
-			particleCHandle->maindir = hitdir * 1.0f;
+			particleCHandle->maindir = dir * 5.0f;
 			particleCHandle->color_r = 244;
 			particleCHandle->color_g = 244;
 			particleCHandle->color_b = 244;
 			particleCHandle->color_a = 224;
-			particleCHandle->size = 0.5;
+			particleCHandle->size = 0.1;
 		});
 	}
 

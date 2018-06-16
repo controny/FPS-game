@@ -91,8 +91,8 @@ public:
 		Entity* gun = world->create();
 		Entity* monster = world->create();
 
-		Entity* blood = world->create();
-		Entity* particles = world->create();
+		Entity* hitParticles = world->create();
+		Entity* gunFire = world->create();
 
 		// Load texture resource
 		Resource::TextureResource textureResource;
@@ -133,7 +133,7 @@ public:
 		skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
 		skeleton_model->assign<PositionComponent>(glm::vec3(10.0f, 10.0f, 0.0f));
 
-		particles->assign<ParticleComponent>(gameRootPath + "/resources/textures/");
-        particles->assign<PositionComponent>(glm::vec3());
+		hitParticles->assign<ParticleComponent>(gameRootPath + "/resources/textures/");
+        hitParticles->assign<PositionComponent>(glm::vec3());
 	}
 };
