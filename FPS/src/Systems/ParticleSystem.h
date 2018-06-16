@@ -29,12 +29,13 @@ public:
 		if (event.key == MOUSE_LEFT)
 		{
 			// 获取player的位置和朝向
-			glm::vec3 pos;
-			glm::vec3 front;
+			glm::vec3 pos, front, right;
 			world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
 				pos = ent->get<CameraComponent>()->Position;
 				front = ent->get<PositionComponent>()->Front;
+				right = ent->get<PositionComponent>()->Right;
 			});
+			pos += right * 0.07f;
 			ParticleSystem::simulateGunFire(world, pos, front);
 		}
 	}
@@ -72,6 +73,8 @@ public:
 			Entity* ent,
 			ComponentHandle<ParticleComponent> particleCHandle,
 			ComponentHandle<PositionComponent> positionCHandle) {
+				if (particleCHandle->id != 1)
+					return;
 
 				positionCHandle->Position = pos;
 
@@ -96,21 +99,23 @@ public:
 			Entity* ent,
 			ComponentHandle<ParticleComponent> particleCHandle,
 			ComponentHandle<PositionComponent> positionCHandle) {
+				if (particleCHandle->id != 1)
+					return;
 
 				positionCHandle->Position = pos;
 
-				particleCHandle->texture = loadDDS((particleCHandle->path + "particle.DDS").c_str());
+				particleCHandle->texture = loadPNG((particleCHandle->path + "smoke.png").c_str(), true);
 				particleCHandle->producedParticles = 0;
-				particleCHandle->maxParticles = 30;
+				particleCHandle->maxParticles = 20;
 				particleCHandle->life = 0.3f;
 				particleCHandle->newParticlesPerMS = 50;
-				particleCHandle->spread = 1.0f;
+				particleCHandle->spread = 0.0f;
 				particleCHandle->maindir = -hitdir * 15.0f;
-				particleCHandle->color_r = 14;
-				particleCHandle->color_g = 14;
-				particleCHandle->color_b = 14;
+				particleCHandle->color_r = 44;
+				particleCHandle->color_g = 44;
+				particleCHandle->color_b = 44;
 				particleCHandle->color_a = 224;
-				particleCHandle->size = 0.1;
+				particleCHandle->size = 0.3;
 		});
 
 	}
@@ -120,6 +125,8 @@ public:
 			Entity* ent,
 			ComponentHandle<ParticleComponent> particleCHandle,
 			ComponentHandle<PositionComponent> positionCHandle) {
+			if (particleCHandle->id != 2)
+				return;
 
 			positionCHandle->Position = pos;
 

@@ -91,8 +91,8 @@ public:
 		Entity* gun = world->create();
 		Entity* monster = world->create();
 
-		Entity* hitParticles = world->create();
-		Entity* gunFire = world->create();
+		Entity* hitParticles = world->create();	// 子弹击中物体的粒子效果
+		Entity* gunFire = world->create();	// 枪口开火的粒子效果
 
 		// Load texture resource
 		Resource::TextureResource textureResource;
@@ -133,7 +133,9 @@ public:
 		skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
 		skeleton_model->assign<PositionComponent>(glm::vec3(10.0f, 10.0f, 0.0f));
 
-		hitParticles->assign<ParticleComponent>(gameRootPath + "/resources/textures/");
+		hitParticles->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 1);
         hitParticles->assign<PositionComponent>(glm::vec3());
+		gunFire->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 2);
+        gunFire->assign<PositionComponent>(glm::vec3());
 	}
 };
