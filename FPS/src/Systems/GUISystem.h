@@ -66,6 +66,8 @@ public:
 			{
 				ImGui::Begin("Game Menu", &(windowCHandle->showGUI));  // 用右上角的交叉关闭 GUI
 
+				ImGui::Checkbox("Shadow", &(lightCHandle->shadow_enable));
+
 				ImGui::Text("Shadow type:");
 				ImGui::RadioButton("Linear", &(lightCHandle->shadow_type), 0);
 				ImGui::RadioButton("PCSS (fixed BS region)", &(lightCHandle->shadow_type), 1);

@@ -7,6 +7,7 @@
 #include <Components/MovementComponent.h>
 #include <Components/PlayerComponent.h>
 #include <Events/HitEvent.h>
+#include <Events/FireEvent.h>
 
 //#define DEBUG_CHECK_COLLISION
 //#define DEBUG_CHECK_RAY_COLLISION
@@ -45,14 +46,14 @@ struct Ray {
 
 // 碰撞检测
 class CollisionSystem : public EntitySystem,
-    public EventSubscriber<MousePressEvent> {
+    public EventSubscriber<FireEvent> {
 public:
 
     CollisionSystem() {}
 
     virtual void configure(class World* world) override
     {
-        world->subscribe<MousePressEvent>(this);
+        world->subscribe<FireEvent>(this);
     }
 
     virtual void unconfigure(class World* world) override
@@ -60,7 +61,8 @@ public:
         world->unsubscribeAll(this);
     }
 
-    virtual void receive(class World* world, const MousePressEvent& event) override
+	// 接受开火事件后，进行检测
+    virtual void receive(class World* world, const FireEvent& event) override
     {
         world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
             auto positionCHandle = ent->get<PositionComponent>();
