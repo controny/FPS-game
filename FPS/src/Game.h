@@ -110,7 +110,8 @@ public:
         ground->assign<PositionComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
         ground->assign<CollisionComponent>(500.0f, 500.0f, 1.0f);
 
-		player->assign<ObjectComponent>(gameRootPath + "/resources/objects/nanosuit/nanosuit.obj");
+		//player->assign<ObjectComponent>(gameRootPath + "/resources/objects/nanosuit/nanosuit.obj");
+		player->assign<ObjectComponent>(gameRootPath + "/resources/bone/AK47/AK47.obj");
 		player->assign<PositionComponent>(glm::vec3(0.0f, 0.6f, 0.0f));
 		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // 碰撞检测需要，要给个小一点向下的初速度；避免一开始检测不到碰撞掉下去
 		player->assign<PlayerComponent>();
@@ -130,8 +131,8 @@ public:
 		monster->assign<PositionComponent>(glm::vec3(-1.0f, 0.0f, 0.0f));
 
 
-		skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
-		skeleton_model->assign<PositionComponent>(glm::vec3(10.0f, 10.0f, 0.0f));
+		//skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
+		//skeleton_model->assign<PositionComponent>(glm::vec3(10.0f, 10.0f, 0.0f));
 
 		particles->assign<ParticleComponent>(gameRootPath + "/resources/textures/");
         particles->assign<PositionComponent>(glm::vec3());
