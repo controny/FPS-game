@@ -94,6 +94,7 @@ public:
 
 		Entity* hitParticles = world->create();	// 子弹击中物体的粒子效果
 		Entity* gunFire = world->create();	// 枪口开火的粒子效果
+		Entity* disappear = world->create();	// 怪物消失的粒子效果
 
 		// Load texture resource
 		Resource::TextureResource textureResource;
@@ -141,7 +142,9 @@ public:
 
 		hitParticles->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 1);
         hitParticles->assign<PositionComponent>(glm::vec3());
-		//gunFire->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 2);
-        //gunFire->assign<PositionComponent>(glm::vec3());
+		gunFire->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 2);
+        gunFire->assign<PositionComponent>(glm::vec3());
+		disappear->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 3);
+        disappear->assign<PositionComponent>(glm::vec3());
 	}
 };

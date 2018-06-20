@@ -48,7 +48,7 @@ struct ParticleComponent {
 
 	int id;	// used to identify different entities
 
-	ParticleComponent(string _path, int _id, int _maxParticles = 50, float _life = 0.3f, int _newParticlesPerMS = 10, float _spread = 1.5f,
+	ParticleComponent(string _path, int _id, int _maxParticles = 500, float _life = 0.3f, int _newParticlesPerMS = 10, float _spread = 1.5f,
 		glm::vec3 _maindir = glm::vec3(0.0f, 5.0f, 0.0f), int _color_r = 256, int _color_g = 256, int _color_b = 256, int _color_a = 128)
 		: path(_path), id(_id), maxParticles(_maxParticles), life(_life), newParticlesPerMS(_newParticlesPerMS), spread(_spread),
 		maindir(_maindir), color_r(_color_r), color_g(_color_g), color_b(_color_b), color_a(_color_a)
