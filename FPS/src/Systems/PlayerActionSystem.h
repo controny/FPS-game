@@ -8,13 +8,15 @@
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Components/LightingInfoSingletonComponent.h>
 #include <Events/KeyEvents.h>
+#include <Events/FireEvent.h>
 
 using namespace ECS;
 
 // 根据键盘输入完成行走、跳等操作
 class PlayerActionSystem : public EntitySystem,
 	public EventSubscriber<KeyPressEvent>,
-	public EventSubscriber<KeyReleaseEvent> {
+	public EventSubscriber<KeyReleaseEvent>,
+	public EventSubscriber<MousePressEvent> {
 public:
 
 	float speed_multiples;
@@ -24,6 +26,7 @@ public:
 	{
 		world->subscribe<KeyPressEvent>(this);
 		world->subscribe<KeyReleaseEvent>(this);
+		world->subscribe<MousePressEvent>(this);
 	}
 
 	virtual void unconfigure(class World* world) override
@@ -31,8 +34,38 @@ public:
 		world->unsubscribeAll(this);
 	}
 
+	virtual void receive(class World* world, const MousePressEvent& event) override {
+		if (event.key == MOUSE_LEFT) {
+
+			// 这里对所有 player component 进行了操作，虽然现在这里只有一个 player。先不管了。
+			world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+				if (playerCHandle->cur_bullet > 0 && playerCHandle->can_shot) {
+					playerCHandle->cur_bullet--;
+
+					world->each<TextComponent>([&](Entity* ent, ComponentHandle<TextComponent> textCHandle) -> void {
+						if (textCHandle->info == "bullet_info") {
+							string tmp;
+							ostringstream osstream;
+							if (playerCHandle->cur_bullet < 10)
+								osstream << 0;
+							osstream <<  playerCHandle->cur_bullet << " | " << playerCHandle->bullet_capacity;
+							textCHandle->setText(osstream.str());
+						}
+					});
+					world->emit<FireEvent>({});
+				}
+				else {
+					// 进行换弹动作；动作完成之前 canshot 都为 false；完成之后才复原子弹数量和设 canshot 为 true；
+					playerCHandle->cur_bullet = playerCHandle->bullet_capacity;
+				}
+			});
+		}
+	}
+
 	virtual void receive(class World* world, const KeyPressEvent& event) override
 	{	
+		//cout << event.key << endl;
+
 		if (event.key == LEFT_SHIFT)
 			this->speed_up = true;
 
@@ -85,7 +118,7 @@ public:
             movementCHandle->Velocity.y = y_velocity;
             
             if (jump) {
-                printf("jump\n");
+                //printf("jump\n");
                 jump = false;
                 playerCHandle->isJumping = true;
                 movementCHandle->Velocity += glm::vec3(0.0, 40.0f, 0.0f);

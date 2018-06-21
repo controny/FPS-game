@@ -131,11 +131,13 @@
     <ClCompile Include="dependencies\include\imgui\imgui.cpp" />
     <ClCompile Include="dependencies\include\imgui\imgui_draw.cpp" />
     <ClCompile Include="dependencies\include\imgui\imgui_impl_glfw_gl3.cpp" />
+    <ClCompile Include="dependencies\include\loadpng\lodepng.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\include\ECS.h" />
     <ClInclude Include="dependencies\include\ft2build.h" />
+    <ClInclude Include="dependencies\include\loadpng\lodepng.h" />
     <ClInclude Include="dependencies\include\skiningLight.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Components\BoneObjectComponent.h" />
@@ -152,6 +154,8 @@
     <ClInclude Include="src\Components\SkyboxInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\TextComponent.h" />
     <ClInclude Include="src\Components\WindowInfoSingletonComponent.h" />
+    <ClInclude Include="src\Events\FireEvent.h" />
+    <ClInclude Include="src\Events\HitEvent.h" />
     <ClInclude Include="src\Events\KeyEvents.h" />
     <ClInclude Include="src\Events\MouseMovementEvent.h" />
     <ClInclude Include="src\MeshComponent.h" />

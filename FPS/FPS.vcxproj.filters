@@ -6,6 +6,7 @@
     <ClCompile Include="dependencies\include\imgui\imgui_draw.cpp" />
     <ClCompile Include="dependencies\include\imgui\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="dependencies\include\loadpng\lodepng.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\include\ECS.h" />
@@ -47,6 +48,9 @@
     <ClInclude Include="src\Systems\CollisionSystem.h" />
     <ClInclude Include="src\Components\CollisionComponent.h" />
     <ClInclude Include="src\Systems\HitProcessingSystem.h" />
+    <ClInclude Include="src\Events\HitEvent.h" />
+    <ClInclude Include="src\Events\FireEvent.h" />
+    <ClInclude Include="dependencies\include\loadpng\lodepng.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />

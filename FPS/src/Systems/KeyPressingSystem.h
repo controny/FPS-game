@@ -35,14 +35,14 @@ public:
 		if (glfwGetMouseButton(windowCHandle->Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 			world->emit<MousePressEvent>({ MOUSE_LEFT, deltaTime });
 
-		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_W) == GLFW_REPEAT)
+		/*if (glfwGetKey(windowCHandle->Window, GLFW_KEY_W) == GLFW_REPEAT)
 			world->emit<KeyRepeatEvent>({ W, deltaTime });
 		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_S) == GLFW_REPEAT)
 			world->emit<KeyRepeatEvent>({ S, deltaTime });
 		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_A) == GLFW_REPEAT)
 			world->emit<KeyRepeatEvent>({ A, deltaTime });
 		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_D) == GLFW_REPEAT)
-			world->emit<KeyRepeatEvent>({ D, deltaTime });
+			world->emit<KeyRepeatEvent>({ D, deltaTime });*/
 
 		if (glfwGetKey(windowCHandle->Window, GLFW_KEY_W) == GLFW_RELEASE)
 			world->emit<KeyReleaseEvent>({ W, deltaTime });

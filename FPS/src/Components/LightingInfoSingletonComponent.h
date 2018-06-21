@@ -14,15 +14,16 @@ struct LightingInfoSingletonComponent {
 
 	float AmbientStrength, SpecularStrength, DiffuseStrength, Shininess;
 	float bias;
-
+	
 	GLuint depthMapFBO;
 	GLuint depthMap;
 	GLuint shadow_width, shadow_height;
 	int shadow_type;
+	bool shadow_enable;
 	glm::mat4 lightSpaceMatrix;
 
 	LightingInfoSingletonComponent() {
-		LightPos = glm::vec3(-7.5f, 30.0f, -7.5f);
+		LightPos = glm::vec3(-12.5f, 30.0f, -12.5f);
 		LightDirection = glm::vec3(1.0f, -10.0f, 1.0f);
 		LightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 		AmbientStrength = 0.5f;
@@ -31,6 +32,7 @@ struct LightingInfoSingletonComponent {
 		Shininess = 32.0f;
 
 		shadow_type = 0;  // linear
+		shadow_enable = true;
 		init();
 	}
 

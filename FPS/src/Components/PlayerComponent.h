@@ -9,8 +9,17 @@ using namespace ECS;
 struct PlayerComponent {
 
     bool isJumping;
+	bool can_shot;  // 现在是否能射击
+	int bullet_capacity, cur_bullet;  // 弹夹容量
 
 	PlayerComponent() {
-        isJumping = false;
+		init();
+        
+	}
+
+	void init() {
+		bullet_capacity = 30;
+		cur_bullet = bullet_capacity;
+		isJumping = false;
 	}
 };

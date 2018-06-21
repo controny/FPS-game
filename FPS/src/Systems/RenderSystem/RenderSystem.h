@@ -46,6 +46,7 @@ public:
 
 	virtual void tick(class World* world, float deltaTime) override
 	{
+		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
 		renderDepth(world, deltaTime);
 		render(world, deltaTime);
 	}
@@ -59,7 +60,7 @@ private:
 
 		glm::mat4 lightProjection, lightView;
 
-		GLfloat near_plane = 1.1f, far_plane = 75.0f;
+		GLfloat near_plane = 1.0f, far_plane = 75.0f;
 
 		//lightProjection = glm::perspective(glm::radians(89.0f), (float)window_width / (float)window_height, near_plane, far_plane);
 		lightProjection = glm::ortho(-150.0f, 150.0f, -150.0f, 150.0f, near_plane, far_plane);
@@ -123,10 +124,7 @@ private:
 		objectShader.setMat4("projection", projection);
 		objectShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
 		objectShader.setInt("shadow_type", lightCHandle->shadow_type);
-
-		glActiveTexture(GL_TEXTURE31);
-		objectShader.setInt("shadowMap", 31);
-		glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
+		objectShader.setBool("shadow_enable", lightCHandle->shadow_enable);
 			
 		renderMeshes(world, deltaTime, objectShader);
 
@@ -150,9 +148,7 @@ private:
 		boneShader.setMat4("projection", projection);
 		boneShader.setInt("shadow_type", lightCHandle->shadow_type);
 
-		glActiveTexture(GL_TEXTURE31);
-		boneShader.setInt("shadowMap", 31);
-		glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
+		
 		
 		renderBoneObject(world, deltaTime, boneShader);
 
@@ -185,6 +181,8 @@ private:
 
 	void renderMeshes(class World* world, float deltaTime, Shader shader) {
 
+		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
+
 		// 渲染，就是之前 Mesh 类的 Draw()
 		world->each<ObjectComponent, PositionComponent>(
 			[&](Entity* ent,
@@ -197,7 +195,8 @@ private:
 			vector<Mesh>& meshes = objectCHandle->meshes;
 			for (unsigned int j = 0; j < meshes.size(); j++) {
 				Mesh& mesh = meshes[j];
-				for (unsigned int i = 0; i < mesh.textures.size(); i++)
+				int i = 0;
+				for (i = 0; i < mesh.textures.size(); i++)
 				{
 					glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
 													  // retrieve texture number (the N in diffuse_textureN)
@@ -219,6 +218,10 @@ private:
 					// and finally bind the texture
 					glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
 				}
+
+				glActiveTexture(GL_TEXTURE0 + i);
+				shader.setInt("shadowMap", i);
+				glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
 
 				glm::mat4 model;
 				model = glm::translate(model, positionCHandle->Position);
@@ -256,6 +259,10 @@ private:
 
 	void renderBoneObject(class World* world, float deltaTime, Shader shader) {
 
+		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
+
+		glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
+		bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 
 		// 渲染骨骼模型
 		world->each<BoneObjectComponent, PositionComponent>([&](Entity* ent, 
@@ -296,11 +303,16 @@ private:
 				glUniformMatrix4fv(m_boneLocation[i], 1, GL_TRUE, (const GLfloat*)Transforms[i]);
 			}
 			
+			glActiveTexture(GL_TEXTURE15);
+			boneShader.setInt("shadowMap", 15);
+			glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
+		
 			glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
 			bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 			bonemodel = glm::translate(bonemodel, positionCHandle->Position);
 
 			shader.setMat4("model", bonemodel);
+
 			BoneobjectCHandle->Render();
 		});
 	}
