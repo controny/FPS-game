@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <ECS.h>
+#include <Components/WindowInfoSingletonComponent.h>
+
 
 using namespace ECS;
 
@@ -13,6 +15,8 @@ struct PostComponent {
 	float size;  // 准心大小，越小越准
 	glm::vec3 Color;
 	GLuint line_VAO, line_VBO, point_VAO, point_VBO;
+	float window_rate;
+	
 
 	float vertices[24] = {
 		-1.0f, 0.0f, 0.0f,
@@ -28,11 +32,11 @@ struct PostComponent {
 		0.0f, -1.0f, 0.0f,
 	};
 
-	PostComponent(glm::vec3 _color, float _size, float _length = 0.03f) {
+	PostComponent(glm::vec3 _color, float _size, float _length = 0.02f) {
 		init(_color, _size, _length);
 	}
 
-	void init(glm::vec3 _color, float _size, float _length = 0.03f) {
+	void init(glm::vec3 _color, float _size, float _window_rate = 1.33, float _length = 0.02f) {
 		Color = _color;
 		glGenVertexArrays(1, &line_VAO);
 		glGenBuffers(1, &line_VBO);
@@ -58,12 +62,16 @@ struct PostComponent {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		length = _length;
-		setSize(_size);
+		window_rate = _window_rate;
+		setSize(_size, window_rate);
 	}
 
 	// 转换成设备坐标后，坐标位置根据窗口大小来定，不能变成固定大小的正方形。要我改变窗口大小，准心大小也不变。
-	void setSize(float _size) {
+	void setSize(float _size, float window_rate) {
+		/*设置size2,length2大小来通过窗口比例实现准心正方形*/
+		float length2 = length * window_rate;
 		size = _size;
+		float size2 = size * window_rate;
 
 		vertices[0] = -size;
 		vertices[3] = -size - length;
@@ -71,11 +79,11 @@ struct PostComponent {
 		vertices[6] = size;
 		vertices[9] = size + length;
 
-		vertices[13] = size;
-		vertices[16] = size + length;
+		vertices[13] = size2;
+		vertices[16] = size2 + length2;
 
-		vertices[19] = -size;
-		vertices[22] = -size - length;
+		vertices[19] = -size2;
+		vertices[22] = -size2 - length2;
 
 		glBindVertexArray(line_VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, line_VBO);
