@@ -36,7 +36,7 @@ public:
 				right = ent->get<PositionComponent>()->Right;
 			});
 			pos += right * 0.07f;
-			//ParticleSystem::simulateGunFire(world, pos, front);
+			ParticleSystem::simulateGunFire(world, pos, front);
 			ParticleSystem::simulateDisappearing(world, glm::vec3(-5.0f, 10.0f, 5.0f));
 		}
 	}

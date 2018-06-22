@@ -50,7 +50,10 @@
     <ClInclude Include="src\Systems\HitProcessingSystem.h" />
     <ClInclude Include="src\Events\HitEvent.h" />
     <ClInclude Include="src\Events\FireEvent.h" />
+    <ClInclude Include="src\Components\HPComponent.h" />
     <ClInclude Include="dependencies\include\loadpng\lodepng.h" />
+    <ClInclude Include="src\Systems\TextSystem.h" />
+    <ClInclude Include="src\Events\TextChangeEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />

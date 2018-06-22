@@ -255,8 +255,6 @@ private:
 		});
 	}
 
-
-
 	void renderBoneObject(class World* world, float deltaTime, Shader shader) {
 
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
@@ -316,6 +314,7 @@ private:
 			BoneobjectCHandle->Render();
 		});
 	}
+
 	void renderSkybox(class World* world, float deltaTime) {
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;
