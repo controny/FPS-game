@@ -22,6 +22,7 @@
 #include <Components/BoneObjectComponent.h>
 #include <Components/PlayerComponent.h>
 #include <Components/CameraComponent.h>
+#include <Components/TransformComponent.h>
 #include <Systems/RenderSystem/RenderSystem.h>
 #include <Systems/KeyPressingSystem.h>
 #include <Systems/MouseMovingSystem.h>
@@ -118,10 +119,11 @@ public:
 
 		//player->assign<ObjectComponent>(gameRootPath + "/resources/objects/nanosuit/nanosuit.obj");
 		player->assign<ObjectComponent>(gameRootPath + "/resources/bone/AK47/AK47.obj");
-		player->assign<PositionComponent>(glm::vec3(0.0f, 0.6f, 0.0f));
+		player->assign<PositionComponent>(glm::vec3(0.0f, 1.5f, 0.0f));
 		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // 碰撞检测需要，要给个小一点向下的初速度；避免一开始检测不到碰撞掉下去
 		player->assign<PlayerComponent>();
-		player->assign<CameraComponent>(glm::vec3(0.0f, 14.0f, 1.0f));
+		player->assign<TransformComponent>(glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.3f, 0.3f,0.3f));
+		player->assign<CameraComponent>(glm::vec3(3.0f, 1.0f, 1.0f));
         player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
 
 		text->assign<TextComponent>("bullet_info", "", 20.0f, 12.0f, 0.5f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
@@ -131,7 +133,7 @@ public:
 
 
 		gun->assign<ObjectComponent>(gameRootPath + "/resources/bone/AK47/AK47.obj");
-		gun->assign<PositionComponent>(glm::vec3(3.0f, 0.0f, 0.0f));
+		gun->assign<PositionComponent>(glm::vec3(3.0f, 8.0f, 0.0f));
 
 		monster->assign<ObjectComponent>(gameRootPath + "/resources/bone/Etin/Etin.obj");
 		monster->assign<PositionComponent>(glm::vec3(-1.0f, 0.0f, 0.0f));

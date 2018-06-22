@@ -51,6 +51,7 @@
     <ClInclude Include="src\Events\HitEvent.h" />
     <ClInclude Include="src\Events\FireEvent.h" />
     <ClInclude Include="dependencies\include\loadpng\lodepng.h" />
+    <ClInclude Include="src\Components\TransformComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />

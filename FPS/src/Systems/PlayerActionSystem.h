@@ -55,6 +55,7 @@ public:
 					world->emit<FireEvent>({});
 				}
 				else {
+					playerCHandle->can_shot = false;
 					// 进行换弹动作；动作完成之前 canshot 都为 false；完成之后才复原子弹数量和设 canshot 为 true；
 					playerCHandle->cur_bullet = playerCHandle->bullet_capacity;
 				}

@@ -82,7 +82,7 @@ private:
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-
+	
 	void render(class World* world, float deltaTime) {
 		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
@@ -226,10 +226,82 @@ private:
 				glm::mat4 model;
 				model = glm::translate(model, positionCHandle->Position);
 
-
 				glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
 				float x = XZ_front.x, z = XZ_front.z;
-				
+				// 根据 Front、Right 向量对 player 的模型进行旋转
+				if (x > 0 && z > 0) {
+					model = glm::rotate(model, glm::acos(z), glm::vec3(0.0, 1.0, 0.0));
+				}
+				else if (x > 0 && z < 0) {
+					model = glm::rotate(model, float(glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+				}
+				else if (x < 0 && z > 0) {
+					model = glm::rotate(model, float(-glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+				}
+				else if (x < 0 && z < 0) {
+					model = glm::rotate(model, float(6.28 - glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+				}
+
+				shader.setMat4("model", model);
+				//glDepthFunc(GL_LEQUAL);
+				glBindVertexArray(mesh.VAO);
+				glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+				glBindVertexArray(0);
+				//glDepthFunc(GL_LESS);
+				//glActiveTexture(GL_TEXTURE0);
+			}
+		});
+
+		world->each<ObjectComponent, PositionComponent, TransformComponent>(
+			[&](Entity* ent,
+				ComponentHandle<ObjectComponent> objectCHandle,
+				ComponentHandle<PositionComponent> positionCHandle,
+				ComponentHandle<TransformComponent> TransformCHandle) -> void {
+			unsigned int diffuseNr = 1;
+			unsigned int specularNr = 1;
+			unsigned int normalNr = 1;
+			unsigned int heightNr = 1;
+			vector<Mesh>& meshes = objectCHandle->meshes;
+			glm::vec3 translate_vec = TransformCHandle->translate;
+			glm::vec3 rotate_vec = TransformCHandle->rotate;
+			glm::vec3 scale_vec = TransformCHandle->scale;
+			for (unsigned int j = 0; j < meshes.size(); j++) {
+				Mesh& mesh = meshes[j];
+				int i = 0;
+				for (i = 0; i < mesh.textures.size(); i++)
+				{
+					glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+													  // retrieve texture number (the N in diffuse_textureN)
+					string number;
+					string name = mesh.textures[i].type;
+					if (name == "texture_diffuse")
+						number = std::to_string(diffuseNr++);
+					else if (name == "texture_specular")
+						number = std::to_string(specularNr++); // transfer unsigned int to stream
+					else if (name == "texture_normal")
+						number = std::to_string(normalNr++); // transfer unsigned int to stream
+					else if (name == "texture_height")
+						number = std::to_string(heightNr++); // transfer unsigned int to stream
+
+															// now set the sampler to the correct texture unit
+					int a = glGetUniformLocation(shader.ID, (name + number).c_str());
+					glUniform1i(a, i);
+
+					// and finally bind the texture
+					glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
+				}
+
+				glActiveTexture(GL_TEXTURE0 + i);
+				shader.setInt("shadowMap", i);
+				glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
+
+				glm::mat4 model;
+				model = glm::translate(model, positionCHandle->Position);
+				model = glm::translate(model, translate_vec);
+				model = glm::rotate(model, 180.0f, rotate_vec);
+				model = glm::scale(model, scale_vec);
+				glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
+				float x = XZ_front.x, z = XZ_front.z;
 				// 根据 Front、Right 向量对 player 的模型进行旋转
 				if (x > 0 && z > 0) {
 					model = glm::rotate(model, glm::acos(z), glm::vec3(0.0, 1.0, 0.0));
@@ -261,9 +333,6 @@ private:
 
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
 
-		glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
-		bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
-
 		// 渲染骨骼模型
 		world->each<BoneObjectComponent, PositionComponent>([&](Entity* ent, 
 			ComponentHandle<BoneObjectComponent> BoneobjectCHandle,
@@ -289,7 +358,7 @@ private:
 			static vector<Matrix4f> Transforms;
 			//float RunningTime = GetRunningTime();
 			static float RunningTime = 0.5;
-			RunningTime += 0.1;
+			RunningTime += deltaTime;
 			BoneobjectCHandle->BoneTransform(RunningTime, Transforms);
 			GLuint m_boneLocation[100];
 			for (unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(m_boneLocation); i++) {
@@ -307,7 +376,7 @@ private:
 			boneShader.setInt("shadowMap", 15);
 			glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
 		
-			glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
+			glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.25f, 0.25f, 0.25f));
 			bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 			bonemodel = glm::translate(bonemodel, positionCHandle->Position);
 
