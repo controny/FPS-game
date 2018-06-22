@@ -104,6 +104,7 @@ struct Mesh {
 
 
 struct ObjectComponent {
+	string id;
 
 	/*  Model Data */
 	vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
@@ -118,9 +119,10 @@ struct ObjectComponent {
 	}
 	 
 	//加载模型的情况
-	ObjectComponent(string const &path, bool gamma = false) : gammaCorrection(gamma)
+	ObjectComponent(string const &path, string _id="", bool gamma = false) : gammaCorrection(gamma)
 	{
 		loadModel(path);
+		id = _id;
 	}
 
 	void loadModel(string const &path)

@@ -188,6 +188,8 @@ private:
 			[&](Entity* ent,
 				ComponentHandle<ObjectComponent> objectCHandle,
 				ComponentHandle<PositionComponent> positionCHandle) -> void {
+			if (objectCHandle->id != "")
+				return;
 			unsigned int diffuseNr = 1;
 			unsigned int specularNr = 1;
 			unsigned int normalNr = 1;
@@ -223,7 +225,11 @@ private:
 				shader.setInt("shadowMap", i);
 				glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
 
+
 				glm::mat4 model;
+				if (objectCHandle->id != "") {
+
+				}
 				model = glm::translate(model, positionCHandle->Position);
 
 				glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
@@ -251,6 +257,7 @@ private:
 				//glActiveTexture(GL_TEXTURE0);
 			}
 		});
+		
 
 		world->each<ObjectComponent, PositionComponent, TransformComponent>(
 			[&](Entity* ent,
@@ -296,8 +303,8 @@ private:
 				glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
 
 				glm::mat4 model;
-				
-				model = glm::rotate(model, 90.0f, rotate_vec);
+				//cout << rotate_vec.x << rotate_vec.y << rotate_vec.z << endl;
+				//model = glm::rotate(model, 180.0f, rotate_vec);
 				model = glm::scale(model, scale_vec);
 				model = glm::translate(model, positionCHandle->Position);
 				model = glm::translate(model, translate_vec);
