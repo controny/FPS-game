@@ -36,7 +36,8 @@ public:
 				right = ent->get<PositionComponent>()->Right;
 			});
 			pos += right * 0.07f;
-			ParticleSystem::simulateGunFire(world, pos, front);
+			//ParticleSystem::simulateGunFire(world, pos, front);
+			ParticleSystem::simulateDisappearing(world, glm::vec3(-5.0f, 10.0f, 5.0f));
 		}
 	}
 
@@ -106,7 +107,8 @@ public:
 
 				particleCHandle->texture = loadPNG((particleCHandle->path + "smoke.png").c_str(), true);
 				particleCHandle->producedParticles = 0;
-				particleCHandle->maxParticles = 20;
+				particleCHandle->maxParticles = 10;
+				particleCHandle->MAX_TOTAL_NUM = 3000;
 				particleCHandle->life = 0.3f;
 				particleCHandle->newParticlesPerMS = 50;
 				particleCHandle->spread = 0.0f;
@@ -115,7 +117,7 @@ public:
 				particleCHandle->color_g = 44;
 				particleCHandle->color_b = 44;
 				particleCHandle->color_a = 224;
-				particleCHandle->size = 0.3;
+				particleCHandle->size = 0.8;
 		});
 
 	}
@@ -142,6 +144,31 @@ public:
 			particleCHandle->color_b = 244;
 			particleCHandle->color_a = 224;
 			particleCHandle->size = 0.1;
+		});
+	}
+
+	static void simulateDisappearing(class World* world, glm::vec3 pos) {
+		world->each<ParticleComponent, PositionComponent>([&](
+			Entity* ent,
+			ComponentHandle<ParticleComponent> particleCHandle,
+			ComponentHandle<PositionComponent> positionCHandle) {
+			if (particleCHandle->id != 3)
+				return;
+
+			positionCHandle->Position = pos;
+
+			particleCHandle->texture = loadPNG((particleCHandle->path + "flame.png").c_str(), true);
+			particleCHandle->producedParticles = 0;
+			particleCHandle->maxParticles = 300;
+			particleCHandle->life = 2.5f;
+			particleCHandle->newParticlesPerMS = 100;
+			particleCHandle->spread = 1.0f;
+			particleCHandle->maindir = glm::vec3(0.0f, 5.0f, 0.0f);
+			particleCHandle->color_r = 44;
+			particleCHandle->color_g = 44;
+			particleCHandle->color_b = 44;
+			particleCHandle->color_a = 224;
+			particleCHandle->size = 1.0;
 		});
 	}
 

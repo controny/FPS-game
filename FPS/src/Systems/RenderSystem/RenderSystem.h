@@ -296,10 +296,11 @@ private:
 				glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
 
 				glm::mat4 model;
+				
+				model = glm::rotate(model, 90.0f, rotate_vec);
+				model = glm::scale(model, scale_vec);
 				model = glm::translate(model, positionCHandle->Position);
 				model = glm::translate(model, translate_vec);
-				model = glm::rotate(model, 180.0f, rotate_vec);
-				model = glm::scale(model, scale_vec);
 				glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
 				float x = XZ_front.x, z = XZ_front.z;
 				// 根据 Front、Right 向量对 player 的模型进行旋转
