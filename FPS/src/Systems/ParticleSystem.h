@@ -37,7 +37,6 @@ public:
 			});
 			pos += right * 0.07f;
 			ParticleSystem::simulateGunFire(world, pos, front);
-			ParticleSystem::simulateDisappearing(world, glm::vec3(-5.0f, 10.0f, 5.0f));
 		}
 	}
 
@@ -160,7 +159,8 @@ public:
 			particleCHandle->texture = loadPNG((particleCHandle->path + "flame.png").c_str(), true);
 			particleCHandle->producedParticles = 0;
 			particleCHandle->maxParticles = 300;
-			particleCHandle->life = 2.5f;
+			particleCHandle->MAX_TOTAL_NUM = 50000;
+			particleCHandle->life = 5.0f;
 			particleCHandle->newParticlesPerMS = 100;
 			particleCHandle->spread = 1.0f;
 			particleCHandle->maindir = glm::vec3(0.0f, 5.0f, 0.0f);

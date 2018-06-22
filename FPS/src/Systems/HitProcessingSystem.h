@@ -53,6 +53,7 @@ public:
 				world->emit<TextChangeEvent>({ "score", osstream.str() });
 
 				// destroye animation
+				ParticleSystem::simulateDisappearing(world, hit_position);
 			}
 
 		}
