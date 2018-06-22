@@ -1,0 +1,28 @@
+#
+# mtl file for Etin.obj obj file
+#
+
+newmtl creature_ettin_ettin.m2_Geoset_000_Dbl
+illum 2
+Kd 1.000000 1.000000 1.000000
+Ka 0.250000 0.250000 0.250000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd Etin_ettin_yellow_02.png
+newmtl creature_ettin_ettin.m2_Geoset_001_Dbl
+illum 2
+Kd 1.000000 1.000000 1.000000
+Ka 0.250000 0.250000 0.250000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd Etin_ettin_yellow_01.png
+newmtl creature_ettin_ettin.m2_Geoset_002
+illum 2
+Kd 1.000000 1.000000 1.000000
+Ka 0.250000 0.250000 0.250000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd Etin_ettin_yellow_01.png

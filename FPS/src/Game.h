@@ -130,11 +130,11 @@ public:
 		
 
 
-		gun->assign<ObjectComponent>(gameRootPath + "/resources/bone/AK47/AK47.obj");
-		gun->assign<PositionComponent>(glm::vec3(3.0f, 0.0f, 0.0f));
+		gun->assign<ObjectComponent>(gameRootPath + "/resources/objects/gun/Ak-74.obj");
+		gun->assign<PositionComponent>(glm::vec3(-20.0f, 10.0f, -10.0f));
 
-		monster->assign<ObjectComponent>(gameRootPath + "/resources/bone/Etin/Etin.obj");
-		monster->assign<PositionComponent>(glm::vec3(-1.0f, 0.0f, 0.0f));
+		monster->assign<ObjectComponent>(gameRootPath + "/resources/objects/Etin/Etin.obj");
+		monster->assign<PositionComponent>(glm::vec3(-4.0f, 0.0f, 0.0f));
 
 
 		skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
