@@ -119,10 +119,10 @@ public:
         ground->assign<CollisionComponent>(500.0f, 500.0f, 1.0f);
 
 		player->assign<ObjectComponent>(gameRootPath + "/resources/objects/gun/Ak-74.obj", "player");
-		player->assign<PositionComponent>(glm::vec3(0.0f, 1.0f, 0.0f));
-		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // 碰撞检测需要，要给个小一点向下的初速度；避免一开始检测不到碰撞掉下去
+		player->assign<PositionComponent>(glm::vec3(0.0f, 4.0f, 0.0f));
+		player->assign<MovementComponent>(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // 碰撞检测需要，要给个小一点向下的初速度；避免一开始检测不到碰撞掉下去
 		player->assign<PlayerComponent>();
-		player->assign<TransformComponent>(glm::vec3(2.3f, 2.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.1f, 0.1f,0.1f));
+		player->assign<TransformComponent>(glm::vec3(3.0f, 1.5f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.05f, 0.05f,0.05f));
 		player->assign<CameraComponent>(glm::vec3(3.0f, 1.0f, 1.0f));
         player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
 
