@@ -144,6 +144,7 @@
     <ClInclude Include="src\Components\CameraInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\CameraComponent.h" />
     <ClInclude Include="src\Components\CollisionComponent.h" />
+    <ClInclude Include="src\Components\HPComponent.h" />
     <ClInclude Include="src\Components\LightingInfoSingletonComponent.h" />
     <ClInclude Include="src\Components\MovementComponent.h" />
     <ClInclude Include="src\Components\ObjectComponent.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="src\Events\HitEvent.h" />
     <ClInclude Include="src\Events\KeyEvents.h" />
     <ClInclude Include="src\Events\MouseMovementEvent.h" />
+    <ClInclude Include="src\Events\TextChangeEvent.h" />
     <ClInclude Include="src\MeshComponent.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Shader.h" />
@@ -178,6 +180,7 @@
     <ClInclude Include="src\Systems\RenderSystem\Camera.h" />
     <ClInclude Include="src\Systems\RenderSystem\RenderSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem\Shader.h" />
+    <ClInclude Include="src\Systems\TextSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />

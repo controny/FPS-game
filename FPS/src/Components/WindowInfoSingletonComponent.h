@@ -9,10 +9,12 @@ struct WindowInfoSingletonComponent {
 
 	GLFWwindow* Window;
 	bool showGUI;
+	int score;
 
 	WindowInfoSingletonComponent(GLFWwindow *_window) {
 
 		Window = _window;
 		showGUI = false;
+		score = 0;
 	}
 };

@@ -9,6 +9,7 @@
 #include <Components/LightingInfoSingletonComponent.h>
 #include <Events/KeyEvents.h>
 #include <Events/FireEvent.h>
+#include <Events/TextChangeEvent.h>
 
 using namespace ECS;
 
@@ -42,16 +43,13 @@ public:
 				if (playerCHandle->cur_bullet > 0 && playerCHandle->can_shot) {
 					playerCHandle->cur_bullet--;
 
-					world->each<TextComponent>([&](Entity* ent, ComponentHandle<TextComponent> textCHandle) -> void {
-						if (textCHandle->info == "bullet_info") {
-							string tmp;
-							ostringstream osstream;
-							if (playerCHandle->cur_bullet < 10)
-								osstream << 0;
-							osstream <<  playerCHandle->cur_bullet << " | " << playerCHandle->bullet_capacity;
-							textCHandle->setText(osstream.str());
-						}
-					});
+					string tmp;
+					ostringstream osstream;
+					if (playerCHandle->cur_bullet < 10)
+						osstream << 0;
+					osstream << playerCHandle->cur_bullet << " / " << playerCHandle->bullet_capacity;
+
+					world->emit<TextChangeEvent>( { "bullet_info", osstream.str() } );
 					world->emit<FireEvent>({});
 				}
 				else {
