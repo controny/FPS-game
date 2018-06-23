@@ -22,6 +22,8 @@ public:
 	float dx = 0, dy = 0, bx = 0, by = 0;//dx,dy:每一次tick前进的偏移值;bx,by:每一次tick返回的偏移值
 	float x = 0, y = 0, px = 0;
 	float oriSize = 0.025f, desSize = 0.08f, dSize = 0.08f, bSize = 0.08f, tempSize = 0.025f;//oriSize:原始准心大小，desSize:目标准心大小；dSize,bSize:准心变大或变小的Δ值
+	const float T = 0.1f;
+	float dt = 0.15f;
 	virtual void configure(class World* world) override
 	{
 		world->subscribe<KeyPressEvent>(this);
@@ -60,7 +62,9 @@ public:
 	virtual void receive(class World* world, const MousePressEvent& event) override
 	{
 		// 怎么实现后坐力？跳上去之后还能回来？而且过渡自然？
-		if (event.key == MOUSE_LEFT) {
+		
+		/*连续点击时当dt<0才会触发鼠标点击事件*/
+		if (event.key == MOUSE_LEFT && dt <= 0) {
 			world->each<PostComponent>([&](Entity* ent, ComponentHandle<PostComponent> postCHandle) -> void {
 				dx = move_x;
 				dy = move_y;
@@ -69,8 +73,13 @@ public:
 				
 				dSize = tempSize;
 				bSize = desSize;
+
+				dt = 0.15f;
 			});
-		}	
+		}
+		else {
+			dSize = tempSize;
+		}
 	}
 
 	RecoilSystem() {
@@ -83,6 +92,21 @@ public:
 
 	//在dx,dy上加上高斯随机数，实现屏幕抖动以及准心变化
 	virtual void tick(class World* world, float deltaTime) override {
+		/*连续点击时当dt<0才会触发鼠标点击事件*/
+		
+		if (deltaTime < 0.07) {
+			dt -= deltaTime;
+		}
+		
+		//cout << "yyp" << deltaTime << endl;
+		//cout << "abc" << dt << endl;
+
+		/*取窗口大小比例，确保准心为正方形*/
+		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
+		int window_width, window_height;
+		glfwGetWindowSize(windowCHandle->Window, &window_width, &window_height);
+		float window_rate = (float)window_width / (float)window_height;
+		
 		world->each<PostComponent>([&](Entity* ent, ComponentHandle<PostComponent> postCHandle) -> void {
 			/* 屏幕抖动 */
 			if (dx != 0) {
@@ -114,13 +138,13 @@ public:
 			/* 准心大小变化 */
 			if (dSize != desSize) {
 				if ((dSize < desSize)) {
-					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), dSize);
+					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), dSize, window_rate);
 					px = getNumberInNormalDistribution(0.006f, 0.001f);
 					dSize += px;
 					tempSize = dSize;
 				}
 				else {
-					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), desSize);
+					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), desSize, window_rate);
 					dSize = desSize;
 					
 				}
@@ -128,10 +152,10 @@ public:
 			else {
 				if ((bSize > oriSize)) {
 					bSize -= (desSize * (deltaTime / t));
-					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), bSize);
+					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), bSize, window_rate);
 				}
 				else {
-					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), oriSize);
+					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), oriSize, window_rate);
 					bSize = oriSize;
 					tempSize = 0.025f;
 				}
