@@ -130,7 +130,7 @@ public:
                 playerCHandle->isJumping = true;
                 movementCHandle->Velocity += glm::vec3(0.0, 40.0f, 0.0f);
                 movementCHandle->Acceleration = glm::vec3(0.0f, -60.0f, 0.0f);
-            }                                                             
+            }                                                        
 		});
 	}
 };
