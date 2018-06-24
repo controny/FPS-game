@@ -94,16 +94,20 @@ public:
 		
 		Entity* bullet_text = world->create();
 		Entity* hp_text = world->create();
-		Entity* test_post = world->create();  // 以后 post 赋给 gun 的 entity，现在只是测试
+		Entity* test_post = world->create();  // 以后 post 赋给 gun �?entity，现在只是测�?
 		Entity* old_man = world->create();
 
 		Entity* gun = world->create();
 		Entity* monster = world->create();
 
-		Entity* hitParticles = world->create();	// 子弹击中物体的粒子效果
+		Entity* hitParticles = world->create();	// 子弹击中物体的粒子效�?
 		Entity* gunFire = world->create();	// 枪口开火的粒子效果
-		Entity* disappear = world->create();	// 怪物消失的粒子效果
+		Entity* disappear = world->create();	// 怪物消失的粒子效�?
 		Entity* ground = world->create();
+
+		// Initialize static resources of Particle Component
+		Resource::ParticleResource particleResource;
+		particleResource.init(gameRootPath + "/resources/textures/");
 
 		// Load texture resource
 		Resource::TextureResource textureResource;
@@ -176,13 +180,13 @@ public:
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 
-		hitParticles->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 1);
+		hitParticles->assign<ParticleComponent>(particleResource, 1);
 		hitParticles->assign<PositionComponent>(glm::vec3());
 
-		gunFire->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 2);
+		gunFire->assign<ParticleComponent>(particleResource, 2);
 		gunFire->assign<PositionComponent>(glm::vec3());
 
-		disappear->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 3);
+		disappear->assign<ParticleComponent>(particleResource, 3);
 		disappear->assign<PositionComponent>(glm::vec3());
 	}
 };
