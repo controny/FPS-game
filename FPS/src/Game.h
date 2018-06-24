@@ -77,9 +77,6 @@ public:
 		world->registerSystem(new GUISystem());  // Must place after render system
 		world->registerSystem(new TextSystem());
 
-		Resource::ModelResource monster_resource(gameRootPath + "/resources/objects/Etin/Etin.obj");
-		world->registerSystem(new MonsterCreationSystem(monster_resource));
-
 
 		// Singleton components
 		world->createSingletonComponent<LightingInfoSingletonComponent>();
@@ -185,6 +182,9 @@ public:
 			wall->assign<PositionComponent>(glm::vec3(pos_x, height / 2, pos_z));
 			wall->assign<CollisionComponent>(x, height, z);
 		}
+		Resource::ModelResource monster_resource(gameRootPath + "/resources/objects/Etin/Etin.obj");
+		world->registerSystem(new MonsterCreationSystem(monster_resource, square, away));
+
 
 		old_man->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
 		old_man->assign<PositionComponent>(glm::vec3(0.0f, 80.0f, 0.0f));
