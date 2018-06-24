@@ -90,6 +90,7 @@ public:
 		Entity* wall_a = world->create();
 		Entity* wall_b = world->create();
         Entity* wall_c = world->create();
+		Entity* ground = world->create();
 		Entity* player = world->create();
 		
 		Entity* bullet_text = world->create();
@@ -98,12 +99,11 @@ public:
 		Entity* old_man = world->create();
 
 		Entity* gun = world->create();
-		Entity* monster = world->create();
+		//Entity* monster = world->create();
 
 		Entity* hitParticles = world->create();	// 子弹击中物体的粒子效果
 		Entity* gunFire = world->create();	// 枪口开火的粒子效果
 		Entity* disappear = world->create();	// 怪物消失的粒子效果
-		Entity* ground = world->create();
 
 		// Load texture resource
 		Resource::TextureResource textureResource;
