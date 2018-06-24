@@ -76,7 +76,9 @@ public:
 		world->registerSystem(new RenderSystem(gameRootPath + "/src/Shaders/"));
 		world->registerSystem(new GUISystem());  // Must place after render system
 		world->registerSystem(new TextSystem());
-		world->registerSystem(new MonsterCreationSystem());
+
+		Resource::ModelResource monster_resource(gameRootPath + "/resources/objects/Etin/Etin.obj");
+		world->registerSystem(new MonsterCreationSystem(monster_resource));
 
 
 		// Singleton components
@@ -97,8 +99,6 @@ public:
 
 		Entity* gun = world->create();
 		Entity* monster = world->create();
-		Entity* monster1 = world->create();
-		Entity* monster2 = world->create();
 
 		Entity* hitParticles = world->create();	// 子弹击中物体的粒子效果
 		Entity* gunFire = world->create();	// 枪口开火的粒子效果
@@ -112,6 +112,7 @@ public:
 		// Assign the components to entities
 		Resource::CubeResource wall_resource, ground_resource;
         Resource::PBR_CubeResource ground_pbr_resource, wall_pbr_resource;
+
         wall_resource.init(20.0f, 20.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
         wall_a->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
         wall_a->assign<PositionComponent>(glm::vec3(30.0f, 10.0f, 0.0f));
@@ -133,23 +134,14 @@ public:
         wall_c->assign<PositionComponent>(glm::vec3(60.0f, 10.0f, 45.0f));
         wall_c->assign<CollisionComponent>(20.0f, 10.0f, 20.0f);
 
-		monster->assign<ObjectComponent>(gameRootPath + "/resources/objects/Etin/Etin.obj");
+		/*monster->assign<ObjectComponent>(monster_resource.textures_loaded, monster_resource.meshes);
 		monster->assign<PositionComponent>(glm::vec3(-8.0f, 0.0f, 0.0f));
 		monster->assign<CollisionComponent>(-2.0f, 2.0f, 0.0f, 4.0f, -1.5f, 1.5f);
-		monster->assign<HPComponent>();
-
-		monster1->assign<ObjectComponent>(gameRootPath + "/resources/objects/Etin/Etin.obj");
-		monster1->assign<PositionComponent>(glm::vec3(-16.0f, 0.0f, 0.0f));
-		monster1->assign<CollisionComponent>(-2.0f, 2.0f, 0.0f, 4.0f, -1.5f, 1.5f);
-		monster1->assign<HPComponent>();
-
-		monster2->assign<ObjectComponent>(gameRootPath + "/resources/objects/Etin/Etin.obj");
-		monster2->assign<PositionComponent>(glm::vec3(-24.0f, 0.0f, 0.0f));
-		monster2->assign<CollisionComponent>(-2.0f, 2.0f, 0.0f, 4.0f, -1.5f, 1.5f);
-		monster2->assign<HPComponent>();
+		monster->assign<MovementComponent>(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		monster->assign<HPComponent>();*/
 
 		old_man->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
-		old_man->assign<PositionComponent>(glm::vec3(50.0f, 0.0f, -10.0f));  // 渲染的时候还没有根据这个 pos 位移。
+		old_man->assign<PositionComponent>(glm::vec3(50.0f, 0.0f, -10.0f));
 		old_man->assign<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f, 0.0f);
 		old_man->assign<HPComponent>();
 

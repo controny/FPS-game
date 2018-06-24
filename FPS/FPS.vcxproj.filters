@@ -74,5 +74,6 @@
     <None Include="src\Shaders\skinning.vs" />
     <None Include="src\Shaders\depth.fs" />
     <None Include="src\Shaders\depth.vs" />
+    <None Include="src\Shaders\pbr.fs" />
   </ItemGroup>
 </Project>

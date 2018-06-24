@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include <ECS.h>
+#include <Resource.h>
 #include <Components/CollisionComponent.h>
 #include <Components/PositionComponent.h>
 #include <Components/ObjectComponent.h>
@@ -18,10 +19,14 @@ class MonsterCreationSystem : public EntitySystem,
 	public EventSubscriber<KeyPressEvent> {
 public:
 
-	const float margin_time = 100.0f;
+	const float margin_time = 3.0f;
 	float left_time;
+	Resource::ModelResource resource;
 
-	MonsterCreationSystem() {
+	MonsterCreationSystem() {}
+
+	MonsterCreationSystem(Resource::ModelResource monster_resource) {
+		resource = monster_resource;
 		init();
 	}
 
@@ -44,7 +49,7 @@ public:
 	}
 
 	virtual void tick(class World* world, float deltaTime) override {
-		/*left_time -= deltaTime;
+		left_time -= deltaTime;
 		if (left_time < 0) {
 			auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 
@@ -53,12 +58,13 @@ public:
 			float x = (rand() - 1) / double(RAND_MAX) * 100;
 			float z = (rand() - 1) / double(RAND_MAX) * 100;
 
-			monster->assign<ObjectComponent>(windowCHandle->gameRootPath + "/resources/objects/Etin/Etin.obj");
+			monster->assign<ObjectComponent>(resource.textures_loaded, resource.meshes);
 			monster->assign<PositionComponent>(glm::vec3(x, 0.0f, z));
 			monster->assign<CollisionComponent>(-2.0f, 2.0f, 0.0f, 4.0f, -1.5f, 1.5f);
+			monster->assign<MovementComponent>(glm::normalize(glm::vec3(-x, 0.0f, -z)) * 3.0f, glm::vec3(0.0f, 0.0f, 0.0f));
 			monster->assign<HPComponent>();
 
 			left_time = margin_time;
-		}*/
+		}
 	}
 };
