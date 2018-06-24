@@ -160,7 +160,7 @@ public:
 
 					world->emit<TextChangeEvent>({ "bullet_info", osstream.str() });
 				}
-			}
+			}                                                        
 		});
 
 
