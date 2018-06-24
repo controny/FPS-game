@@ -35,6 +35,7 @@ struct ParticleComponent {
 	// main direction of explosion
 	glm::vec3 maindir;
 	float size;
+	bool randomSize;
 
 	GLfloat* g_particule_position_size_data;
 	GLubyte* g_particule_color_data;
@@ -54,6 +55,7 @@ struct ParticleComponent {
 		: resource(_resource), id(_id), maxParticles(_maxParticles), life(_life), newParticlesPerMS(_newParticlesPerMS), spread(_spread),
 		maindir(_maindir), color_r(_color_r), color_g(_color_g), color_b(_color_b), color_a(_color_a)
 	{
+		randomSize = true;
 		container = new Particle[maxParticles];
 		g_particule_position_size_data = new GLfloat[maxParticles * 4];
 		g_particule_color_data = new GLubyte[maxParticles * 4];

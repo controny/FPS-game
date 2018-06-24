@@ -137,8 +137,9 @@ public:
 			particleCHandle->texture = particleCHandle->resource.gunFireTexture;
 			particleCHandle->producedParticles = 0;
 			particleCHandle->maxParticles = 1;
+			particleCHandle->MAX_TOTAL_NUM = 1000;
 			particleCHandle->life = 0.1f;
-			particleCHandle->newParticlesPerMS = 100;
+			particleCHandle->newParticlesPerMS = 50;
 			particleCHandle->spread = 0.0f;
 			particleCHandle->maindir = dir * 5.0f;
 			particleCHandle->color_r = 244;
@@ -146,6 +147,7 @@ public:
 			particleCHandle->color_b = 244;
 			particleCHandle->color_a = 224;
 			particleCHandle->size = 0.1;
+			particleCHandle->randomSize = false;
 		});
 	}
 
@@ -229,7 +231,10 @@ private:
 			particleCHandle->container[particleIndex].b = (rand() % (2*maxColorBiase) - maxColorBiase) +  particleCHandle->color_b;
 			particleCHandle->container[particleIndex].a = (rand() % (2*maxColorBiase) - maxColorBiase) +  particleCHandle->color_a;
 
-			particleCHandle->container[particleIndex].size = (rand() % 500) / 2000.0f + particleCHandle->size;
+			if (particleCHandle->randomSize)
+				particleCHandle->container[particleIndex].size = (rand() % 500) / 2000.0f + particleCHandle->size;
+			else
+				particleCHandle->container[particleIndex].size = particleCHandle->size;
 
 		}
 	}
