@@ -165,7 +165,6 @@ public:
 
 					world->emit<TextChangeEvent>({ "bullet_info", osstream.str() });
 				}
-				cout << transformCHandle->relative_translate.y << endl;
 			}                                                        
 		});
 
