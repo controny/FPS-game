@@ -129,7 +129,7 @@ public:
             textureResource.wall_roughness,
             textureResource.wall_ao,
             textureResource.wall_height);
-        wall_c->assign<ObjectComponent>(wall_pbr_resource.vertices, wall_pbr_resource.indices, wall_pbr_resource.textures, true);
+        wall_c->assign<ObjectComponent>(wall_pbr_resource.vertices, wall_pbr_resource.indices, wall_pbr_resource.textures, "wall", true);
         wall_c->assign<PositionComponent>(glm::vec3(60.0f, 10.0f, 45.0f));
         wall_c->assign<CollisionComponent>(20.0f, 10.0f, 20.0f);
 
@@ -165,13 +165,13 @@ public:
             textureResource.ground_roughness,
             textureResource.ground_ao,
             textureResource.ground_height);
-        ground->assign<ObjectComponent>(ground_pbr_resource.vertices, ground_pbr_resource.indices, ground_pbr_resource.textures, true);
+        ground->assign<ObjectComponent>(ground_pbr_resource.vertices, ground_pbr_resource.indices, ground_pbr_resource.textures, "ground", true);
         ground->assign<PositionComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
         ground->assign<CollisionComponent>(500.0f, 500.0f, 1.0f);
 
 		player->assign<ObjectComponent>(gameRootPath + "/resources/objects/gun/Ak-74.obj", "player");
-		player->assign<PositionComponent>(glm::vec3(5.0f, 3.0f, 0.0f));
-		player->assign<MovementComponent>(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // 碰撞检测需要，要给个小一点向下的初速度；避免一开始检测不到碰撞掉下去
+		player->assign<PositionComponent>(glm::vec3(5.0f, 0.6f, 0.0f));
+		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // 碰撞检测需要，要给个小一点向下的初速度；避免一开始检测不到碰撞掉下去
 		player->assign<PlayerComponent>();
 		player->assign<TransformComponent>(glm::vec3(-0.63f, 4.52f, 2.0f), glm::vec3(0.022f, 0.022f,0.022f), 0.0f, 180.0f);
 		player->assign<CameraComponent>(glm::vec3(0.0f, 5.0f, 0.0f));
