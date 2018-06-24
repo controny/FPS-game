@@ -90,19 +90,21 @@ public:
 		Entity* wall_a = world->create();
 		Entity* wall_b = world->create();
         Entity* wall_c = world->create();
+		Entity* ground = world->create();
 		Entity* player = world->create();
 		
 		Entity* bullet_text = world->create();
 		Entity* hp_text = world->create();
-		Entity* test_post = world->create();  // 以后 post 赋给 gun �?entity，现在只是测�?
+		Entity* test_post = world->create();  // ä»¥åŽ post èµ‹ç»™ gun çš?entityï¼ŒçŽ°åœ¨åªæ˜¯æµ‹è¯?
 		Entity* old_man = world->create();
 
 		Entity* gun = world->create();
-		Entity* monster = world->create();
+		//Entity* monster = world->create();
 
-		Entity* hitParticles = world->create();	// 子弹击中物体的粒子效�?
-		Entity* gunFire = world->create();	// 枪口开火的粒子效果
-		Entity* disappear = world->create();	// 怪物消失的粒子效�?
+		Entity* hitParticles = world->create();	// å­å¼¹å‡»ä¸­ç‰©ä½“çš„ç²’å­æ•ˆæž?
+		Entity* gunFire = world->create();	// æžªå£å¼€ç«çš„ç²’å­æ•ˆæžœ
+
+		Entity* disappear = world->create();	// æ€ªç‰©æ¶ˆå¤±çš„ç²’å­æ•ˆæž?
 		Entity* ground = world->create();
 
 		// Initialize static resources of Particle Component
@@ -168,7 +170,7 @@ public:
 		player->assign<ObjectComponent>(gameRootPath + "/resources/objects/gun/Ak-74.obj", "player");
 
 		player->assign<PositionComponent>(glm::vec3(5.0f, 0.6f, 0.0f));
-		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // 碰撞检测需要，要给个小一点向下的初速度；避免一开始检测不到碰撞掉下去
+		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // ç¢°æ’žæ£€æµ‹éœ€è¦ï¼Œè¦ç»™ä¸ªå°ä¸€ç‚¹å‘ä¸‹çš„åˆé€Ÿåº¦ï¼›é¿å…ä¸€å¼€å§‹æ£€æµ‹ä¸åˆ°ç¢°æ’žæŽ‰ä¸‹åŽ»
 
 		player->assign<PlayerComponent>();
 		player->assign<TransformComponent>(glm::vec3(-0.63f, 4.52f, 2.0f), glm::vec3(0.022f, 0.022f,0.022f), 0.0f, 180.0f);

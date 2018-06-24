@@ -62,41 +62,6 @@ public:
     }
 
     // 接受开火事件后，进行检测
-    virtual void receive(class World* world, const FireEvent& event) override
-    {
-        world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
-            auto positionCHandle = ent->get<PositionComponent>();
-            glm::vec3 origin = ent->get<CameraComponent>()->Position;
-            glm::vec3 direction = positionCHandle->Front;
-            //printf("origin: (%f, %f, %f)\n", origin.x, origin.y, origin.z);
-            //printf("direction: (%f, %f, %f)\n", direction.x, direction.y, direction.z);
-            Ray ray(origin, direction);
-            bool shooted = false;
-            world->each<CollisionComponent>(
-                [&](Entity* other_ent,
-                    ComponentHandle<CollisionComponent> collisionCHandle) -> void {
-                if (ent->getEntityId() == other_ent->getEntityId() || shooted)
-                    return;
-                // check collision between ray and AABB body
-                glm::vec2 t = checkRayBodyCollision(ray, getCurrentBody(other_ent));
-                if (t[0] < t[1] && t[0] > 0.0f) {
-                    glm::vec3 hitPos = ray.getPoint(t[0]);
-                    shooted = true;
-
-#ifdef DEBUG_CHECK_RAY_COLLISION
-                    printf("----------------------\n");
-                    printf("ray hit body(entity id: %d)\n", other_ent->getEntityId());
-                    printf("hit position: (%f, %f, %f)\n", hitPos.x, hitPos.y, hitPos.z);
-                    printf("----------------------\n");
-#endif // DEBUG_CHECK_RAY_COLLISION
-
-                    world->emit<HitEvent>({ other_ent, hitPos, direction });
-                }
-            });
-        });
-    }
-
-//	// 接受开火事件后，进行检测
 //    virtual void receive(class World* world, const FireEvent& event) override
 //    {
 //        world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
@@ -106,61 +71,96 @@ public:
 //            //printf("origin: (%f, %f, %f)\n", origin.x, origin.y, origin.z);
 //            //printf("direction: (%f, %f, %f)\n", direction.x, direction.y, direction.z);
 //            Ray ray(origin, direction);
-//            float min_distance = FLT_MAX;
-//            Entity* hitEnt;
-//            glm::vec3 hitPos;
-//            Entity* groundEnt;
-//            glm::vec3 groundHitPos;
-//            bool otherHit = true;
-//            bool groundHit = false;
-//
+//            bool shooted = false;
 //            world->each<CollisionComponent>(
 //                [&](Entity* other_ent,
 //                    ComponentHandle<CollisionComponent> collisionCHandle) -> void {
-//                string otherEntId = other_ent->get<ObjectComponent>()->id;
-//                if (ent->getEntityId() == other_ent->getEntityId())
+//                if (ent->getEntityId() == other_ent->getEntityId() || shooted)
 //                    return;
 //                // check collision between ray and AABB body
 //                glm::vec2 t = checkRayBodyCollision(ray, getCurrentBody(other_ent));
-//                // if hit
 //                if (t[0] < t[1] && t[0] > 0.0f) {
-//                    if (other_ent->get<ObjectComponent>()->id == "ground") {
-//                        groundHit = true;
-//                        groundHitPos = ray.getPoint(t[0]);
-//                        groundEnt = other_ent;
-//                    }
-//                    else {
-//                        glm::vec3 other_ent_position = other_ent->get<PositionComponent>()->Position;
-//                        float cur_distance = distanceBetweenTwoPositions(origin, other_ent_position);
-//                        if (cur_distance < min_distance) {
-//                            otherHit = true;
-//                            min_distance = cur_distance;
-//                            glm::vec3 hitPos = ray.getPoint(t[0]);
-//                            hitEnt = other_ent;
-//                        }
-//                    }
-//                }
-//            });
-//
-//            if (otherHit == true) {
-//                world->emit<HitEvent>({ hitEnt, hitPos, direction });
-//            }
-//            else if (otherHit == false && groundHit == true) {
-//                hitEnt = groundEnt;
-//                hitPos = groundHitPos;
-//                world->emit<HitEvent>({ hitEnt, hitPos, direction });
-//            } 
-//
+//                    glm::vec3 hitPos = ray.getPoint(t[0]);
+//                    shooted = true;
 //
 //#ifdef DEBUG_CHECK_RAY_COLLISION
 //                    printf("----------------------\n");
-//                    printf("ray hit body(entity id: %d)\n", hitEnt->getEntityId());
+//                    printf("ray hit body(entity id: %d)\n", other_ent->getEntityId());
 //                    printf("hit position: (%f, %f, %f)\n", hitPos.x, hitPos.y, hitPos.z);
 //                    printf("----------------------\n");
 //#endif // DEBUG_CHECK_RAY_COLLISION
 //
+//                    world->emit<HitEvent>({ other_ent, hitPos, direction });
+//                }
+//            });
 //        });
 //    }
+
+	// 接受开火事件后，进行检测
+    virtual void receive(class World* world, const FireEvent& event) override
+    {
+        world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+            auto positionCHandle = ent->get<PositionComponent>();
+            glm::vec3 origin = ent->get<CameraComponent>()->Position;
+            glm::vec3 direction = positionCHandle->Front;
+            //printf("origin: (%f, %f, %f)\n", origin.x, origin.y, origin.z);
+            //printf("direction: (%f, %f, %f)\n", direction.x, direction.y, direction.z);
+            Ray ray(origin, direction);
+            float min_distance = FLT_MAX;
+            Entity* hitEnt;
+            glm::vec3 hitPos;
+            Entity* groundEnt;
+            glm::vec3 groundHitPos;
+            bool otherHit = false;
+            bool groundHit = false;
+
+            world->each<CollisionComponent>(
+                [&](Entity* other_ent,
+                    ComponentHandle<CollisionComponent> collisionCHandle) -> void {
+                string otherEntId = other_ent->get<ObjectComponent>()->id;
+                if (ent->getEntityId() == other_ent->getEntityId())
+                    return;
+                // check collision between ray and AABB body
+                glm::vec2 t = checkRayBodyCollision(ray, getCurrentBody(other_ent));
+                // if hit
+                if (t[0] < t[1] && t[0] > 0.0f) {
+                    if (other_ent->get<ObjectComponent>()->id == "ground") {
+                        groundHit = true;
+                        groundHitPos = ray.getPoint(t[0]);
+                        groundEnt = other_ent;
+                    }
+                    else {
+                        glm::vec3 other_ent_position = other_ent->get<PositionComponent>()->Position;
+                        float cur_distance = distanceBetweenTwoPositions(origin, other_ent_position);
+                        if (cur_distance < min_distance) {
+                            otherHit = true;
+                            min_distance = cur_distance;
+                            hitPos = ray.getPoint(t[0]);
+                            hitEnt = other_ent;
+                        }
+                    }
+                }
+            });
+
+            if (otherHit == true) {
+                world->emit<HitEvent>({ hitEnt, hitPos, direction });
+            }
+            else if (otherHit == false && groundHit == true) {
+                hitEnt = groundEnt;
+                hitPos = groundHitPos;
+                world->emit<HitEvent>({ hitEnt, hitPos, direction });
+            } 
+
+
+#ifdef DEBUG_CHECK_RAY_COLLISION
+                    printf("----------------------\n");
+                    printf("ray hit body(entity id: %d)\n", hitEnt->getEntityId());
+                    printf("hit position: (%f, %f, %f)\n", hitPos.x, hitPos.y, hitPos.z);
+                    printf("----------------------\n");
+#endif // DEBUG_CHECK_RAY_COLLISION
+
+        });
+    }
 
     float distanceBetweenTwoPositions(glm::vec3 pos1, glm::vec3 pos2) {
         return pow(pos1.x - pos2.x, 2) + pow(pos1.y - pos2.y, 2) + pow(pos1.z - pos2.z, 2);

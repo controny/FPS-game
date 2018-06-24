@@ -19,7 +19,7 @@ class MonsterCreationSystem : public EntitySystem,
 	public EventSubscriber<KeyPressEvent> {
 public:
 
-	const float margin_time = 3.0f;
+	const float margin_time = 10.0f;
 	float left_time;
 	Resource::ModelResource resource;
 
@@ -60,7 +60,7 @@ public:
 
 			monster->assign<ObjectComponent>(resource.textures_loaded, resource.meshes);
 			monster->assign<PositionComponent>(glm::vec3(x, 0.0f, z));
-			monster->assign<CollisionComponent>(-2.0f, 2.0f, 0.0f, 4.0f, -1.5f, 1.5f);
+			monster->assign<CollisionComponent>(-2.0f, 2.0f, 0.0f, 7.0f, -1.5f, 1.5f);
 			monster->assign<MovementComponent>(glm::normalize(glm::vec3(-x, 0.0f, -z)) * 3.0f, glm::vec3(0.0f, 0.0f, 0.0f));
 			monster->assign<HPComponent>();
 
