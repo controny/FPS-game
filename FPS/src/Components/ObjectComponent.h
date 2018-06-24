@@ -111,18 +111,21 @@ struct ObjectComponent {
 	vector<Mesh> meshes;
 	string directory;
 	bool gammaCorrection;
+    bool pbr;
 
 	//只有一个MESH的情况，把它存在meshes向量中
-	ObjectComponent(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures) {
+	ObjectComponent(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, bool _pbr = false) {
 		meshes.push_back(Mesh(vertices, indices, textures));
 		textures_loaded = textures;
+        pbr = _pbr;
 	}
 	 
 	//加载模型的情况
-	ObjectComponent(string const &path, string _id="", bool gamma = false) : gammaCorrection(gamma)
+	ObjectComponent(string const &path, string _id="", bool _pbr = false, bool gamma = false) : gammaCorrection(gamma)
 	{
 		loadModel(path);
 		id = _id;
+        pbr = _pbr;
 	}
 
 	void loadModel(string const &path)
