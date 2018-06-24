@@ -193,6 +193,7 @@
     <None Include="src\Shaders\object.vs" />
     <None Include="src\Shaders\particle.fs" />
     <None Include="src\Shaders\particle.vs" />
+    <None Include="src\Shaders\pbr.fs" />
     <None Include="src\Shaders\post.fs" />
     <None Include="src\Shaders\post.vs" />
     <None Include="src\Shaders\skinning.vs" />

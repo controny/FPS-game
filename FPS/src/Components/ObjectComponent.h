@@ -114,13 +114,19 @@ struct ObjectComponent {
     bool pbr;
 
 	//只有一个MESH的情况，把它存在meshes向量中
-	ObjectComponent(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, bool _pbr = false) {
+	ObjectComponent(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, string _id = "", bool _pbr = false) {
 		meshes.push_back(Mesh(vertices, indices, textures));
 		textures_loaded = textures;
+        id = _id;
         pbr = _pbr;
 	}
 	 
 	//加载模型的情况
+	ObjectComponent(vector<Texture> _textures, vector<Mesh> _meshes) {
+		textures_loaded = _textures;
+		meshes = _meshes;
+	}
+
 	ObjectComponent(string const &path, string _id="", bool _pbr = false, bool gamma = false) : gammaCorrection(gamma)
 	{
 		loadModel(path);
