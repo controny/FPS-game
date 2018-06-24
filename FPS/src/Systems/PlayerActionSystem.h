@@ -4,6 +4,7 @@
 #include <ECS.h>
 #include <Components/MovementComponent.h>
 #include <Components/PlayerComponent.h>
+#include <Components/TransformComponent.h>
 #include <Components/ObjectComponent.h>
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Components/LightingInfoSingletonComponent.h>
@@ -21,7 +22,7 @@ class PlayerActionSystem : public EntitySystem,
 public:
 
 	float speed_multiples;
-	bool forward, backward, left, right, speed_up, jump;
+	bool forward, backward, left, right, speed_up, jump, load_bullet;
 
 	virtual void configure(class World* world) override
 	{
@@ -57,13 +58,6 @@ public:
 					
 					
 					// 进行换弹动作；动作完成之前 canshot 都为 false；完成之后才复原子弹数量和设 canshot 为 true；
-					playerCHandle->can_shot = true;
-					playerCHandle->cur_bullet = playerCHandle->bullet_capacity;
-					string tmp;
-					ostringstream osstream;
-					osstream << playerCHandle->cur_bullet << " / " << playerCHandle->bullet_capacity;
-
-					world->emit<TextChangeEvent>({ "bullet_info", osstream.str() });
 				}
 			});
 		}
@@ -90,6 +84,12 @@ public:
                 this->jump = !playerCHandle->isJumping;
             });
         }
+
+		if (event.key == R) {
+			world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+				this->load_bullet = !playerCHandle->can_shot;
+			});
+		}
 	}
 
 	virtual void receive(class World* world, const KeyReleaseEvent& event) override
@@ -130,7 +130,39 @@ public:
                 playerCHandle->isJumping = true;
                 movementCHandle->Velocity += glm::vec3(0.0, 40.0f, 0.0f);
                 movementCHandle->Acceleration = glm::vec3(0.0f, -60.0f, 0.0f);
-            }                                                        
+            }
+
+			//换弹动作
+			ComponentHandle<TransformComponent> transformCHandle = ent->get<TransformComponent>();
+			if (load_bullet) {
+				playerCHandle->can_shot = false;
+				static float load_time_need = 1, cur_load_time = 0, load_bullet_shift=1.0f;
+				float relative = cur_load_time / load_time_need;
+				cur_load_time += deltaTime;
+				if (relative < 0.5) {
+					transformCHandle->relative_translate.y = -relative * load_bullet_shift;
+					transformCHandle->relative_translate.z = -relative * load_bullet_shift;
+				}
+				else if (relative < 1 && relative > 0.5) {
+					transformCHandle->relative_translate.y = -(load_bullet_shift/2 - (relative-0.5) * load_bullet_shift);
+					transformCHandle->relative_translate.z = -(load_bullet_shift / 2 - (relative - 0.5) * load_bullet_shift);
+				}
+				else if (relative > 1) {
+					transformCHandle->relative_translate.y = 0;
+					transformCHandle->relative_translate.z = 0;
+					cur_load_time = 0;
+					playerCHandle->can_shot = true;
+					load_bullet = false;
+					playerCHandle->cur_bullet = playerCHandle->bullet_capacity;
+					string tmp;
+					ostringstream osstream;
+					osstream << playerCHandle->cur_bullet << " / " << playerCHandle->bullet_capacity;
+
+					world->emit<TextChangeEvent>({ "bullet_info", osstream.str() });
+				}
+			}                                                        
 		});
+
+
 	}
 };
