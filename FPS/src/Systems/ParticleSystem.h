@@ -5,10 +5,11 @@
 #include <Resource.h>
 #include <Components/ParticleComponent.h>
 #include <Events/KeyEvents.h>
+#include <Events/FireEvent.h>
 
 using namespace ECS;
 
-class ParticleSystem : public EntitySystem, public EventSubscriber<MousePressEvent>
+class ParticleSystem : public EntitySystem, public EventSubscriber<FireEvent>
 {
 public:
 	ParticleSystem() {
@@ -19,7 +20,7 @@ public:
 
     virtual void configure(class World* world) override
     {
-        world->subscribe<MousePressEvent>(this);
+        world->subscribe<FireEvent>(this);
     }
 
     virtual void unconfigure(class World* world) override
@@ -28,19 +29,16 @@ public:
     }
 
 	// 点击鼠标开枪时喷射火焰
-	virtual void receive(class World* world, const MousePressEvent& event) override {
-		if (event.key == MOUSE_LEFT)
-		{
-			// 获取player的位置和朝向
-			glm::vec3 pos, front, right;
-			world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
-				pos = ent->get<CameraComponent>()->Position;
-				front = ent->get<PositionComponent>()->Front;
-				right = ent->get<PositionComponent>()->Right;
-			});
-			pos += right * 0.07f;
-			ParticleSystem::simulateGunFire(world, pos, front);
-		}
+	virtual void receive(class World* world, const FireEvent& event) override {
+		// 获取player的位置和朝向
+		glm::vec3 pos, front, right;
+		world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+			pos = ent->get<CameraComponent>()->Position;
+			front = ent->get<PositionComponent>()->Front;
+			right = ent->get<PositionComponent>()->Right;
+		});
+		pos += right * 0.07f;
+		ParticleSystem::simulateGunFire(world, pos, front);
 	}
 
 	virtual void tick(class World* world, float deltaTime) override {

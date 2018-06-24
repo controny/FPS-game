@@ -321,7 +321,7 @@ struct Resource {
 		std::vector<unsigned int> indices;
 		std::vector<Texture> textures;
 
-		void init(float length, float width, float height,
+		void init(float x, float y, float z,
 			Texture diffuse_texture, Texture specular_texture) {
 
 			vertices.clear();
@@ -373,9 +373,9 @@ struct Resource {
 			};
 
 			for (int i = 0; i < 36 * 3; ++i) {
-				if ((i + 1) % 3 == 1) coords[i] = coords[i] * length;
-				else if ((i + 1) % 3 == 2) coords[i] = coords[i] * height;
-				else coords[i] = coords[i] * width;
+				if ((i + 1) % 3 == 1) coords[i] = coords[i] * x;
+				else if ((i + 1) % 3 == 2) coords[i] = coords[i] * y;
+				else coords[i] = coords[i] * z;
 			}
 
 			float normals[] = {
@@ -484,7 +484,7 @@ struct Resource {
         std::vector<unsigned int> indices;
         std::vector<Texture> textures;
 
-        void init(float length, float width, float height, float tex_coords_value,
+        void init(float x, float y, float z, float tex_coords_value,
             Texture albedo_texture,
             Texture normal_texture,
             Texture metallic_texture,
@@ -541,9 +541,9 @@ struct Resource {
             };
 
             for (int i = 0; i < 36 * 3; ++i) {
-                if ((i + 1) % 3 == 1) coords[i] = coords[i] * length;
-                else if ((i + 1) % 3 == 2) coords[i] = coords[i] * height;
-                else coords[i] = coords[i] * width;
+                if ((i + 1) % 3 == 1) coords[i] = coords[i] * x;
+                else if ((i + 1) % 3 == 2) coords[i] = coords[i] * y;
+                else coords[i] = coords[i] * z;
             }
 
             float normals[] = {

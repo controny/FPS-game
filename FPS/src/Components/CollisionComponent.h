@@ -58,13 +58,13 @@ struct CollisionComponent {
     float original_depth;
     float original_height;
 
-    CollisionComponent(float width, float depth, float height) {
-        original_width = width;
-        original_depth = depth;
-        original_height = height;
-        float halfExtents_X = width / 2;
-        float halfExtents_Y = height / 2;
-        float halfExtents_Z = depth / 2;
+    CollisionComponent(float x, float y, float z) {
+        original_width = x;
+        original_depth = z;
+        original_height = y;
+        float halfExtents_X = x / 2;
+        float halfExtents_Y = y / 2;
+        float halfExtents_Z = z / 2;
         body.x_min = -halfExtents_X;
         body.x_max =  halfExtents_X;
         body.y_min = -halfExtents_Y;
