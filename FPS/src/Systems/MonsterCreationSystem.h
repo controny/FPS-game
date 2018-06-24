@@ -21,13 +21,16 @@ public:
 
 	const float margin_time = 3.0f;
 	float left_time;
+	float square, away;
 
 	Resource::ModelResource resource;
 
 	MonsterCreationSystem() {}
 
-	MonsterCreationSystem(Resource::ModelResource monster_resource) {
+	MonsterCreationSystem(Resource::ModelResource monster_resource, float _square, float _away) {
 		resource = monster_resource;
+		square = _square;
+		away = _away;
 		init();
 	}
 
@@ -56,14 +59,45 @@ public:
 
 			Entity* monster = world->create();
 
-			float x = (rand() - 1) / double(RAND_MAX) * 100;
-			float z = (rand() - 1) / double(RAND_MAX) * 100;
+			float area = rand() / double(RAND_MAX) * 4;
+			float pos = (rand() - 1) / double(RAND_MAX) * 2 * (square - 20);
+			
+			float x, z;
+			if (area > 0 && area < 1) {
+				x = away; z = pos;
+			}
+			if (area > 1 && area < 2) {
+				x = -away; z = pos;
+			}
+			if (area > 2 && area < 3) {
+				x = pos; z = away;
+			}
+			if (area > 3 && area < 4) {
+				x = pos; z = -away;
+			}
+
+			float rotate_y;
+			glm::vec3 normal = glm::normalize(glm::vec3(x, 0.0f, z));
+			if (normal.x > 0 && normal.z > 0) {
+				rotate_y = -(1.57 + acos(normal.x));
+			}
+			if (normal.x > 0 && normal.z < 0) {
+				rotate_y = -asin(normal.x);
+			}
+			if (normal.x < 0 && normal.z > 0) {
+				rotate_y = 1.57 + asin(normal.z);
+			}
+			if (normal.x < 0 && normal.z < 0) {
+				rotate_y = acos(-normal.z);
+			}
+			cout << normal.x << ' ' << normal.z << endl;
+			cout << rotate_y << endl;
 
 			monster->assign<ObjectComponent>(resource.textures_loaded, resource.meshes, "monster");
 			monster->assign<PositionComponent>(glm::vec3(x, 0.0f, z));
-
-			monster->assign<CollisionComponent>(-2.0f, 2.0f, 0.0f, 4.0f, -1.5f, 1.5f);
-			monster->assign<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 2.0f, 2.0f), 0.0f, 0.0f);
+			
+			monster->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 14.0f, -3.0f, 3.0f);
+			monster->assign<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 2.0f, 2.0f), 0.0f, rotate_y);
 
 			monster->assign<MovementComponent>(glm::normalize(glm::vec3(-x, 0.0f, -z)) * 3.0f, glm::vec3(0.0f, 0.0f, 0.0f));
 			monster->assign<HPComponent>();

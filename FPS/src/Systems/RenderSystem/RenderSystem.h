@@ -191,7 +191,7 @@ private:
 	}
 
 	void renderMeshes(class World* world, float deltaTime, Shader shader) {
-
+		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
 
 		// 渲染，就是之前 Mesh 类的 Draw()
@@ -245,7 +245,8 @@ private:
 
 				auto transformCHandle = ent->get<TransformComponent>();
 				if (transformCHandle.isValid()) {  // 如果有 transform component，那么根据里面的信息继续设置 model
-					model = glm::rotate(model, transformCHandle->rotate_y, glm::vec3(0.0f, 1.0f, 0.0f));			
+					
+					model = glm::rotate(model, transformCHandle->rotate_y, glm::vec3(0.0f, 1.0f, 0.0f));
 					model = glm::translate(model, transformCHandle->translate + transformCHandle->relative_translate);
 					
 					model = glm::rotate(model, transformCHandle->rotate_x, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -253,6 +254,7 @@ private:
 					if (objectCHandle->id == "player") {
 						model = glm::rotate(model, 3.14f, glm::vec3(0.0f, 1.0f, 0.0f));  //枪模型本身反过来了
 					}
+					
 				}
 				
 
