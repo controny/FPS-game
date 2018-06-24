@@ -43,7 +43,10 @@ public:
 			world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
 				if (playerCHandle->cur_bullet > 0 && playerCHandle->can_shot) {
 					playerCHandle->cur_bullet--;
-
+					if (playerCHandle->cur_bullet == 0) {
+						playerCHandle->can_shot = false;
+						this->load_bullet = true;
+					}
 					string tmp;
 					ostringstream osstream;
 					if (playerCHandle->cur_bullet < 10)
@@ -55,7 +58,7 @@ public:
 				}
 				else {
 					playerCHandle->can_shot = false;
-					
+					this->load_bullet = true;
 					
 					// 进行换弹动作；动作完成之前 canshot 都为 false；完成之后才复原子弹数量和设 canshot 为 true；
 				}
@@ -87,7 +90,8 @@ public:
 
 		if (event.key == R) {
 			world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
-				this->load_bullet = !playerCHandle->can_shot;
+				//this->load_bullet = !playerCHandle->can_shot;
+				this->load_bullet = true;
 			});
 		}
 	}
