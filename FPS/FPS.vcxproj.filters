@@ -52,12 +52,10 @@
     <ClInclude Include="src\Events\FireEvent.h" />
     <ClInclude Include="src\Components\HPComponent.h" />
     <ClInclude Include="dependencies\include\loadpng\lodepng.h" />
-<<<<<<< HEAD
     <ClInclude Include="src\Components\TransformComponent.h" />
-=======
     <ClInclude Include="src\Systems\TextSystem.h" />
     <ClInclude Include="src\Events\TextChangeEvent.h" />
->>>>>>> 13dbd48faf2f8a4697e375de5d741b0a7dab8585
+    <ClInclude Include="src\Systems\MonsterCreationSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />

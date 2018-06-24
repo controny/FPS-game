@@ -35,6 +35,7 @@
 #include <Systems/CollisionSystem.h>
 #include <Systems/HitProcessingSystem.h>
 #include <Systems/TextSystem.h>
+#include <Systems/MonsterCreationSystem.h>
 
 
 class Game {
@@ -54,8 +55,7 @@ public:
 
 		char exeFullPath[MAX_PATH]; // Full path
 		GetModuleFileName(NULL, exeFullPath, MAX_PATH);
-		PathRemoveFileSpec(exeFullPath);
-		PathRemoveFileSpec(exeFullPath);  // remove bin/FPS.exe
+		PathRemoveFileSpec(exeFullPath); PathRemoveFileSpec(exeFullPath);  // remove bin/FPS.exe
 		gameRootPath = (string)exeFullPath;
 		std::replace(gameRootPath.begin(), gameRootPath.end(), '\\', '/');
 
@@ -67,7 +67,6 @@ public:
 		// Systems
 		world->registerSystem(new KeyPressingSystem());
 		world->registerSystem(new MouseMovingSystem());
-		//world->registerSystem(new CameraMovingSystem(cameraPos));
 		world->registerSystem(new RecoilSystem());
 		world->registerSystem(new PlayerActionSystem());
         world->registerSystem(new MovementSystem());
@@ -77,11 +76,12 @@ public:
 		world->registerSystem(new RenderSystem(gameRootPath + "/src/Shaders/"));
 		world->registerSystem(new GUISystem());  // Must place after render system
 		world->registerSystem(new TextSystem());
+		world->registerSystem(new MonsterCreationSystem());
 
 
 		// Singleton components
 		world->createSingletonComponent<LightingInfoSingletonComponent>();
-		world->createSingletonComponent<WindowInfoSingletonComponent>(window);
+		world->createSingletonComponent<WindowInfoSingletonComponent>(window, gameRootPath);
 		world->createSingletonComponent<SkyboxInfoSingletonComponent>(skybox_resource.vertices, skybox_resource.indices, skybox_resource.textures);
 
 		// Entities
@@ -92,7 +92,7 @@ public:
 		Entity* bullet_text = world->create();
 		Entity* hp_text = world->create();
 		Entity* test_post = world->create();  // 以后 post 赋给 gun 的 entity，现在只是测试
-		Entity* skeleton_model = world->create();
+		Entity* old_man = world->create();
 
 		Entity* gun = world->create();
 		Entity* monster = world->create();
@@ -135,10 +135,10 @@ public:
 		monster2->assign<CollisionComponent>(-2.0f, 2.0f, 0.0f, 4.0f, -1.5f, 1.5f);
 		monster2->assign<HPComponent>();
 
-		skeleton_model->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
-		skeleton_model->assign<PositionComponent>(glm::vec3(10.0f, -10.0f, 0.0f));  // 渲染的时候还没有根据这个 pos 位移。
-		//skeleton_model->assign<CollisionComponent>(-2.0f, 2.0f, 0.0f, 4.0f, -1.5f, 1.5f);
-		skeleton_model->assign<HPComponent>();
+		old_man->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
+		old_man->assign<PositionComponent>(glm::vec3(50.0f, 0.0f, -10.0f));  // 渲染的时候还没有根据这个 pos 位移。
+		old_man->assign<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f, 0.0f);
+		old_man->assign<HPComponent>();
 
 		ground_resource.init(500.0f, 500.0f, 1.0f, textureResource.ground_diffuse, textureResource.ground_specular);
 		ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);
@@ -146,20 +146,17 @@ public:
         ground->assign<CollisionComponent>(500.0f, 500.0f, 1.0f);
 
 		player->assign<ObjectComponent>(gameRootPath + "/resources/objects/gun/Ak-74.obj", "player");
-		player->assign<PositionComponent>(glm::vec3(0.0f, 4.0f, 0.0f));
+		player->assign<PositionComponent>(glm::vec3(5.0f, 3.0f, 0.0f));
 		player->assign<MovementComponent>(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // 碰撞检测需要，要给个小一点向下的初速度；避免一开始检测不到碰撞掉下去
 		player->assign<PlayerComponent>();
-		player->assign<TransformComponent>(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.05f, 0.05f,0.05f), glm::vec3(-1.0f, 1.0f, -4.0f));
-		player->assign<CameraComponent>(glm::vec3(3.0f, 1.0f, 1.0f));
+		player->assign<TransformComponent>(glm::vec3(-0.63f, 4.52f, 2.0f), glm::vec3(0.022f, 0.022f,0.022f), 0.0f, 180.0f);
+		player->assign<CameraComponent>(glm::vec3(0.0f, 5.0f, 0.0f));
         player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
 
 		bullet_text->assign<TextComponent>("bullet_info", "30 / 30", 20.0f, 30.0f, 0.8f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
 		hp_text->assign<TextComponent>("score", "score: ", 600.0f, 30.0f, 0.8f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
-		
-		gun->assign<ObjectComponent>(gameRootPath + "/resources/objects/gun/Ak-74.obj");
-		gun->assign<PositionComponent>(glm::vec3(-20.0f, 10.0f, -10.0f));
 
 		hitParticles->assign<ParticleComponent>(gameRootPath + "/resources/textures/", 1);
 		hitParticles->assign<PositionComponent>(glm::vec3());
