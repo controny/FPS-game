@@ -917,6 +917,16 @@ struct Resource {
 		}
 	};
 
+	struct ParticleResource {
+		unsigned int bloodTexture, smokeTexture, gunFireTexture, disappearingTexture;
+
+		void init(string path) {
+			bloodTexture = loadDDS((path + "particle.DDS").c_str());
+			smokeTexture = loadPNG((path + "smoke.png").c_str(), true);
+			gunFireTexture = loadPNG((path + "muzzle-flash.png").c_str(), true);
+			disappearingTexture = loadDDS((path + "particle.DDS").c_str());
+		}
+	};
 	Resource(string _resource_dir) {
 		init(_resource_dir);
 	}
