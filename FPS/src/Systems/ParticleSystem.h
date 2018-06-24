@@ -156,19 +156,19 @@ public:
 
 			positionCHandle->Position = pos;
 
-			particleCHandle->texture = loadPNG((particleCHandle->path + "flame.png").c_str(), true);
+			particleCHandle->texture = loadDDS((particleCHandle->path + "particle.DDS").c_str());
 			particleCHandle->producedParticles = 0;
-			particleCHandle->maxParticles = 300;
-			particleCHandle->MAX_TOTAL_NUM = 50000;
+			particleCHandle->maxParticles = 100;
+			//particleCHandle->MAX_TOTAL_NUM = 20000;
 			particleCHandle->life = 5.0f;
-			particleCHandle->newParticlesPerMS = 100;
-			particleCHandle->spread = 1.0f;
+			particleCHandle->newParticlesPerMS = 50;
+			particleCHandle->spread = 1.5f;
 			particleCHandle->maindir = glm::vec3(0.0f, 5.0f, 0.0f);
 			particleCHandle->color_r = 44;
 			particleCHandle->color_g = 44;
 			particleCHandle->color_b = 44;
 			particleCHandle->color_a = 224;
-			particleCHandle->size = 1.0;
+			particleCHandle->size = 0.1;
 		});
 	}
 
