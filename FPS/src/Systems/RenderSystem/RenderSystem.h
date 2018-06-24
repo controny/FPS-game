@@ -31,6 +31,7 @@ public:
 	Shader particleShader;
 	Shader depthShader;
 	Shader boneDepthShader;
+    Shader pbrShader;
 
 
 	RenderSystem(string shader_dir) {
@@ -42,6 +43,7 @@ public:
 		particleShader.init("particle.vs", "particle.fs", shader_dir);
 		depthShader.init("depth.vs", "depth.fs", shader_dir);
 		boneDepthShader.init("boneDepth.vs", "depth.fs", shader_dir);
+        pbrShader.init("object.vs", "pbr.fs", shader_dir);
 	}
 
 	virtual void tick(class World* world, float deltaTime) override
@@ -75,6 +77,7 @@ private:
 		depthShader.use();
 		depthShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
 		renderMeshes(world, deltaTime, depthShader);
+        renderPbrMeshes(world, deltaTime, depthShader);
 
 		boneDepthShader.use();
 		boneDepthShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
@@ -128,6 +131,20 @@ private:
 			
 		renderMeshes(world, deltaTime, objectShader);
 
+        // pbr着色器变量
+        pbrShader.use();
+        pbrShader.setMat4("view", ViewMatrix);
+        pbrShader.setVec3("viewPos", CameraPos);
+
+        pbrShader.setVec3("lightPos", lightCHandle->LightPos);
+        pbrShader.setVec3("lightColor", lightCHandle->LightColor);
+
+        pbrShader.setMat4("projection", projection);
+        pbrShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
+        pbrShader.setInt("shadow_type", lightCHandle->shadow_type);
+        pbrShader.setBool("shadow_enable", lightCHandle->shadow_enable);
+
+        renderPbrMeshes(world, deltaTime, pbrShader);
 
 		//设置骨骼着色器变量
 		boneShader.use();
@@ -182,7 +199,9 @@ private:
 			[&](Entity* ent,
 				ComponentHandle<ObjectComponent> objectCHandle,
 				ComponentHandle<PositionComponent> positionCHandle) -> void {
-
+            if (objectCHandle->pbr) {
+                return;
+            }
 			unsigned int diffuseNr = 1;
 			unsigned int specularNr = 1;
 			unsigned int normalNr = 1;
@@ -317,6 +336,71 @@ private:
 		//	}
 		//});
 	}
+
+    void renderPbrMeshes(class World* world, float deltaTime, Shader shader) {
+
+        auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
+
+        // 渲染，就是之前 Mesh 类的 Draw()
+        world->each<ObjectComponent, PositionComponent>(
+            [&](Entity* ent,
+                ComponentHandle<ObjectComponent> objectCHandle,
+                ComponentHandle<PositionComponent> positionCHandle) -> void {
+            if (!objectCHandle->pbr) {
+                return;
+            }
+            vector<Mesh>& meshes = objectCHandle->meshes;
+            for (unsigned int j = 0; j < meshes.size(); j++) {
+                Mesh& mesh = meshes[j];
+                int i = 0;
+                for (i = 0; i < mesh.textures.size(); i++)
+                {
+                    // active proper texture unit before binding
+                    glActiveTexture(GL_TEXTURE0 + i);
+
+                    string name = mesh.textures[i].type;
+                    // now set the sampler to the correct texture unit
+                    int a = glGetUniformLocation(shader.ID, name.c_str());
+                    glUniform1i(a, i);
+
+                    // and finally bind the texture
+                    glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
+                }
+
+                glActiveTexture(GL_TEXTURE0 + i);
+                shader.setInt("shadowMap", i);
+                glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
+
+                glm::mat4 model;
+                model = glm::translate(model, positionCHandle->Position);
+
+                glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
+                float x = XZ_front.x, z = XZ_front.z;
+
+                // 根据 Front、Right 向量对 player 的模型进行旋转
+                if (x > 0 && z > 0) {
+                    model = glm::rotate(model, glm::acos(z), glm::vec3(0.0, 1.0, 0.0));
+                }
+                else if (x > 0 && z < 0) {
+                    model = glm::rotate(model, float(glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+                }
+                else if (x < 0 && z > 0) {
+                    model = glm::rotate(model, float(-glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+                }
+                else if (x < 0 && z < 0) {
+                    model = glm::rotate(model, float(6.28 - glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+                }
+
+                shader.setMat4("model", model);
+                //glDepthFunc(GL_LEQUAL);
+                glBindVertexArray(mesh.VAO);
+                glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+                glBindVertexArray(0);
+                //glDepthFunc(GL_LESS);
+                //glActiveTexture(GL_TEXTURE0);
+            }
+        });
+    }
 
 	void renderBoneObject(class World* world, float deltaTime, Shader shader) {
 

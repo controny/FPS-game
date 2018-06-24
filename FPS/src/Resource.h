@@ -262,6 +262,19 @@ struct Resource {
 		// textures for ground
 		Texture ground_diffuse;
 		Texture ground_specular;
+        Texture ground_albedo;
+        Texture ground_normal;
+        Texture ground_metallic;
+        Texture ground_roughness;
+        Texture ground_ao;
+        Texture ground_height;
+
+        Texture wall_albedo;
+        Texture wall_normal;
+        Texture wall_metallic;
+        Texture wall_roughness;
+        Texture wall_ao;
+        Texture wall_height;
 
 		void init() {
 			container_diffuse = Texture(Load((resource_dir + "textures/container2.png").c_str()), "texture_diffuse");
@@ -269,6 +282,18 @@ struct Resource {
 
 			ground_diffuse = Texture(Load((resource_dir + "textures/wood.png").c_str()), "texture_diffuse");
 			ground_specular = Texture(Load((resource_dir + "textures/wood_specular.jpg").c_str()), "texture_specular");
+
+            ground_albedo = Texture(Load((resource_dir + "textures/marble-speckled/marble-speckled-albedo.png").c_str()), "albedoMap");
+            ground_normal = Texture(Load((resource_dir + "textures/marble-speckled/marble-speckled-normal.png").c_str()), "normalMap");
+            ground_metallic = Texture(Load((resource_dir + "textures/marble-speckled/marble-speckled-metalness.png").c_str()), "metallicMap");
+            ground_roughness = Texture(Load((resource_dir + "textures/marble-speckled/marble-speckled-roughness.png").c_str()), "roughnessMap");
+
+            wall_albedo = Texture(Load((resource_dir + "textures/blocksrough/blocksrough_basecolor.png").c_str()), "albedoMap");
+            wall_normal = Texture(Load((resource_dir + "textures/blocksrough/blocksrough_normal.png").c_str()), "normalMap");
+            wall_metallic = Texture(Load((resource_dir + "textures/blocksrough/blocksrough_metallic.png").c_str()), "metallicMap");
+            wall_roughness = Texture(Load((resource_dir + "textures/blocksrough/blocksrough_roughness.png").c_str()), "roughnessMap");
+            wall_ao = Texture(Load((resource_dir + "textures/blocksrough/blocksrough_ambientocclusion.png").c_str()), "aoMap");
+            wall_height = Texture(Load((resource_dir + "textures/blocksrough/blocksrough_height.png").c_str()), "heightMap");
 		}
 	};
 
@@ -452,6 +477,178 @@ struct Resource {
 				indices.push_back(i);
 		}
 	};
+
+    struct PBR_CubeResource {
+
+        std::vector<Vertex> vertices;
+        std::vector<unsigned int> indices;
+        std::vector<Texture> textures;
+
+        void init(float length, float width, float height, float tex_coords_value,
+            Texture albedo_texture,
+            Texture normal_texture,
+            Texture metallic_texture,
+            Texture roughness_texture,
+            Texture ao_texture,
+            Texture height_texture) {
+
+            vertices.clear();
+            indices.clear();
+            textures.clear();
+
+            float coords[] = {
+                -0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f,  0.5f, -0.5f,
+                0.5f,  0.5f, -0.5f,
+                -0.5f,  0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
+
+                -0.5f, -0.5f,  0.5f,
+                0.5f, -0.5f,  0.5f,
+                0.5f,  0.5f,  0.5f,
+                0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f,  0.5f,
+                -0.5f, -0.5f,  0.5f,
+
+                -0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f,  0.5f,
+                -0.5f,  0.5f,  0.5f,
+
+                0.5f,  0.5f,  0.5f,
+                0.5f,  0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f,  0.5f,
+                0.5f,  0.5f,  0.5f,
+
+                -0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f,  0.5f,
+                0.5f, -0.5f,  0.5f,
+                -0.5f, -0.5f,  0.5f,
+                -0.5f, -0.5f, -0.5f,
+
+                -0.5f,  0.5f, -0.5f,
+                0.5f,  0.5f, -0.5f,
+                0.5f,  0.5f,  0.5f,
+                0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f, -0.5f,
+            };
+
+            for (int i = 0; i < 36 * 3; ++i) {
+                if ((i + 1) % 3 == 1) coords[i] = coords[i] * length;
+                else if ((i + 1) % 3 == 2) coords[i] = coords[i] * height;
+                else coords[i] = coords[i] * width;
+            }
+
+            float normals[] = {
+                0.0f,  0.0f, -1.0f,
+                0.0f,  0.0f, -1.0f,
+                0.0f,  0.0f, -1.0f,
+                0.0f,  0.0f, -1.0f,
+                0.0f,  0.0f, -1.0f,
+                0.0f,  0.0f, -1.0f,
+
+                0.0f,  0.0f, 1.0f,
+                0.0f,  0.0f, 1.0f,
+                0.0f,  0.0f, 1.0f,
+                0.0f,  0.0f, 1.0f,
+                0.0f,  0.0f, 1.0f,
+                0.0f,  0.0f, 1.0f,
+
+                -1.0f,  0.0f,  0.0f,
+                -1.0f,  0.0f,  0.0f,
+                -1.0f,  0.0f,  0.0f,
+                -1.0f,  0.0f,  0.0f,
+                -1.0f,  0.0f,  0.0f,
+                -1.0f,  0.0f,  0.0f,
+
+                1.0f,  0.0f,  0.0f,
+                1.0f,  0.0f,  0.0f,
+                1.0f,  0.0f,  0.0f,
+                1.0f,  0.0f,  0.0f,
+                1.0f,  0.0f,  0.0f,
+                1.0f,  0.0f,  0.0f,
+
+                0.0f, -1.0f,  0.0f,
+                0.0f, -1.0f,  0.0f,
+                0.0f, -1.0f,  0.0f,
+                0.0f, -1.0f,  0.0f,
+                0.0f, -1.0f,  0.0f,
+                0.0f, -1.0f,  0.0f,
+
+                0.0f,  1.0f,  0.0f,
+                0.0f,  1.0f,  0.0f,
+                0.0f,  1.0f,  0.0f,
+                0.0f,  1.0f,  0.0f,
+                0.0f,  1.0f,  0.0f,
+                0.0f,  1.0f,  0.0f
+            };
+
+            textures.push_back(albedo_texture);
+            textures.push_back(normal_texture);
+            textures.push_back(metallic_texture);
+            textures.push_back(roughness_texture);
+            textures.push_back(ao_texture);
+
+            float tex_coords[] = {
+                0.0f, 0.0f,
+                1.0f, 0.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                0.0f, 0.0f,
+
+                0.0f, 0.0f,
+                1.0f, 0.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                0.0f, 0.0f,
+
+                1.0f, 0.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                0.0f, 1.0f,
+                0.0f, 0.0f,
+                1.0f, 0.0f,
+
+                1.0f, 0.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                0.0f, 1.0f,
+                0.0f, 0.0f,
+                1.0f, 0.0f,
+
+                0.0f, 1.0f,
+                1.0f, 1.0f,
+                1.0f, 0.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+                0.0f, 1.0f,
+
+                0.0f, 1.0f,
+                1.0f, 1.0f,
+                1.0f, 0.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+                0.0f, 1.0f
+            };
+
+            for (int i = 0; i < 36; i++) {
+                vertices.push_back(Vertex(glm::vec3(coords[i * 3], coords[i * 3 + 1], coords[i * 3 + 2]),
+                    glm::vec3(normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2]),
+                    glm::vec2(tex_coords[i * 2] * tex_coords_value, tex_coords[i * 2 + 1] * tex_coords_value)));
+            }
+            for (int i = 0; i < 36; ++i)
+                indices.push_back(i);
+        }
+    };
 
 	struct SkyBoxResource {
 
