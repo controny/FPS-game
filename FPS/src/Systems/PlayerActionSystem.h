@@ -140,20 +140,21 @@ public:
 			ComponentHandle<TransformComponent> transformCHandle = ent->get<TransformComponent>();
 			if (load_bullet) {
 				playerCHandle->can_shot = false;
-				static float load_time_need = 1, cur_load_time = 0, load_bullet_shift=1.0f;
+				static float load_time_need = 1, cur_load_time = 0, load_bullet_shift=1.0f ,y_origin= transformCHandle->relative_translate.y, z_origin= transformCHandle->relative_translate.z;
+				if (cur_load_time==0) y_origin= transformCHandle->relative_translate.y, z_origin= transformCHandle->relative_translate.z;
 				float relative = cur_load_time / load_time_need;
 				cur_load_time += deltaTime;
 				if (relative < 0.5) {
-					transformCHandle->relative_translate.y = -relative * load_bullet_shift;
-					transformCHandle->relative_translate.z = -relative * load_bullet_shift;
+					transformCHandle->relative_translate.y = y_origin-relative * load_bullet_shift;
+					transformCHandle->relative_translate.z = z_origin-relative * load_bullet_shift;
 				}
 				else if (relative < 1 && relative > 0.5) {
-					transformCHandle->relative_translate.y = -(load_bullet_shift/2 - (relative-0.5) * load_bullet_shift);
-					transformCHandle->relative_translate.z = -(load_bullet_shift / 2 - (relative - 0.5) * load_bullet_shift);
+					transformCHandle->relative_translate.y += y_origin - (load_bullet_shift / 2 - (relative - 0.5) * load_bullet_shift);
+					transformCHandle->relative_translate.z += z_origin - (load_bullet_shift / 2 - (relative - 0.5) * load_bullet_shift);
 				}
 				else if (relative > 1) {
-					transformCHandle->relative_translate.y = 0;
-					transformCHandle->relative_translate.z = 0;
+					transformCHandle->relative_translate.y = y_origin;
+					transformCHandle->relative_translate.z = z_origin;
 					cur_load_time = 0;
 					playerCHandle->can_shot = true;
 					load_bullet = false;
@@ -164,6 +165,7 @@ public:
 
 					world->emit<TextChangeEvent>({ "bullet_info", osstream.str() });
 				}
+				cout << transformCHandle->relative_translate.y << endl;
 			}                                                        
 		});
 

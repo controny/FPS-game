@@ -67,6 +67,9 @@ public:
 		lastY = ypos;
 
 		updateCamera(world, xoffset, yoffset);
+		world->each<TransformComponent>([&](Entity* ent, ComponentHandle<TransformComponent> transformCHandle) -> void {
+			transformCHandle->relative_translate = glm::vec3(0.0f, 0.0f, 0.0f);
+		});
 	}
 
 private:
