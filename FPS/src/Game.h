@@ -92,7 +92,7 @@ public:
 		
 		Entity* bullet_text = world->create();
 		Entity* hp_text = world->create();
-		Entity* test_post = world->create();  // ÒÔºó post ¸³¸ø gun µÄ entity£¬ÏÖÔÚÖ»ÊÇ²âÊÔ
+		Entity* test_post = world->create();  // ä»¥åŽ post èµ‹ç»™ gun çš„ entityï¼ŒçŽ°åœ¨åªæ˜¯æµ‹è¯•
 		Entity* old_man = world->create();
 
 		Entity* gun = world->create();
@@ -100,9 +100,9 @@ public:
 		Entity* monster1 = world->create();
 		Entity* monster2 = world->create();
 
-		Entity* hitParticles = world->create();	// ×Óµ¯»÷ÖÐÎïÌåµÄÁ£×ÓÐ§¹û
-		Entity* gunFire = world->create();	// Ç¹¿Ú¿ª»ðµÄÁ£×ÓÐ§¹û
-		Entity* disappear = world->create();	// ¹ÖÎïÏûÊ§µÄÁ£×ÓÐ§¹û
+		Entity* hitParticles = world->create();	// å­å¼¹å‡»ä¸­ç‰©ä½“çš„ç²’å­æ•ˆæžœ
+		Entity* gunFire = world->create();	// æžªå£å¼€ç«çš„ç²’å­æ•ˆæžœ
+		Entity* disappear = world->create();	// æ€ªç‰©æ¶ˆå¤±çš„ç²’å­æ•ˆæžœ
 		Entity* ground = world->create();
 
 		// Load texture resource
@@ -129,7 +129,7 @@ public:
             textureResource.wall_roughness,
             textureResource.wall_ao,
             textureResource.wall_height);
-        wall_c->assign<ObjectComponent>(wall_pbr_resource.vertices, wall_pbr_resource.indices, wall_pbr_resource.textures, true);
+        wall_c->assign<ObjectComponent>(wall_pbr_resource.vertices, wall_pbr_resource.indices, wall_pbr_resource.textures, "wall", true);
         wall_c->assign<PositionComponent>(glm::vec3(60.0f, 10.0f, 45.0f));
         wall_c->assign<CollisionComponent>(20.0f, 10.0f, 20.0f);
 
@@ -149,7 +149,7 @@ public:
 		monster2->assign<HPComponent>();
 
 		old_man->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
-		old_man->assign<PositionComponent>(glm::vec3(50.0f, 0.0f, -10.0f));  // äÖÈ¾µÄÊ±ºò»¹Ã»ÓÐ¸ù¾ÝÕâ¸ö pos Î»ÒÆ¡£
+		old_man->assign<PositionComponent>(glm::vec3(50.0f, 0.0f, -10.0f));  // æ¸²æŸ“çš„æ—¶å€™è¿˜æ²¡æœ‰æ ¹æ®è¿™ä¸ª pos ä½ç§»ã€‚
 		old_man->assign<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f, 0.0f);
 		old_man->assign<HPComponent>();
 
@@ -165,13 +165,15 @@ public:
             textureResource.ground_roughness,
             textureResource.ground_ao,
             textureResource.ground_height);
-        ground->assign<ObjectComponent>(ground_pbr_resource.vertices, ground_pbr_resource.indices, ground_pbr_resource.textures, true);
+        ground->assign<ObjectComponent>(ground_pbr_resource.vertices, ground_pbr_resource.indices, ground_pbr_resource.textures, "ground", true);
         ground->assign<PositionComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
         ground->assign<CollisionComponent>(500.0f, 500.0f, 1.0f);
 
 		player->assign<ObjectComponent>(gameRootPath + "/resources/objects/gun/Ak-74.obj", "player");
-		player->assign<PositionComponent>(glm::vec3(5.0f, 3.0f, 0.0f));
-		player->assign<MovementComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));  // Åö×²¼ì²âÐèÒª£¬Òª¸ø¸öÐ¡Ò»µãÏòÏÂµÄ³õËÙ¶È£»±ÜÃâÒ»¿ªÊ¼¼ì²â²»µ½Åö×²µôÏÂÈ¥
+
+		player->assign<PositionComponent>(glm::vec3(5.0f, 0.6f, 0.0f));
+		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // ç¢°æ’žæ£€æµ‹éœ€è¦ï¼Œè¦ç»™ä¸ªå°ä¸€ç‚¹å‘ä¸‹çš„åˆé€Ÿåº¦ï¼›é¿å…ä¸€å¼€å§‹æ£€æµ‹ä¸åˆ°ç¢°æ’žæŽ‰ä¸‹åŽ»
+
 		player->assign<PlayerComponent>();
 		player->assign<TransformComponent>(glm::vec3(-0.63f, 4.52f, 2.0f), glm::vec3(0.022f, 0.022f,0.022f), 0.0f, 180.0f);
 		player->assign<CameraComponent>(glm::vec3(0.0f, 5.0f, 0.0f));
