@@ -325,18 +325,35 @@ private:
 					model = glm::rotate(model, float(6.28 - glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
 				}
 
+				XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, positionCHandle->Front.y, positionCHandle->Front.z));
+				x = XZ_front.x, y = XZ_front.y, z = XZ_front.z;
+				if (x > 0 && z > 0) {
+					model = glm::rotate(model, glm::acos(z), glm::vec3(0.0, 1.0, 0.0));
+				}
+				else if (x > 0 && z < 0) {
+					model = glm::rotate(model, float(glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+				}
+				else if (x < 0 && z > 0) {
+					model = glm::rotate(model, float(-glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+				}
+				else if (x < 0 && z < 0) {
+					model = glm::rotate(model, float(6.28 - glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+				}
+				
 				if (y > 0 && z > 0) {
 					model = glm::rotate(model, glm::acos(z), glm::vec3(1.0, 0.0, 0.0));
 				}
 				else if (y > 0 && z < 0) {
 					model = glm::rotate(model, float(glm::acos(z)), glm::vec3(1.0, 0.0, 0.0));
 				}
-				else if (y < 0 && z > 0) {
+				/*else if (y < 0 && z > 0) {
 					model = glm::rotate(model, float(-glm::acos(z)), glm::vec3(1.0, 0.0, 0.0));
 				}
 				else if (y < 0 && z < 0) {
 					model = glm::rotate(model, float(6.28 - glm::acos(z)), glm::vec3(1.0, 0.0, 0.0));
-				}
+				}*/
+				
+				/*
 				static float load_bullet_time = 100, current_load_time=0;
 				if (PlayerCHandle->cur_bullet == 0) {
 					if (current_load_time > load_bullet_time) {
@@ -349,7 +366,7 @@ private:
 					}
 					
 				}
-				cout << PlayerCHandle->cur_bullet << endl;
+				*/
 				shader.setMat4("model", model);
 				//glDepthFunc(GL_LEQUAL);
 				glBindVertexArray(mesh.VAO);
