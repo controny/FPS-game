@@ -14,7 +14,6 @@ struct PlayerComponent {
 
 	PlayerComponent() {
 		init();
-        
 	}
 
 	void init() {

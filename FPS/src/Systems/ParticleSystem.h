@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <ECS.h>
 
+#include <Resource.h>
 #include <Components/ParticleComponent.h>
 #include <Events/KeyEvents.h>
 
@@ -10,7 +11,9 @@ using namespace ECS;
 class ParticleSystem : public EntitySystem, public EventSubscriber<MousePressEvent>
 {
 public:
-	ParticleSystem() {}
+	ParticleSystem() {
+		//ParticleComponent::resource.init(ParticleComponent::path);
+	}
 
 	virtual ~ParticleSystem() {}
 
@@ -36,8 +39,7 @@ public:
 				right = ent->get<PositionComponent>()->Right;
 			});
 			pos += right * 0.07f;
-			//ParticleSystem::simulateGunFire(world, pos, front);
-			ParticleSystem::simulateDisappearing(world, glm::vec3(-5.0f, 10.0f, 5.0f));
+			ParticleSystem::simulateGunFire(world, pos, front);
 		}
 	}
 
@@ -79,7 +81,7 @@ public:
 
 				positionCHandle->Position = pos;
 
-				particleCHandle->texture = loadDDS((particleCHandle->path + "particle.DDS").c_str());
+				particleCHandle->texture = particleCHandle->resource.bloodTexture;
 				particleCHandle->producedParticles = 0;
 				particleCHandle->maxParticles = 30;
 				particleCHandle->life = 1.0f;
@@ -105,7 +107,7 @@ public:
 
 				positionCHandle->Position = pos;
 
-				particleCHandle->texture = loadPNG((particleCHandle->path + "smoke.png").c_str(), true);
+				particleCHandle->texture = particleCHandle->resource.smokeTexture;
 				particleCHandle->producedParticles = 0;
 				particleCHandle->maxParticles = 10;
 				particleCHandle->MAX_TOTAL_NUM = 3000;
@@ -132,7 +134,7 @@ public:
 
 			positionCHandle->Position = pos;
 
-			particleCHandle->texture = loadPNG((particleCHandle->path + "muzzle-flash.png").c_str(), true);
+			particleCHandle->texture = particleCHandle->resource.gunFireTexture;
 			particleCHandle->producedParticles = 0;
 			particleCHandle->maxParticles = 1;
 			particleCHandle->life = 0.1f;
@@ -157,18 +159,19 @@ public:
 
 			positionCHandle->Position = pos;
 
-			particleCHandle->texture = loadPNG((particleCHandle->path + "flame.png").c_str(), true);
+			particleCHandle->texture = particleCHandle->resource.disappearingTexture;
 			particleCHandle->producedParticles = 0;
-			particleCHandle->maxParticles = 300;
-			particleCHandle->life = 2.5f;
-			particleCHandle->newParticlesPerMS = 100;
-			particleCHandle->spread = 1.0f;
+			particleCHandle->maxParticles = 100;
+			//particleCHandle->MAX_TOTAL_NUM = 20000;
+			particleCHandle->life = 5.0f;
+			particleCHandle->newParticlesPerMS = 50;
+			particleCHandle->spread = 1.5f;
 			particleCHandle->maindir = glm::vec3(0.0f, 5.0f, 0.0f);
 			particleCHandle->color_r = 44;
 			particleCHandle->color_g = 44;
 			particleCHandle->color_b = 44;
 			particleCHandle->color_a = 224;
-			particleCHandle->size = 1.0;
+			particleCHandle->size = 0.1;
 		});
 	}
 

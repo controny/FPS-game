@@ -50,7 +50,12 @@
     <ClInclude Include="src\Systems\HitProcessingSystem.h" />
     <ClInclude Include="src\Events\HitEvent.h" />
     <ClInclude Include="src\Events\FireEvent.h" />
+    <ClInclude Include="src\Components\HPComponent.h" />
     <ClInclude Include="dependencies\include\loadpng\lodepng.h" />
+    <ClInclude Include="src\Components\TransformComponent.h" />
+    <ClInclude Include="src\Systems\TextSystem.h" />
+    <ClInclude Include="src\Events\TextChangeEvent.h" />
+    <ClInclude Include="src\Systems\MonsterCreationSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />
@@ -69,5 +74,6 @@
     <None Include="src\Shaders\skinning.vs" />
     <None Include="src\Shaders\depth.fs" />
     <None Include="src\Shaders\depth.vs" />
+    <None Include="src\Shaders\pbr.fs" />
   </ItemGroup>
 </Project>

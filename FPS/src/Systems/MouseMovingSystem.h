@@ -70,6 +70,50 @@ public:
 	}
 
 private:
+	void updateTransform(World* world, float pitch) {
+		world->each<PlayerComponent>([&](Entity* ent, ComponentHandle<PlayerComponent> playerCHandle) -> void {
+			auto positionCHandle = ent->get<PositionComponent>();
+			auto transformCHandle = ent->get<TransformComponent>();
+
+			float rotate_x = 0.0f, rotate_y = 0.0f;
+
+			// 根据 Front 向量对 player 的模型绕 y 轴旋转
+			glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
+			float x = XZ_front.x, z = XZ_front.z;
+				
+			if (x > 0 && z > 0) {
+				rotate_y = glm::acos(z);
+			}
+			else if (x > 0 && z < 0) {
+				rotate_y = float(glm::acos(z));
+			}
+			else if (x < 0 && z > 0) {
+				rotate_y = float(-glm::acos(z));
+			}
+			else if (x < 0 && z < 0) {
+				rotate_y = float(6.28 - glm::acos(z));
+			}
+			transformCHandle->rotate_y = rotate_y;
+
+			// 根据 Front 向量对 player 的模型绕 x 轴旋转
+			glm::vec3 n_front = glm::normalize(positionCHandle->Front);
+			x = n_front.x; z = n_front.z; float y = n_front.y;
+
+			if (y < 0.001f && y > -0.001f) transformCHandle->rotate_x = 0.0f;
+			else transformCHandle->rotate_x = -float(glm::asin(y));
+
+			if (pitch > 0) {
+				transformCHandle->relative_translate.z = pitch / 300.0f;
+				transformCHandle->relative_translate.y = pitch / 50.0f;
+			}
+			else {
+				transformCHandle->relative_translate.z = -abs(pitch) / 80.0f;
+				transformCHandle->relative_translate.y = -abs(pitch) / 70.0f;
+			}
+			
+			
+		});
+	}
 
 	// 更新 player entity 的 camera 和 position 的数据（之前 camera 的 updateVectors 方法和 processMouseMovement 方法）
 	// 主要是更新 Front 和 Right 向量
@@ -87,10 +131,10 @@ private:
 			cameraCHandle->Pitch += yoffset;
 
 			// Make sure that when pitch is out of bounds, screen doesn't get flipped
-			if (cameraCHandle->Pitch > 89.0f)
-				cameraCHandle->Pitch = 89.0f;
-			if (cameraCHandle->Pitch < -89.0f)
-				cameraCHandle->Pitch = -89.0f;
+			if (cameraCHandle->Pitch > 35.0f)
+				cameraCHandle->Pitch = 35.0f;
+			if (cameraCHandle->Pitch < -35.0f)
+				cameraCHandle->Pitch = -35.0f;
 
 			glm::vec3 front;
 			front.x = cos(glm::radians(cameraCHandle->Yaw)) * cos(glm::radians(cameraCHandle->Pitch));
@@ -114,6 +158,8 @@ private:
 
 			positionCHandle->Right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
 			positionCHandle->Up = glm::normalize(glm::cross(positionCHandle->Right, front));
+
+			updateTransform(world, cameraCHandle->Pitch);
 		});
 	}
 };

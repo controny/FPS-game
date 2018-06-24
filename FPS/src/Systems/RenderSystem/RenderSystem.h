@@ -31,6 +31,7 @@ public:
 	Shader particleShader;
 	Shader depthShader;
 	Shader boneDepthShader;
+    Shader pbrShader;
 
 
 	RenderSystem(string shader_dir) {
@@ -42,6 +43,7 @@ public:
 		particleShader.init("particle.vs", "particle.fs", shader_dir);
 		depthShader.init("depth.vs", "depth.fs", shader_dir);
 		boneDepthShader.init("boneDepth.vs", "depth.fs", shader_dir);
+        pbrShader.init("object.vs", "pbr.fs", shader_dir);
 	}
 
 	virtual void tick(class World* world, float deltaTime) override
@@ -75,6 +77,7 @@ private:
 		depthShader.use();
 		depthShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
 		renderMeshes(world, deltaTime, depthShader);
+        renderPbrMeshes(world, deltaTime, depthShader);
 
 		boneDepthShader.use();
 		boneDepthShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
@@ -82,7 +85,7 @@ private:
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-
+	
 	void render(class World* world, float deltaTime) {
 		auto windowCHandle = world->getSingletonComponent<WindowInfoSingletonComponent>();
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
@@ -128,10 +131,22 @@ private:
 			
 		renderMeshes(world, deltaTime, objectShader);
 
+        // pbr着色器变量
+        pbrShader.use();
+        pbrShader.setMat4("view", ViewMatrix);
+        pbrShader.setVec3("viewPos", CameraPos);
+
+        pbrShader.setVec3("lightPos", lightCHandle->LightPos);
+        pbrShader.setVec3("lightColor", lightCHandle->LightColor);
+
+        pbrShader.setMat4("projection", projection);
+        pbrShader.setMat4("lightSpaceMatrix", lightCHandle->lightSpaceMatrix);
+        pbrShader.setInt("shadow_type", lightCHandle->shadow_type);
+        pbrShader.setBool("shadow_enable", lightCHandle->shadow_enable);
+
+        renderPbrMeshes(world, deltaTime, pbrShader);
 
 		//设置骨骼着色器变量
-		glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
-
 		boneShader.use();
 		boneShader.setMat4("view", ViewMatrix);
 		boneShader.setVec3("viewPos", CameraPos);
@@ -143,13 +158,9 @@ private:
 		boneShader.setFloat("shininess", lightCHandle->Shininess);
 		boneShader.setFloat("diffuseStrength", lightCHandle->DiffuseStrength);
 
-		bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
-		boneShader.setMat4("model", bonemodel);
 		boneShader.setMat4("projection", projection);
 		boneShader.setInt("shadow_type", lightCHandle->shadow_type);
 
-		
-		
 		renderBoneObject(world, deltaTime, boneShader);
 
 		/* ----------- render skybox -----------*/
@@ -183,11 +194,14 @@ private:
 
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
 
-		// 渲染，就是之前 Mesh 类的 Draw()
+		//// 渲染，就是之前 Mesh 类的 Draw()
 		world->each<ObjectComponent, PositionComponent>(
 			[&](Entity* ent,
 				ComponentHandle<ObjectComponent> objectCHandle,
 				ComponentHandle<PositionComponent> positionCHandle) -> void {
+            if (objectCHandle->pbr) {
+                return;
+            }
 			unsigned int diffuseNr = 1;
 			unsigned int specularNr = 1;
 			unsigned int normalNr = 1;
@@ -223,26 +237,22 @@ private:
 				shader.setInt("shadowMap", i);
 				glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
 
+
 				glm::mat4 model;
 				model = glm::translate(model, positionCHandle->Position);
 
-
-				glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
-				float x = XZ_front.x, z = XZ_front.z;
+				auto transformCHandle = ent->get<TransformComponent>();
+				if (transformCHandle.isValid()) {  // 如果又 transform component，那么根据里面的信息继续设置 model
+					model = glm::rotate(model, transformCHandle->rotate_y, glm::vec3(0.0f, 1.0f, 0.0f));			
+					model = glm::translate(model, transformCHandle->translate + transformCHandle->relative_translate);
+					
+					model = glm::rotate(model, transformCHandle->rotate_x, glm::vec3(1.0f, 0.0f, 0.0f));
+					model = glm::scale(model, transformCHandle->scale);
+					if (objectCHandle->id == "player") {
+						model = glm::rotate(model, 3.14f, glm::vec3(0.0f, 1.0f, 0.0f));  //枪模型本身反过来了
+					}
+				}
 				
-				// 根据 Front、Right 向量对 player 的模型进行旋转
-				if (x > 0 && z > 0) {
-					model = glm::rotate(model, glm::acos(z), glm::vec3(0.0, 1.0, 0.0));
-				}
-				else if (x > 0 && z < 0) {
-					model = glm::rotate(model, float(glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
-				}
-				else if (x < 0 && z > 0) {
-					model = glm::rotate(model, float(-glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
-				}
-				else if (x < 0 && z < 0) {
-					model = glm::rotate(model, float(6.28 - glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
-				}
 
 				shader.setMat4("model", model);
 				//glDepthFunc(GL_LEQUAL);
@@ -253,16 +263,148 @@ private:
 				//glActiveTexture(GL_TEXTURE0);
 			}
 		});
+		
+
+		//world->each<ObjectComponent, PositionComponent>(
+		//	[&](Entity* ent,
+		//		ComponentHandle<ObjectComponent> objectCHandle,
+		//		ComponentHandle<PositionComponent> positionCHandle) -> void {
+
+		//	unsigned int diffuseNr = 1;
+		//	unsigned int specularNr = 1;
+		//	unsigned int normalNr = 1;
+		//	unsigned int heightNr = 1;
+
+		//	vector<Mesh>& meshes = objectCHandle->meshes;
+		//	
+		//	for (unsigned int j = 0; j < meshes.size(); j++) {
+		//		Mesh& mesh = meshes[j];
+		//		int i = 0;
+		//		for (i = 0; i < mesh.textures.size(); i++)
+		//		{
+		//			glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+		//											  // retrieve texture number (the N in diffuse_textureN)
+		//			string number;
+		//			string name = mesh.textures[i].type;
+		//			if (name == "texture_diffuse")
+		//				number = std::to_string(diffuseNr++);
+		//			else if (name == "texture_specular")
+		//				number = std::to_string(specularNr++); // transfer unsigned int to stream
+		//			else if (name == "texture_normal")
+		//				number = std::to_string(normalNr++); // transfer unsigned int to stream
+		//			else if (name == "texture_height")
+		//				number = std::to_string(heightNr++); // transfer unsigned int to stream
+
+		//													// now set the sampler to the correct texture unit
+		//			int a = glGetUniformLocation(shader.ID, (name + number).c_str());
+		//			glUniform1i(a, i);
+
+		//			// and finally bind the texture
+		//			glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
+		//		}
+
+		//		glActiveTexture(GL_TEXTURE0 + i);
+		//		shader.setInt("shadowMap", i);
+		//		glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
+
+		//		glm::mat4 model;
+		//		model = glm::translate(model, positionCHandle->Position);  // 根据位置的平移
+
+		//		
+		//		
+		//		/*
+		//		static float load_bullet_time = 100, current_load_time=0;
+		//		if (PlayerCHandle->cur_bullet == 0) {
+		//			if (current_load_time > load_bullet_time) {
+		//				current_load_time = 0;
+		//				PlayerCHandle->cur_bullet = 30;
+		//			}
+		//			else {
+		//				current_load_time += deltaTime;
+		//				//cout << deltaTime << endl;
+		//			}
+		//			
+		//		}
+		//		*/
+		//		shader.setMat4("model", model);
+		//		//glDepthFunc(GL_LEQUAL);
+		//		glBindVertexArray(mesh.VAO);
+		//		glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+		//		glBindVertexArray(0);
+		//		//glDepthFunc(GL_LESS);
+		//		//glActiveTexture(GL_TEXTURE0);
+		//	}
+		//});
 	}
 
+    void renderPbrMeshes(class World* world, float deltaTime, Shader shader) {
 
+        auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
+
+        // 渲染，就是之前 Mesh 类的 Draw()
+        world->each<ObjectComponent, PositionComponent>(
+            [&](Entity* ent,
+                ComponentHandle<ObjectComponent> objectCHandle,
+                ComponentHandle<PositionComponent> positionCHandle) -> void {
+            if (!objectCHandle->pbr) {
+                return;
+            }
+            vector<Mesh>& meshes = objectCHandle->meshes;
+            for (unsigned int j = 0; j < meshes.size(); j++) {
+                Mesh& mesh = meshes[j];
+                int i = 0;
+                for (i = 0; i < mesh.textures.size(); i++)
+                {
+                    // active proper texture unit before binding
+                    glActiveTexture(GL_TEXTURE0 + i);
+
+                    string name = mesh.textures[i].type;
+                    // now set the sampler to the correct texture unit
+                    int a = glGetUniformLocation(shader.ID, name.c_str());
+                    glUniform1i(a, i);
+
+                    // and finally bind the texture
+                    glBindTexture(GL_TEXTURE_2D, mesh.textures[i].id);
+                }
+
+                glActiveTexture(GL_TEXTURE0 + i);
+                shader.setInt("shadowMap", i);
+                glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
+
+                glm::mat4 model;
+                model = glm::translate(model, positionCHandle->Position);
+
+                glm::vec3 XZ_front = glm::normalize(glm::vec3(positionCHandle->Front.x, 0.0f, positionCHandle->Front.z));
+                float x = XZ_front.x, z = XZ_front.z;
+
+                // 根据 Front、Right 向量对 player 的模型进行旋转
+                if (x > 0 && z > 0) {
+                    model = glm::rotate(model, glm::acos(z), glm::vec3(0.0, 1.0, 0.0));
+                }
+                else if (x > 0 && z < 0) {
+                    model = glm::rotate(model, float(glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+                }
+                else if (x < 0 && z > 0) {
+                    model = glm::rotate(model, float(-glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+                }
+                else if (x < 0 && z < 0) {
+                    model = glm::rotate(model, float(6.28 - glm::acos(z)), glm::vec3(0.0, 1.0, 0.0));
+                }
+
+                shader.setMat4("model", model);
+                //glDepthFunc(GL_LEQUAL);
+                glBindVertexArray(mesh.VAO);
+                glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+                glBindVertexArray(0);
+                //glDepthFunc(GL_LESS);
+                //glActiveTexture(GL_TEXTURE0);
+            }
+        });
+    }
 
 	void renderBoneObject(class World* world, float deltaTime, Shader shader) {
 
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
-
-		glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
-		bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 
 		// 渲染骨骼模型
 		world->each<BoneObjectComponent, PositionComponent>([&](Entity* ent, 
@@ -289,7 +431,7 @@ private:
 			static vector<Matrix4f> Transforms;
 			//float RunningTime = GetRunningTime();
 			static float RunningTime = 0.5;
-			RunningTime += 0.1;
+			RunningTime += deltaTime;
 			BoneobjectCHandle->BoneTransform(RunningTime, Transforms);
 			GLuint m_boneLocation[100];
 			for (unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(m_boneLocation); i++) {
@@ -306,16 +448,26 @@ private:
 			glActiveTexture(GL_TEXTURE15);
 			boneShader.setInt("shadowMap", 15);
 			glBindTexture(GL_TEXTURE_2D, lightCHandle->depthMap);
-		
-			glm::mat4 bonemodel = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
-			bonemodel = glm::rotate(bonemodel, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
-			bonemodel = glm::translate(bonemodel, positionCHandle->Position);
+			
+			glm::mat4 model = glm::scale(glm::mat4(), glm::vec3(0.25f, 0.25f, 0.25f));
+			model = glm::translate(model, positionCHandle->Position);
+			model = glm::rotate(model, 180.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 
-			shader.setMat4("model", bonemodel);
+			auto transformCHandle = ent->get<TransformComponent>();
+			if (transformCHandle.isValid()) {  // 如果又 transform component，那么根据里面的信息继续设置 model
+				model = glm::rotate(model, transformCHandle->rotate_y, glm::vec3(0.0f, 1.0f, 0.0f));
+				model = glm::translate(model, transformCHandle->translate + transformCHandle->relative_translate);
+
+				model = glm::rotate(model, transformCHandle->rotate_x, glm::vec3(1.0f, 0.0f, 0.0f));
+				model = glm::scale(model, transformCHandle->scale);
+			}
+
+			shader.setMat4("model", model);
 
 			BoneobjectCHandle->Render();
 		});
 	}
+
 	void renderSkybox(class World* world, float deltaTime) {
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;

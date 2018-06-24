@@ -17,7 +17,6 @@ struct PositionComponent {
     PositionComponent(glm::vec3 _Position) {
         Position = _Position;
     }
-
     void Print() {
         printf("Position: (%f, %f, %f)\n", Position.x, Position.y, Position.z);
     }

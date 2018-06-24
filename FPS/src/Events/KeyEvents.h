@@ -13,7 +13,8 @@ enum Key {
 	LEFT_SHIFT,
 	SPACE,
 
-	MOUSE_LEFT
+	MOUSE_LEFT,
+	R
 };
 
 struct MousePressEvent {

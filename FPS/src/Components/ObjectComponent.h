@@ -104,23 +104,34 @@ struct Mesh {
 
 
 struct ObjectComponent {
+	string id;
 
 	/*  Model Data */
 	vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
 	vector<Mesh> meshes;
 	string directory;
 	bool gammaCorrection;
+    bool pbr;
 
 	//只有一个MESH的情况，把它存在meshes向量中
-	ObjectComponent(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures) {
+	ObjectComponent(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, string _id = "", bool _pbr = false) {
 		meshes.push_back(Mesh(vertices, indices, textures));
 		textures_loaded = textures;
+        id = _id;
+        pbr = _pbr;
 	}
 	 
 	//加载模型的情况
-	ObjectComponent(string const &path, bool gamma = false) : gammaCorrection(gamma)
+	ObjectComponent(vector<Texture> _textures, vector<Mesh> _meshes) {
+		textures_loaded = _textures;
+		meshes = _meshes;
+	}
+
+	ObjectComponent(string const &path, string _id="", bool _pbr = false, bool gamma = false) : gammaCorrection(gamma)
 	{
 		loadModel(path);
+		id = _id;
+        pbr = _pbr;
 	}
 
 	void loadModel(string const &path)
@@ -259,7 +270,7 @@ struct ObjectComponent {
 					break;
 				}
 			}
-			if (!skip)
+			//if (!skip)
 			{   // if texture hasn't been loaded already, load it
 				Texture texture;
 				texture.id = TextureFromFile(str.C_Str(), this->directory);

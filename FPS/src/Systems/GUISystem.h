@@ -61,6 +61,33 @@ public:
 
 		auto lightCHandle = world->getSingletonComponent<LightingInfoSingletonComponent>();
 
+		//float x = 0.0f, y = 0.0f, z;
+		//float cx, cy, cz;
+		//float rx, ry;
+		//float s;
+		//world->each<ObjectComponent, PositionComponent, PlayerComponent, TransformComponent>(
+		//	[&](Entity* ent,
+		//		ComponentHandle<ObjectComponent> objectCHandle,
+		//		ComponentHandle<PositionComponent> positionCHandle,
+		//		ComponentHandle<PlayerComponent> playerCHandle,
+		//		ComponentHandle<TransformComponent> transformCHandle) -> void {
+		//	x = transformCHandle->translate.x;
+		//	y = transformCHandle->translate.y;
+		//	z = transformCHandle->translate.z;
+		//	s = transformCHandle->scale.x;
+
+		//	auto cameraCHandle = ent->get<CameraComponent>();
+		//	cx = cameraCHandle->Relative_position.x;
+		//	cy = cameraCHandle->Relative_position.y;
+		//	cz = cameraCHandle->Relative_position.z;
+
+
+
+		//	rx = transformCHandle->rotate_x;
+		//	ry = transformCHandle->rotate_y;
+
+		//});
+
 		if (windowCHandle->showGUI) {
 			ImGui_ImplGlfwGL3_NewFrame();
 			{
@@ -78,7 +105,20 @@ public:
 				ImGui::SliderFloat("Specular strength", &(lightCHandle->SpecularStrength), 0.0f, 1.0f);
 				ImGui::SliderFloat("Diffuse strength", &(lightCHandle->DiffuseStrength), 0.0f, 1.0f);
 				ImGui::SliderFloat("Shininess", &(lightCHandle->Shininess), 0.1f, 64.0f);
+                ImGui::Text("Light Source Position");
+                ImGui::SliderFloat("x", &lightCHandle->LightPos.x, -100.0f, 100.0f);
+                ImGui::SliderFloat("y", &lightCHandle->LightPos.y, -100.0f, 100.0f);
+                ImGui::SliderFloat("z", &lightCHandle->LightPos.z, -100.0f, 100.0f);
 
+				//ImGui::SliderFloat("x", &x, -20.0f, 20.0f);
+				//ImGui::SliderFloat("y", &y, -20.0f, 20.0f);
+				//ImGui::SliderFloat("z", &z, -20.0f, 20.0f);
+				//ImGui::SliderFloat("s", &s, 0.05f, 0.001f);
+				//ImGui::SliderFloat("cx", &cx, -20.0f, 20.0f);
+				//ImGui::SliderFloat("cy", &cy, -20.0f, 20.0f);
+				//ImGui::SliderFloat("cz", &cz, -20.0f, 20.0f);
+				//ImGui::SliderFloat("rx", &rx, -180.0f, 180.0f);
+				//ImGui::SliderFloat("ry", &ry, -180.0f, 180.0f);
 				ImGui::End();
 			}
 
@@ -87,5 +127,26 @@ public:
 		} else {
 			glfwSetInputMode(windowCHandle->Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
+
+		/*world->each<ObjectComponent, PositionComponent, PlayerComponent, TransformComponent>(
+			[&](Entity* ent,
+				ComponentHandle<ObjectComponent> objectCHandle,
+				ComponentHandle<PositionComponent> positionCHandle,
+				ComponentHandle<PlayerComponent> playerCHandle,
+				ComponentHandle<TransformComponent> transformCHandle) -> void {
+			transformCHandle->translate.x = x;
+			transformCHandle->translate.y = y;
+			transformCHandle->translate.z = z;
+			transformCHandle->scale = glm::vec3(s, s, s);
+
+			auto cameraCHandle = ent->get<CameraComponent>();
+			cameraCHandle->Relative_position.x = cx;
+			cameraCHandle->Relative_position.y = cy;
+			cameraCHandle->Relative_position.z = cz;
+
+			transformCHandle->rotate_x = rx;
+			transformCHandle->rotate_y = ry;
+
+		});*/
 	}
 };
