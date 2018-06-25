@@ -67,6 +67,9 @@ public:
 		lastY = ypos;
 
 		updateCamera(world, xoffset, yoffset);
+		world->each<TransformComponent>([&](Entity* ent, ComponentHandle<TransformComponent> transformCHandle) -> void {
+			transformCHandle->relative_translate = glm::vec3(0.0f, 0.0f, 0.0f);
+		});
 	}
 
 private:
@@ -131,10 +134,10 @@ private:
 			cameraCHandle->Pitch += yoffset;
 
 			// Make sure that when pitch is out of bounds, screen doesn't get flipped
-			if (cameraCHandle->Pitch > 35.0f)
-				cameraCHandle->Pitch = 35.0f;
-			if (cameraCHandle->Pitch < -35.0f)
-				cameraCHandle->Pitch = -35.0f;
+			if (cameraCHandle->Pitch > 45.0f)
+				cameraCHandle->Pitch = 45.0f;
+			if (cameraCHandle->Pitch < -45.0f)
+				cameraCHandle->Pitch = -45.0f;
 
 			glm::vec3 front;
 			front.x = cos(glm::radians(cameraCHandle->Yaw)) * cos(glm::radians(cameraCHandle->Pitch));

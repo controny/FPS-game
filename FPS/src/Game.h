@@ -77,9 +77,6 @@ public:
 		world->registerSystem(new GUISystem());  // Must place after render system
 		world->registerSystem(new TextSystem());
 
-		Resource::ModelResource monster_resource(gameRootPath + "/resources/objects/Etin/Etin.obj");
-		world->registerSystem(new MonsterCreationSystem(monster_resource));
-
 
 		// Singleton components
 		world->createSingletonComponent<LightingInfoSingletonComponent>();
@@ -87,10 +84,6 @@ public:
 		world->createSingletonComponent<SkyboxInfoSingletonComponent>(skybox_resource.vertices, skybox_resource.indices, skybox_resource.textures);
 
 		// Entities
-		Entity* wall_a = world->create();
-		Entity* wall_b = world->create();
-        Entity* wall_c = world->create();
-		Entity* ground = world->create();
 		Entity* player = world->create();
 		
 		Entity* bullet_text = world->create();
@@ -98,11 +91,8 @@ public:
 		Entity* test_post = world->create();  // ä»¥åŽ post èµ‹ç»™ gun çš?entityï¼ŒçŽ°åœ¨åªæ˜¯æµ‹è¯?
 		Entity* old_man = world->create();
 
-		Entity* gun = world->create();
-		//Entity* monster = world->create();
-
-		Entity* hitParticles = world->create();	// å­å¼¹å‡»ä¸­ç‰©ä½“çš„ç²’å­æ•ˆæž?
-		Entity* gunFire = world->create();	// æžªå£å¼€ç«çš„ç²’å­æ•ˆæžœ
+		Entity* hitParticles = world->create();
+		Entity* gunFire = world->create();
 
 		Entity* disappear = world->create();	// æ€ªç‰©æ¶ˆå¤±çš„ç²’å­æ•ˆæž?
 		Entity* ground = world->create();
@@ -116,47 +106,92 @@ public:
 		textureResource.init();
 
 		// Assign the components to entities
-		Resource::CubeResource wall_resource, ground_resource;
+		Resource::CubeResource box_resource, ground_resource;
         Resource::PBR_CubeResource ground_pbr_resource, wall_pbr_resource;
 
-        wall_resource.init(20.0f, 20.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
-        wall_a->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
-        wall_a->assign<PositionComponent>(glm::vec3(30.0f, 10.0f, 0.0f));
-        wall_a->assign<CollisionComponent>(20.0f, 20.0f, 10.0f);
+		
+		for (int i = 0; i < 5; i++) {
+			Entity* box = world->create();
+			if (i == 0) {
+				box_resource.init(10.0f, 20.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
+				box->assign<ObjectComponent>(box_resource.vertices, box_resource.indices, box_resource.textures);
+				box->assign<PositionComponent>(glm::vec3(0.0f, 10.0f, 0.0f));
+				box->assign<CollisionComponent>(10.0f, 30.0f, 10.0f);
+			}
+			else {
+				float x = 0.0f, z = 0.0f;
+				if (i == 1) x = 20.0f;
+				if (i == 2) x = -20.0f;
+				if (i == 3) z = 20.0f;
+				if (i == 4) z = -20.0f;
 
-		wall_resource.init(5.0f, 5.0f, 5.0f, textureResource.container_diffuse, textureResource.container_specular);
-		wall_b->assign<ObjectComponent>(wall_resource.vertices, wall_resource.indices, wall_resource.textures);
-		wall_b->assign<PositionComponent>(glm::vec3(45.0f, 2.5f, 5.0f));
-		wall_b->assign<CollisionComponent>(5.0f, 5.0f, 5.0f);
+				box_resource.init(10.0f, 10.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
+				box->assign<ObjectComponent>(box_resource.vertices, box_resource.indices, box_resource.textures);
+				box->assign<PositionComponent>(glm::vec3(x, 5.0f, z));
+				box->assign<CollisionComponent>(10.0f, 10.0f, 10.0f);
+			}
+		}
 
-        wall_pbr_resource.init(20.0f, 10.0f, 20.0f, 1.0f,
-            textureResource.wall_albedo,
-            textureResource.wall_normal,
-            textureResource.wall_metallic,
-            textureResource.wall_roughness,
-            textureResource.wall_ao,
-            textureResource.wall_height);
-        wall_c->assign<ObjectComponent>(wall_pbr_resource.vertices, wall_pbr_resource.indices, wall_pbr_resource.textures, "wall", true);
-        wall_c->assign<PositionComponent>(glm::vec3(60.0f, 10.0f, 45.0f));
-        wall_c->assign<CollisionComponent>(20.0f, 10.0f, 20.0f);
+		float square = 30.0f, thick = 5.0f, away = 150.0f, height = 30.0f;
+		for (int i = 0; i < 8; i++) {
+			Entity* wall = world->create();
+			float x, z, pos_x, pos_z;
+			
+			if (i == 0) {
+				x = thick; z = away;
+				pos_z = square + away / 2; pos_x = square;
+			}
+			if (i == 1) {
+				x = thick; z = away;
+				pos_z = square + away / 2; pos_x = -square;
+			}
+			if (i == 2) {
+				x = thick; z = away;
+				pos_z = -(square + away / 2); pos_x = square;
+			}
+			if (i == 3) {
+				x = thick; z = away;
+				pos_z = -(square + away / 2); pos_x = -square;
+			}
+			if (i == 4) {
+				x = away; z = thick;
+				pos_z = square; pos_x = square + away / 2;
+			}
+			if (i == 5) {
+				x = away; z = thick;
+				pos_z = square; pos_x = -(square + away / 2);
+			}
+			if (i == 6) {
+				x = away; z = thick;
+				pos_z = -square; pos_x = square + away / 2;
+			}
+			if (i == 7) {
+				x = away; z = thick;
+				pos_z = -square; pos_x = -(square + away / 2);
+			}
 
-		/*monster->assign<ObjectComponent>(monster_resource.textures_loaded, monster_resource.meshes);
-		monster->assign<PositionComponent>(glm::vec3(-8.0f, 0.0f, 0.0f));
-		monster->assign<CollisionComponent>(-2.0f, 2.0f, 0.0f, 4.0f, -1.5f, 1.5f);
-		monster->assign<MovementComponent>(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-		monster->assign<HPComponent>();*/
+			wall_pbr_resource.init(x, height, z, 1.0f,
+				textureResource.wall_albedo,
+				textureResource.wall_normal,
+				textureResource.wall_metallic,
+				textureResource.wall_roughness,
+				textureResource.wall_ao,
+				textureResource.wall_height);
+
+			wall->assign<ObjectComponent>(wall_pbr_resource.vertices, wall_pbr_resource.indices, wall_pbr_resource.textures, "wall", true);
+			wall->assign<PositionComponent>(glm::vec3(pos_x, height / 2, pos_z));
+			wall->assign<CollisionComponent>(x, height, z);
+		}
+		Resource::ModelResource monster_resource(gameRootPath + "/resources/objects/Etin/Etin.obj");
+		world->registerSystem(new MonsterCreationSystem(monster_resource, square, away));
+
 
 		old_man->assign<BoneObjectComponent>(gameRootPath + "/resources/bone/boblampclean.md5mesh");
-		old_man->assign<PositionComponent>(glm::vec3(50.0f, 0.0f, -10.0f));
+		old_man->assign<PositionComponent>(glm::vec3(0.0f, 80.0f, 0.0f));
 		old_man->assign<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.5f, 0.5f), 0.0f, 0.0f);
 		old_man->assign<HPComponent>();
 
-		//ground_resource.init(500.0f, 500.0f, 1.0f, textureResource.ground_diffuse, textureResource.ground_specular);
-		//ground->assign<ObjectComponent>(ground_resource.vertices, ground_resource.indices, ground_resource.textures);
-        //ground->assign<PositionComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
-        //ground->assign<CollisionComponent>(500.0f, 500.0f, 1.0f);
-
-        ground_pbr_resource.init(500.0f, 500.0f, 1.0f, 10.0f,
+        ground_pbr_resource.init(500.0f, 1.0f, 500.0f, 10.0f,
             textureResource.ground_albedo,
             textureResource.ground_normal,
             textureResource.ground_metallic,
@@ -165,11 +200,11 @@ public:
             textureResource.ground_height);
         ground->assign<ObjectComponent>(ground_pbr_resource.vertices, ground_pbr_resource.indices, ground_pbr_resource.textures, "ground", true);
         ground->assign<PositionComponent>(glm::vec3(0.0f, 0.0f, 0.0f));
-        ground->assign<CollisionComponent>(500.0f, 500.0f, 1.0f);
+        ground->assign<CollisionComponent>(500.0f, 1.0f, 500.0f);
 
 		player->assign<ObjectComponent>(gameRootPath + "/resources/objects/gun/Ak-74.obj", "player");
 
-		player->assign<PositionComponent>(glm::vec3(5.0f, 0.6f, 0.0f));
+		player->assign<PositionComponent>(glm::vec3(15.0f, 0.6f, 0.0f));
 		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // ç¢°æ’žæ£€æµ‹éœ€è¦ï¼Œè¦ç»™ä¸ªå°ä¸€ç‚¹å‘ä¸‹çš„åˆé€Ÿåº¦ï¼›é¿å…ä¸€å¼€å§‹æ£€æµ‹ä¸åˆ°ç¢°æ’žæŽ‰ä¸‹åŽ»
 
 		player->assign<PlayerComponent>();
