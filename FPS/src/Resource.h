@@ -301,12 +301,37 @@ struct Resource {
 		Texture cubemapTexture;
 		vector<std::string> faces
 		{
-			resource_dir + "textures/skybox/right.jpg",
-			resource_dir + "textures/skybox/left.jpg",
-			resource_dir + "textures/skybox/top.jpg",
-			resource_dir + "textures/skybox/bottom.jpg",
-			resource_dir + "textures/skybox/back.jpg",
-			resource_dir + "textures/skybox/front.jpg"
+			/*
+			resource_dir + "textures/skybox/bluesky/right.jpg",
+			resource_dir + "textures/skybox/bluesky/left.jpg",
+			resource_dir + "textures/skybox/bluesky/top.jpg",
+			resource_dir + "textures/skybox/bluesky/bottom.jpg",
+			resource_dir + "textures/skybox/bluesky/back.jpg",
+			resource_dir + "textures/skybox/bluesky/front.jpg"
+			*/
+			/*
+			resource_dir + "textures/skybox/iceflow/iceflow_rt.tga",
+			resource_dir + "textures/skybox/iceflow/iceflow_lf.tga",
+			resource_dir + "textures/skybox/iceflow/iceflow_up.jpg",
+			resource_dir + "textures/skybox/iceflow/iceflow_dn.tga",
+			resource_dir + "textures/skybox/iceflow/iceflow_bk.tga",
+			resource_dir + "textures/skybox/iceflow/iceflow_ft.tga"
+			*/
+			/*
+			resource_dir + "textures/skybox/arrakisday/arrakisday_rt.tga",
+			resource_dir + "textures/skybox/arrakisday/arrakisday_lf.tga",
+			resource_dir + "textures/skybox/arrakisday/arrakisday_up.jpg",
+			resource_dir + "textures/skybox/arrakisday/arrakisday_dn.tga",
+			resource_dir + "textures/skybox/arrakisday/arrakisday_bk.tga",
+			resource_dir + "textures/skybox/arrakisday/arrakisday_ft.tga"
+			*/
+			resource_dir + "textures/skybox/ame_cotton/cottoncandy_rt.tga",
+			resource_dir + "textures/skybox/ame_cotton/cottoncandy_lf.tga",
+			resource_dir + "textures/skybox/ame_cotton/cottoncandy_up.jpg",
+			resource_dir + "textures/skybox/ame_cotton/cottoncandy_dn.tga",
+			resource_dir + "textures/skybox/ame_cotton/cottoncandy_bk.tga",
+			resource_dir + "textures/skybox/ame_cotton/cottoncandy_ft.tga"
+			
 		};
 		void init() {
 			cubemapTexture = Texture(loadCubemap(faces), "texture_diffuse");
