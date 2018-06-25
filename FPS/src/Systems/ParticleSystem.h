@@ -7,6 +7,9 @@
 #include <Events/KeyEvents.h>
 #include <Events/FireEvent.h>
 
+#include <chrono>
+#include <random>
+
 using namespace ECS;
 
 class ParticleSystem : public EntitySystem, public EventSubscriber<FireEvent>
@@ -52,7 +55,7 @@ public:
 			Entity* ent,
 			ComponentHandle<ParticleComponent> particleCHandle,
 			ComponentHandle<PositionComponent> positionCHandle) {
-			if (particleCHandle->producedParticles > particleCHandle->MAX_TOTAL_NUM)
+			if (particleCHandle->producedParticles >= particleCHandle->MAX_TOTAL_NUM)
 				return;
 			// Generate 10 new particule each millisecond,
 			// but limit this to 16 ms (60 fps), or if you have 1 long frame (1sec),
@@ -79,6 +82,7 @@ public:
 
 				positionCHandle->Position = pos;
 
+				particleCHandle->reset();
 				particleCHandle->texture = particleCHandle->resource.bloodTexture;
 				particleCHandle->producedParticles = 0;
 				particleCHandle->maxParticles = 30;
@@ -90,7 +94,7 @@ public:
 				particleCHandle->color_g = 10;
 				particleCHandle->color_b = 10;
 				particleCHandle->color_a = 224;
-				particleCHandle->size = 0.1;
+				particleCHandle->size = 0.3;
 		});
 
 	}
@@ -105,19 +109,20 @@ public:
 
 				positionCHandle->Position = pos;
 
+				particleCHandle->reset();
 				particleCHandle->texture = particleCHandle->resource.smokeTexture;
 				particleCHandle->producedParticles = 0;
-				particleCHandle->maxParticles = 10;
+				particleCHandle->maxParticles = 100;
 				particleCHandle->MAX_TOTAL_NUM = 3000;
-				particleCHandle->life = 0.3f;
-				particleCHandle->newParticlesPerMS = 50;
+				particleCHandle->life = 0.2f;
+				particleCHandle->newParticlesPerMS = 100;
 				particleCHandle->spread = 0.0f;
 				particleCHandle->maindir = -hitdir * 15.0f;
 				particleCHandle->color_r = 44;
 				particleCHandle->color_g = 44;
 				particleCHandle->color_b = 44;
 				particleCHandle->color_a = 224;
-				particleCHandle->size = 0.8;
+				particleCHandle->size = 0.2;
 		});
 
 	}
@@ -132,11 +137,13 @@ public:
 
 			positionCHandle->Position = pos;
 
+			particleCHandle->reset();
 			particleCHandle->texture = particleCHandle->resource.gunFireTexture;
 			particleCHandle->producedParticles = 0;
 			particleCHandle->maxParticles = 1;
+			particleCHandle->MAX_TOTAL_NUM = 100;
 			particleCHandle->life = 0.1f;
-			particleCHandle->newParticlesPerMS = 100;
+			particleCHandle->newParticlesPerMS = 1;
 			particleCHandle->spread = 0.0f;
 			particleCHandle->maindir = dir * 5.0f;
 			particleCHandle->color_r = 244;
@@ -144,6 +151,7 @@ public:
 			particleCHandle->color_b = 244;
 			particleCHandle->color_a = 224;
 			particleCHandle->size = 0.1;
+			particleCHandle->randomSize = false;
 		});
 	}
 
@@ -157,19 +165,20 @@ public:
 
 			positionCHandle->Position = pos;
 
+			particleCHandle->reset();
 			particleCHandle->texture = particleCHandle->resource.disappearingTexture;
 			particleCHandle->producedParticles = 0;
-			particleCHandle->maxParticles = 100;
-			//particleCHandle->MAX_TOTAL_NUM = 20000;
-			particleCHandle->life = 5.0f;
-			particleCHandle->newParticlesPerMS = 50;
+			particleCHandle->maxParticles = 300;
+			particleCHandle->MAX_TOTAL_NUM = 13000;
+			particleCHandle->life = 3.0f;
+			particleCHandle->newParticlesPerMS = 80;
 			particleCHandle->spread = 1.5f;
 			particleCHandle->maindir = glm::vec3(0.0f, 5.0f, 0.0f);
 			particleCHandle->color_r = 44;
 			particleCHandle->color_g = 44;
 			particleCHandle->color_b = 44;
 			particleCHandle->color_a = 224;
-			particleCHandle->size = 0.1;
+			particleCHandle->size = 0.2;
 		});
 	}
 
@@ -209,13 +218,24 @@ private:
 			particleCHandle->container[particleIndex].life = particleCHandle->life;
 			particleCHandle->container[particleIndex].pos = positionCHandle->Position;
 
+			unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+			std::default_random_engine generator(seed);
+
+			std::normal_distribution<double> distribution(0.0, 1.0);
+
 			// Very bad way to generate a random direction; 
 			// See for instance http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution instead,
 			// combined with some user-controlled parameters (main direction, spread, etc)
+			//glm::vec3 randomdir = glm::vec3(
+			//	(rand() % 2000 - 1000.0f) / 1000.0f,
+			//	(rand() % 2000 - 1000.0f) / 1000.0f,
+			//	(rand() % 2000 - 1000.0f) / 1000.0f
+			//);
+
 			glm::vec3 randomdir = glm::vec3(
-				(rand() % 2000 - 1000.0f) / 1000.0f,
-				(rand() % 2000 - 1000.0f) / 1000.0f,
-				(rand() % 2000 - 1000.0f) / 1000.0f
+				distribution(generator),
+				distribution(generator),
+				distribution(generator)
 			);
 
 			particleCHandle->container[particleIndex].speed = particleCHandle->maindir + randomdir * particleCHandle->spread;
@@ -227,7 +247,11 @@ private:
 			particleCHandle->container[particleIndex].b = (rand() % (2*maxColorBiase) - maxColorBiase) +  particleCHandle->color_b;
 			particleCHandle->container[particleIndex].a = (rand() % (2*maxColorBiase) - maxColorBiase) +  particleCHandle->color_a;
 
-			particleCHandle->container[particleIndex].size = (rand() % 500) / 2000.0f + particleCHandle->size;
+			if (particleCHandle->randomSize)
+				//particleCHandle->container[particleIndex].size = (rand() % 500) / 2000.0f + particleCHandle->size;
+				particleCHandle->container[particleIndex].size = distribution(generator) * particleCHandle->size;
+			else
+				particleCHandle->container[particleIndex].size = particleCHandle->size;
 
 		}
 	}
