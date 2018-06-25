@@ -109,7 +109,7 @@ public:
 					glm::vec3 position = positionCHandle->Position;
 
 					// 碰到箱子会破坏箱子；碰到中间的就输
-					if (position.x < 30.0f && position.x > -30.0f && position.z < 30.0f && position.z > -30.0f) {
+					if (position.x < 5.0f && position.x > -5.0f && position.z < 5.0f && position.z > -5.0f) {
 						windowCHandle->game_start = false;
 						windowCHandle->game_ready = false;
 
