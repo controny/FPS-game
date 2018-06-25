@@ -94,7 +94,7 @@ public:
 				particleCHandle->color_g = 10;
 				particleCHandle->color_b = 10;
 				particleCHandle->color_a = 224;
-				particleCHandle->size = 1.5;
+				particleCHandle->size = 0.7;
 		});
 
 	}
