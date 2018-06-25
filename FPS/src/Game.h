@@ -91,13 +91,13 @@ public:
 		
 		Entity* bullet_text = world->create();
 		Entity* hp_text = world->create();
-		Entity* test_post = world->create();  // ä»¥åŽ post èµ‹ç»™ gun çš?entityï¼ŒçŽ°åœ¨åªæ˜¯æµ‹è�?
+		Entity* test_post = world->create();
 		Entity* old_man = world->create();
 
 		Entity* hitParticles = world->create();
 		Entity* gunFire = world->create();
 
-		Entity* disappear = world->create();	// æ€ªç‰©æ¶ˆå¤±çš„ç²’å­æ•ˆæ�?
+		Entity* disappear = world->create();
 		Entity* ground = world->create();
 		Entity* time_text = world->create();
 
@@ -175,7 +175,7 @@ public:
 				pos_z = -square; pos_x = -(square + away / 2);
 			}
 
-			wall_pbr_resource.init(x, height, z, 1.0f,
+			wall_pbr_resource.init(x, away, z, 3.0f,
 				textureResource.wall_albedo,
 				textureResource.wall_normal,
 				textureResource.wall_metallic,
@@ -184,7 +184,7 @@ public:
 				textureResource.wall_height);
 
 			wall->assign<ObjectComponent>(wall_pbr_resource.vertices, wall_pbr_resource.indices, wall_pbr_resource.textures, "wall", true);
-			wall->assign<PositionComponent>(glm::vec3(pos_x, height / 2, pos_z));
+			wall->assign<PositionComponent>(glm::vec3(pos_x, height - (away / 2), pos_z));
 			wall->assign<CollisionComponent>(x, height, z);
 		}
 		Resource::ModelResource monster_resource(gameRootPath + "/resources/objects/Etin/Etin.obj");
@@ -216,7 +216,7 @@ public:
 		player->assign<PlayerComponent>();
 		player->assign<TransformComponent>(glm::vec3(-0.63f, 4.52f, 2.0f), glm::vec3(0.022f, 0.022f,0.022f), 0.0f, 180.0f);
 		player->assign<CameraComponent>(glm::vec3(0.0f, 5.0f, 0.0f));
-        player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
+        player->assign<CollisionComponent>(-3.0f, 3.0f, 0.0f, 16.0f, -3.0f, 3.0f);
 
 		bullet_text->assign<TextComponent>("bullet_info", "30 / 30", 0.05f, 0.05f, 0.8f, window_width, window_height, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
 		hp_text->assign<TextComponent>("score", "score: ", 0.4f, 0.05f, 0.8f, window_width, window_height, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
