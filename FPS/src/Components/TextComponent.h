@@ -29,7 +29,8 @@ struct TextComponent {
 	vector<GLuint> VAOs, VBOs, TextureIDs;
 	string text;
 	glm::vec3 color;
-	GLfloat x, y, scale;
+	GLfloat x, y, scale;  // 比例
+	GLfloat x_pos, y_pos, size_scale;  // 实际像素位置，根据 window 大小算出
 	string font_dir;
 
 	FT_Library ft;
@@ -42,6 +43,14 @@ struct TextComponent {
 	void setText(string _text) {
 		this->text = _text;
 		refreshBuffers();
+	}
+
+	void setPos(float window_width, float window_height) {
+		this->x_pos = window_width * this->x;
+		this->y_pos = window_height * this->y;
+		this->size_scale = min(window_width, window_height) / 600.0f * scale;
+		refreshBuffers();
+		cout << x_pos << ' ' << y_pos << endl;
 	}
 
 	void refreshBuffers() {
@@ -65,18 +74,18 @@ struct TextComponent {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		float ori_x = x, ori_y = y;
+		float ori_x = x_pos, ori_y = y_pos;
 		for (int i = 0; i < text.size(); i++)
 		{
 			glBindVertexArray(this->VAOs[i]);
 			Character ch = this->Characters[text[i]];
 			TextureIDs[i] = this->Characters[text[i]].TextureID;
 
-			GLfloat xpos = ori_x + ch.Bearing.x * scale;
-			GLfloat ypos = ori_y - (ch.Size.y - ch.Bearing.y) * scale;
+			GLfloat xpos = ori_x + ch.Bearing.x * size_scale;
+			GLfloat ypos = ori_y - (ch.Size.y - ch.Bearing.y) * size_scale;
 
-			GLfloat w = ch.Size.x * scale;
-			GLfloat h = ch.Size.y * scale;
+			GLfloat w = ch.Size.x * size_scale;
+			GLfloat h = ch.Size.y * size_scale;
 			// Update VBO for each character
 			GLfloat vertices[6][4] = {
 				{ xpos,     ypos + h,   0.0, 0.0 },
@@ -97,7 +106,7 @@ struct TextComponent {
 																							 // Render quad
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-			ori_x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+			ori_x += (ch.Advance >> 6) * size_scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
 		}
 
 		glBindVertexArray(0);
@@ -109,6 +118,7 @@ struct TextComponent {
 		color = _color;
 		x = _x;
 		y = _y;
+		x_pos = y_pos = 0;
 		scale = _scale;
 		text = _text;
 		font_dir = _font_dir;
