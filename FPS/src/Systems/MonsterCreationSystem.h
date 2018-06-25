@@ -60,7 +60,7 @@ public:
 			Entity* monster = world->create();
 
 			float area = rand() / double(RAND_MAX) * 4;
-			float pos = (rand() - 1) / double(RAND_MAX) * 2 * (square - 20);
+			float pos = (rand() - 1) / double(RAND_MAX) * 2 * square / 2;
 			
 			float x, z;
 			if (area > 0 && area < 1) {

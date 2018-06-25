@@ -52,6 +52,8 @@ public:
 	void init(GLFWwindow* _window) {
 		world = World::createWorld();
 		window = _window;
+		int window_width, window_height;
+		glfwGetWindowSize(window, &window_width, &window_height);
 
 		char exeFullPath[MAX_PATH]; // Full path
 		GetModuleFileName(NULL, exeFullPath, MAX_PATH);
@@ -212,8 +214,8 @@ public:
 		player->assign<CameraComponent>(glm::vec3(0.0f, 5.0f, 0.0f));
         player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
 
-		bullet_text->assign<TextComponent>("bullet_info", "30 / 30", 20.0f, 30.0f, 0.8f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
-		hp_text->assign<TextComponent>("score", "score: ", 600.0f, 30.0f, 0.8f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
+		bullet_text->assign<TextComponent>("bullet_info", "30 / 30", 0.05f, 0.05f, 0.8f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
+		hp_text->assign<TextComponent>("score", "score: ", 0.5f, 0.05f, 0.8f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 
