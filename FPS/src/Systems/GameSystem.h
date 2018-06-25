@@ -122,7 +122,7 @@ public:
 				windowCHandle->game_start = false;
 				windowCHandle->game_ready = false;
 				Entity* win_text = world->create();
-				win_text->assign<TextComponent>("end", "You Win", 0.4f, 0.42f, 1.5f, window_width, window_height, glm::vec3(0.5, 0.8f, 0.2f), windowCHandle->gameRootPath + "/resources/fonts/");
+				win_text->assign<TextComponent>("end", "You Win", 0.30f, 0.45f, 1.5f, window_width, window_height, glm::vec3(0.5, 0.8f, 0.2f), windowCHandle->gameRootPath + "/resources/fonts/");
 				
 				world->each<ObjectComponent>([&](Entity* ent, ComponentHandle<ObjectComponent> objectCHandle) -> void {
 					if (objectCHandle->id == "monster") {
@@ -151,7 +151,7 @@ public:
 						windowCHandle->game_ready = false;
 
 						Entity* win_text = world->create();
-						win_text->assign<TextComponent>("end", "You Lose", 0.4f, 0.42f, 1.5f, window_width, window_height, glm::vec3(0.5, 0.8f, 0.2f), windowCHandle->gameRootPath + "/resources/fonts/");
+						win_text->assign<TextComponent>("end", "You Lose", 0.30f, 0.45f, 1.5f, window_width, window_height, glm::vec3(0.5, 0.8f, 0.2f), windowCHandle->gameRootPath + "/resources/fonts/");
 
 						world->each<ObjectComponent>([&](Entity* ent, ComponentHandle<ObjectComponent> objectCHandle) -> void {
 							if (objectCHandle->id == "monster") {

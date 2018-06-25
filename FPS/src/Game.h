@@ -185,7 +185,7 @@ public:
 
 			wall->assign<ObjectComponent>(wall_pbr_resource.vertices, wall_pbr_resource.indices, wall_pbr_resource.textures, "wall", true);
 			wall->assign<PositionComponent>(glm::vec3(pos_x, height - (away / 2), pos_z));
-			wall->assign<CollisionComponent>(x, height, z);
+			wall->assign<CollisionComponent>(x, away, z);
 		}
 		Resource::ModelResource monster_resource(gameRootPath + "/resources/objects/Etin/Etin.obj");
 		world->registerSystem(new MonsterCreationSystem(monster_resource, square, away));
