@@ -94,7 +94,7 @@ public:
 				particleCHandle->color_g = 10;
 				particleCHandle->color_b = 10;
 				particleCHandle->color_a = 224;
-				particleCHandle->size = 0.1;
+				particleCHandle->size = 0.3;
 		});
 
 	}
@@ -141,9 +141,9 @@ public:
 			particleCHandle->texture = particleCHandle->resource.gunFireTexture;
 			particleCHandle->producedParticles = 0;
 			particleCHandle->maxParticles = 1;
-			particleCHandle->MAX_TOTAL_NUM = 1000;
+			particleCHandle->MAX_TOTAL_NUM = 100;
 			particleCHandle->life = 0.1f;
-			particleCHandle->newParticlesPerMS = 50;
+			particleCHandle->newParticlesPerMS = 1;
 			particleCHandle->spread = 0.0f;
 			particleCHandle->maindir = dir * 5.0f;
 			particleCHandle->color_r = 244;
