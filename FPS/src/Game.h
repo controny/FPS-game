@@ -131,7 +131,7 @@ public:
 				if (i == 4) z = -20.0f;
 
 				box_resource.init(10.0f, 10.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
-				box->assign<ObjectComponent>(box_resource.vertices, box_resource.indices, box_resource.textures, "box" + i);
+				box->assign<ObjectComponent>(box_resource.vertices, box_resource.indices, box_resource.textures, "guarding_box");
 				box->assign<PositionComponent>(glm::vec3(x, 5.0f, z));
 				box->assign<CollisionComponent>(10.0f, 10.0f, 10.0f);
 			}

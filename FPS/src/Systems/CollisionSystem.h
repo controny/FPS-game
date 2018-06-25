@@ -292,7 +292,12 @@ public:
                 CollisionState state = checkBodyCollision(ent, other_ent);
                 if (state.collisionInX || state.collisionInY || state.collisionInZ) {
                     //printf("collision\n");
-                    stopMoving(ent, state);
+                    if (ent->get<ObjectComponent>()->id == "monster" && other_ent->get<ObjectComponent>()->id == "guarding_box") {
+                        other_ent->removeAll();
+                    }
+                    else {
+                        stopMoving(ent, state);
+                    }
                 }              
             });
         });

@@ -65,7 +65,7 @@ public:
 
 			float area = rand() / double(RAND_MAX) * 4;
 			float pos = (rand() - 0.5) / double(RAND_MAX) * 2 * (square - 10);
-			float velocity = max(rand() / float(RAND_MAX) * 40, 15.0f);
+			float velocity = max(rand() / float(RAND_MAX) * 20, 15.0f);
 			
 			float x, z;
 			if (area > 0 && area < 1) {

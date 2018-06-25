@@ -82,7 +82,7 @@ public:
 					glm::vec3 position = positionCHandle->Position;
 
 					// 碰到箱子会破坏箱子；碰到中间的就输
-					if (position.x < 30.0f && position.x > -30.0f && position.z < 30.0f && position.z > -30.0f) {
+					if (position.x < 5.0f && position.x > -5.0f && position.z < 5.0f && position.z > -5.0f) {
 						windowCHandle->game_start = false;
 						Entity* win_text = world->create();
 						win_text->assign<TextComponent>("end", "You Lose", 0.28f, 0.45f, 1.5f, window_width, window_height, glm::vec3(0.5, 0.8f, 0.2f), windowCHandle->gameRootPath + "/resources/fonts/");
