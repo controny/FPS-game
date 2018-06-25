@@ -85,16 +85,16 @@ public:
 				particleCHandle->reset();
 				particleCHandle->texture = particleCHandle->resource.bloodTexture;
 				particleCHandle->producedParticles = 0;
-				particleCHandle->maxParticles = 30;
-				particleCHandle->life = 1.0f;
-				particleCHandle->newParticlesPerMS = 30;
+				particleCHandle->maxParticles = 300;
+				particleCHandle->life = 10.0f;
+				particleCHandle->newParticlesPerMS = 60;
 				particleCHandle->spread = 3.0f;
-				particleCHandle->maindir = -hitdir * 10.0f;
+				particleCHandle->maindir = -hitdir * 70.0f;
 				particleCHandle->color_r = 245;
 				particleCHandle->color_g = 10;
 				particleCHandle->color_b = 10;
 				particleCHandle->color_a = 224;
-				particleCHandle->size = 0.3;
+				particleCHandle->size = 1.5;
 		});
 
 	}
@@ -114,15 +114,15 @@ public:
 				particleCHandle->producedParticles = 0;
 				particleCHandle->maxParticles = 100;
 				particleCHandle->MAX_TOTAL_NUM = 3000;
-				particleCHandle->life = 0.2f;
+				particleCHandle->life = 3.2f;
 				particleCHandle->newParticlesPerMS = 100;
 				particleCHandle->spread = 0.0f;
-				particleCHandle->maindir = -hitdir * 15.0f;
+				particleCHandle->maindir = -hitdir * 80.0f;
 				particleCHandle->color_r = 44;
 				particleCHandle->color_g = 44;
 				particleCHandle->color_b = 44;
 				particleCHandle->color_a = 224;
-				particleCHandle->size = 0.2;
+				particleCHandle->size = 1.5;
 		});
 
 	}
@@ -169,16 +169,16 @@ public:
 			particleCHandle->texture = particleCHandle->resource.disappearingTexture;
 			particleCHandle->producedParticles = 0;
 			particleCHandle->maxParticles = 300;
-			particleCHandle->MAX_TOTAL_NUM = 13000;
+			particleCHandle->MAX_TOTAL_NUM = 5000;
 			particleCHandle->life = 3.0f;
 			particleCHandle->newParticlesPerMS = 80;
-			particleCHandle->spread = 1.5f;
-			particleCHandle->maindir = glm::vec3(0.0f, 5.0f, 0.0f);
+			particleCHandle->spread = 6.0f;
+			particleCHandle->maindir = glm::vec3(0.0f, 50.0f, 0.0f);
 			particleCHandle->color_r = 44;
 			particleCHandle->color_g = 44;
 			particleCHandle->color_b = 44;
 			particleCHandle->color_a = 224;
-			particleCHandle->size = 0.2;
+			particleCHandle->size = 2.0;
 		});
 	}
 
