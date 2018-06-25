@@ -149,8 +149,8 @@ public:
 					transformCHandle->relative_translate.z = z_origin-relative * load_bullet_shift;
 				}
 				else if (relative < 1 && relative > 0.5) {
-					transformCHandle->relative_translate.y += y_origin - (load_bullet_shift / 2 - (relative - 0.5) * load_bullet_shift);
-					transformCHandle->relative_translate.z += z_origin - (load_bullet_shift / 2 - (relative - 0.5) * load_bullet_shift);
+					transformCHandle->relative_translate.y = y_origin - (load_bullet_shift / 2 - (relative - 0.5) * load_bullet_shift);
+					transformCHandle->relative_translate.z = z_origin - (load_bullet_shift / 2 - (relative - 0.5) * load_bullet_shift);
 				}
 				else if (relative > 1) {
 					transformCHandle->relative_translate.y = y_origin;
