@@ -24,6 +24,7 @@ struct LightingInfoSingletonComponent {
 
 	LightingInfoSingletonComponent() {
 		LightPos = glm::vec3(-12.5f, 30.0f, -12.5f);
+		//LightPos = glm::vec3(-9.5f, 15.0f, -9.5f);
 		LightDirection = glm::vec3(1.0f, -10.0f, 1.0f);
 		LightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 		AmbientStrength = 0.5f;

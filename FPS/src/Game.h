@@ -79,7 +79,6 @@ public:
 		world->registerSystem(new RenderSystem(gameRootPath + "/src/Shaders/"));
 		world->registerSystem(new GUISystem());  // Must place after render system
 		world->registerSystem(new TextSystem());
-		world->registerSystem(new GameSystem());
 
 
 		// Singleton components
@@ -113,8 +112,9 @@ public:
 		// Assign the components to entities
 		Resource::CubeResource box_resource, ground_resource;
         Resource::PBR_CubeResource ground_pbr_resource, wall_pbr_resource;
-
 		
+		world->registerSystem(new GameSystem(textureResource, box_resource));
+
 		for (int i = 0; i < 5; i++) {
 			Entity* box = world->create();
 			if (i == 0) {

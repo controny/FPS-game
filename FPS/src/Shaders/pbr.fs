@@ -63,15 +63,14 @@ float ShadowCalculation(vec4 fragPosLightSpace, float bias)
         return shadow / 25.0;
     }
     
-    // ÈÔÐèÒªµ÷²Î£»µÈËùÓÐ³¡¾°³öÀ´ºóÔÙ¸ù¾ÝÐ§¹û½øÐÐµ÷²Î
     if (shadow_type != 0) {
         // blocker search
         int region = 0;
         if (shadow_type == 2) {  // PCSS 
-            float light_width = 7.0f;
-            region = max(int(light_width * (currentDepth - bias + closestDepth)), 1);
+            float light_width = 10.0f;
+            region = max(int(light_width * (currentDepth - bias + closestDepth)), 4);
         } else {
-            region = 3;  // fix blocker search region
+            region = 2;  // fix blocker search region
         }
 
         float dist = 0;
@@ -92,7 +91,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, float bias)
             float blockerDistance = dist / blockers;
 
             // PCF width
-            int penumbraWidth = min(max(int((currentDepth - blockerDistance) / blockerDistance * 2.0), 1), 6);
+            int penumbraWidth = min(max(int((currentDepth - blockerDistance) / blockerDistance * 2.0), 0), 10);
             //penumbraWidth = 2;
 
             for(int x = -penumbraWidth; x <= penumbraWidth; ++x) {

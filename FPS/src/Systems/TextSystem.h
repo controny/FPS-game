@@ -47,7 +47,6 @@ public:
 
 		if (last_window_width != window_width || last_window_height != window_height) {
 			world->each<TextComponent>([&](Entity* ent, ComponentHandle<TextComponent> textCHandle) -> void {
-				cout << textCHandle->info << endl;
 				textCHandle->setPos(window_width, window_height);
 			});
 

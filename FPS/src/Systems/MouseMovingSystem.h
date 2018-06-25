@@ -136,8 +136,8 @@ private:
 			// Make sure that when pitch is out of bounds, screen doesn't get flipped
 			if (cameraCHandle->Pitch > 45.0f)
 				cameraCHandle->Pitch = 45.0f;
-			if (cameraCHandle->Pitch < -45.0f)
-				cameraCHandle->Pitch = -45.0f;
+			if (cameraCHandle->Pitch < -40.0f)
+				cameraCHandle->Pitch = -40.0f;
 
 			glm::vec3 front;
 			front.x = cos(glm::radians(cameraCHandle->Yaw)) * cos(glm::radians(cameraCHandle->Pitch));

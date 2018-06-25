@@ -19,7 +19,7 @@ class MonsterCreationSystem : public EntitySystem,
 	public EventSubscriber<KeyPressEvent> {
 public:
 
-	const float margin_time = 1.0f;
+	const float margin_time = 3.0f;
 	float left_time;
 	float square, away;
 

@@ -41,64 +41,63 @@ float ShadowCalculation(vec4 fragPosLightSpace, float bias)
 
     float currentDepth = projCoords.z;
     
-	float closestDepth = texture(shadowMap, projCoords.xy).r;
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
 
-	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
-	float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    float shadow = 0.0;
 
-	if (shadow_type == 0) {  // linear
-		for(int x = -2; x <= 2; ++x) {
-			for(int y = -2; y <= 2; ++y) {
-				float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-				shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
-			}
-		}
-		return shadow / 25.0;
-	}
-	
-	// 仍需要调参；等所有场景出来后再根据效果进行调参
-	if (shadow_type != 0) {
-		// blocker search
-		int region = 0;
-		if (shadow_type == 2) {  // PCSS 
-			float light_width = 7.0f;
-			region = max(int(light_width * (currentDepth - bias + closestDepth)), 1);
-		} else {
-			region = 3;  // fix blocker search region
-		}
+    if (shadow_type == 0) {  // linear
+        for(int x = -2; x <= 2; ++x) {
+            for(int y = -2; y <= 2; ++y) {
+                float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+                shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+            }
+        }
+        return shadow / 25.0;
+    }
+    
+    if (shadow_type != 0) {
+        // blocker search
+        int region = 0;
+        if (shadow_type == 2) {  // PCSS 
+            float light_width = 10.0f;
+            region = max(int(light_width * (currentDepth - bias + closestDepth)), 4);
+        } else {
+            region = 2;  // fix blocker search region
+        }
 
-		float dist = 0;
-		int blockers = 0;
-		for(int x = -region; x <= region; ++x) {
-			for(int y = -region; y <= region; ++y) {
-				float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-				if (currentDepth - bias > pcfDepth) {
-					blockers++;
-					dist += pcfDepth;
-				}
-			}
-		}
+        float dist = 0;
+        int blockers = 0;
+        for(int x = -region; x <= region; ++x) {
+            for(int y = -region; y <= region; ++y) {
+                float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+                if (currentDepth - bias > pcfDepth) {
+                    blockers++;
+                    dist += pcfDepth;
+                }
+            }
+        }
 
-		if (blockers == 0)
-			return 0.0; // not shadow
-		else {
-			float blockerDistance = dist / blockers;
+        if (blockers == 0)
+            return 0.0; // not shadow
+        else {
+            float blockerDistance = dist / blockers;
 
-			// PCF width
-			int penumbraWidth = min(max(int((currentDepth - blockerDistance) / blockerDistance * 2.0), 1), 6);
-			//penumbraWidth = 2;
+            // PCF width
+            int penumbraWidth = min(max(int((currentDepth - blockerDistance) / blockerDistance * 2.0), 0), 10);
+            //penumbraWidth = 2;
 
-			for(int x = -penumbraWidth; x <= penumbraWidth; ++x) {
-				for(int y = -penumbraWidth; y <= penumbraWidth; ++y) {
-					float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-					shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
-				}
-			}
+            for(int x = -penumbraWidth; x <= penumbraWidth; ++x) {
+                for(int y = -penumbraWidth; y <= penumbraWidth; ++y) {
+                    float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+                    shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+                }
+            }
 
-			shadow /= (2 * penumbraWidth + 1) * (2 * penumbraWidth + 1);
-			return shadow;
-		}
-	}
+            shadow /= (2 * penumbraWidth + 1) * (2 * penumbraWidth + 1);
+            return shadow;
+        }
+    }
 }
 
 void main()

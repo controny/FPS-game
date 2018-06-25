@@ -38,7 +38,7 @@ public:
 		ComponentHandle<HPComponent> HPCHandle = hit_entity->get<HPComponent>();
 
 		if (HPCHandle.isValid()) {
-			cout << HPCHandle->HP << endl;
+
 			HPCHandle->HP -= 20;
 			ParticleSystem::simulateBlood(world, hit_position, hit_direction);
 
