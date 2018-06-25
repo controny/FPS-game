@@ -64,7 +64,7 @@ public:
 			Entity* monster = world->create();
 
 			float area = rand() / double(RAND_MAX) * 4;
-			float pos = (rand() - 0.5) / double(RAND_MAX) * 2 * (square - 10);
+			float pos = (rand() - 0.5) / double(RAND_MAX) * 2 * (square - 16);
 			float velocity = max(rand() / float(RAND_MAX) * 20, 15.0f);
 			
 			float x = 0.0f, z = 0.0f;

@@ -54,9 +54,12 @@ struct TextComponent {
 	}
 
 	void refreshBuffers() {
-		VAOs.resize(text.size());
-		VBOs.resize(text.size());
-		TextureIDs.resize(text.size());
+		if (VAOs.size() != text.size()) {
+			VAOs.resize(text.size());
+			VBOs.resize(text.size());
+			TextureIDs.resize(text.size());
+		}
+		
 
 		for (int i = 0; i < text.size(); i++) {
 			glGenVertexArrays(1, &VAOs[i]);

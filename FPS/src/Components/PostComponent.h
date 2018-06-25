@@ -67,11 +67,12 @@ struct PostComponent {
 	}
 
 	// 转换成设备坐标后，坐标位置根据窗口大小来定，不能变成固定大小的正方形。要我改变窗口大小，准心大小也不变。
-	void setSize(float _size, float window_rate) {
+	void setSize(float _size, float _window_rate) {
+		window_rate = _window_rate;
 		/*设置size2,length2大小来通过窗口比例实现准心正方形*/
-		float length2 = length * window_rate;
+		float length2 = length * _window_rate;
 		size = _size;
-		float size2 = size * window_rate;
+		float size2 = size * _window_rate;
 
 		vertices[0] = -size;
 		vertices[3] = -size - length;

@@ -135,13 +135,14 @@ public:
 			/* 准心大小变化 */
 			if (dSize != desSize) {
 				if ((dSize < desSize)) {
+					postCHandle->setSize(dSize, window_rate);
 					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), dSize, window_rate);
 					px = getNumberInNormalDistribution(0.006f, 0.001f);
 					dSize += px;
 					tempSize = dSize;
 				}
 				else {
-					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), desSize, window_rate);
+					postCHandle->setSize(desSize, window_rate);
 					dSize = desSize;
 					
 				}
@@ -149,10 +150,10 @@ public:
 			else {
 				if ((bSize > oriSize)) {
 					bSize -= (desSize * (deltaTime / t));
-					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), bSize, window_rate);
+					postCHandle->setSize(bSize, window_rate);
 				}
 				else {
-					postCHandle->init(glm::vec3(0.0f, 1.0f, 0.0f), oriSize, window_rate);
+					postCHandle->setSize(oriSize, window_rate);
 					bSize = oriSize;
 					tempSize = 0.025f;
 				}
