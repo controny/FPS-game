@@ -11,7 +11,7 @@
 using namespace ECS;
 using namespace std;
 
-const float GAME_TIME = 60.0f;
+const float GAME_TIME = 20.0f;
 const float READY_TIME = 2.0f;
 
 class GameSystem : public EntitySystem,
