@@ -36,8 +36,8 @@ struct TextComponent {
 	FT_Library ft;
 	FT_Face face;
 
-	TextComponent(string info, string text, GLfloat _x, GLfloat _y, GLfloat _scale, glm::vec3 _color, string font_dir) {
-		init(info, text, _x, _y, _scale, _color, font_dir);
+	TextComponent(string info, string text, GLfloat _x, GLfloat _y, GLfloat _scale, GLfloat _window_width, GLfloat _window_height, glm::vec3 _color, string font_dir) {
+		init(info, text, _x, _y, _scale, _window_width, _window_height, _color, font_dir);
 	}
 
 	void setText(string _text) {
@@ -50,7 +50,7 @@ struct TextComponent {
 		this->y_pos = window_height * this->y;
 		this->size_scale = min(window_width, window_height) / 600.0f * scale;
 		refreshBuffers();
-		cout << x_pos << ' ' << y_pos << endl;
+		//cout << x_pos << ' ' << y_pos << endl;
 	}
 
 	void refreshBuffers() {
@@ -113,7 +113,7 @@ struct TextComponent {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void init(string _info, string _text, GLfloat _x, GLfloat _y, GLfloat _scale, glm::vec3 _color, string _font_dir) {
+	void init(string _info, string _text, GLfloat _x, GLfloat _y, GLfloat _scale, GLfloat _window_width, GLfloat _window_height, glm::vec3 _color, string _font_dir) {
 		info = _info;
 		color = _color;
 		x = _x;
@@ -183,6 +183,7 @@ struct TextComponent {
 			FT_Done_FreeType(ft);
 		}
 		
+		setPos(_window_width, _window_height);
 		refreshBuffers();
 	}
 };

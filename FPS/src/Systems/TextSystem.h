@@ -34,7 +34,7 @@ public:
 		});
 	}
 
-	void init() {
+	TextSystem() {
 		last_window_width = last_window_height = 0;
 	}
 
@@ -44,9 +44,10 @@ public:
 
 		int window_width, window_height;
 		glfwGetWindowSize(windowCHandle->Window, &window_width, &window_height);
-		
+
 		if (last_window_width != window_width || last_window_height != window_height) {
 			world->each<TextComponent>([&](Entity* ent, ComponentHandle<TextComponent> textCHandle) -> void {
+				cout << textCHandle->info << endl;
 				textCHandle->setPos(window_width, window_height);
 			});
 

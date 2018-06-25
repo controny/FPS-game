@@ -167,6 +167,7 @@
     <ClInclude Include="src\shaders\shader.h" />
     <ClInclude Include="src\Systems\CameraMovingSystem.h" />
     <ClInclude Include="src\Systems\CollisionSystem.h" />
+    <ClInclude Include="src\Systems\GameSystem.h" />
     <ClInclude Include="src\Systems\MonsterCreationSystem.h" />
     <ClInclude Include="src\Systems\HitProcessingSystem.h" />
     <ClInclude Include="src\Systems\KeyPressingSystem.h" />
