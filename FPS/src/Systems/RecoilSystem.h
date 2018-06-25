@@ -5,6 +5,7 @@
 #include <Components/WindowInfoSingletonComponent.h>
 #include <Events/MouseMovementEvent.h>
 #include <Events/KeyEvents.h>
+#include <Events/FireEvent.h>
 #include <iostream>
 #include <ctime>
 #include <stdlib.h>
@@ -16,7 +17,7 @@ using namespace ECS;
 // 后坐力系统，更改 camera 仰角（和鼠标移动效果一样）和准心大小
 class RecoilSystem : public EntitySystem,
 	public EventSubscriber<KeyPressEvent>,
-	public EventSubscriber<MousePressEvent> {
+	public EventSubscriber<FireEvent> {
 public:
 	const float move_x = 3.0f, move_y = 10.0f, t = 0.3f;//move_x,move_y:总前进的偏移值;
 	float dx = 0, dy = 0, bx = 0, by = 0;//dx,dy:每一次tick前进的偏移值;bx,by:每一次tick返回的偏移值
@@ -27,7 +28,7 @@ public:
 	virtual void configure(class World* world) override
 	{
 		world->subscribe<KeyPressEvent>(this);
-		world->subscribe<MousePressEvent>(this);
+		world->subscribe<FireEvent>(this);
 	}
 
 	virtual void unconfigure(class World* world) override
@@ -59,27 +60,23 @@ public:
 	float getNumberInNormalDistribution(float mean, float std_dev) {
 		return mean + (uniform2NormalDistribution()*std_dev);
 	}
-	virtual void receive(class World* world, const MousePressEvent& event) override
+	virtual void receive(class World* world, const FireEvent& event) override
 	{
 		// 怎么实现后坐力？跳上去之后还能回来？而且过渡自然？
 		
 		/*连续点击时当dt<0才会触发鼠标点击事件*/
-		if (event.key == MOUSE_LEFT && dt <= 0) {
-			world->each<PostComponent>([&](Entity* ent, ComponentHandle<PostComponent> postCHandle) -> void {
-				dx = move_x;
-				dy = move_y;
-				bx = -move_x;
-				by = -move_y;
-				
-				dSize = tempSize;
-				bSize = desSize;
+		world->each<PostComponent>([&](Entity* ent, ComponentHandle<PostComponent> postCHandle) -> void {
+			dx = move_x;
+			dy = move_y;
+			bx = -move_x;
+			by = -move_y;
 
-				dt = 0.15f;
-			});
-		}
-		else {
 			dSize = tempSize;
-		}
+			bSize = desSize;
+
+			dt = 0.15f;
+		});
+		
 	}
 
 	RecoilSystem() {

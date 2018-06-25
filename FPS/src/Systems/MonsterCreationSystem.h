@@ -67,17 +67,17 @@ public:
 			float pos = (rand() - 0.5) / double(RAND_MAX) * 2 * (square - 10);
 			float velocity = max(rand() / float(RAND_MAX) * 40, 15.0f);
 			
-			float x, z;
-			if (area > 0 && area < 1) {
+			float x = 0.0f, z = 0.0f;
+			if (area >= 0 && area < 1) {
 				x = away; z = pos;
 			}
-			if (area > 1 && area < 2) {
+			if (area >= 1 && area < 2) {
 				x = -away; z = pos;
 			}
-			if (area > 2 && area < 3) {
+			if (area >= 2 && area < 3) {
 				x = pos; z = away;
 			}
-			if (area > 3 && area < 4) {
+			if (area >= 3 && area <= 4) {
 				x = pos; z = -away;
 			}
 
