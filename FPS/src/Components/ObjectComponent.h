@@ -122,9 +122,11 @@ struct ObjectComponent {
 	}
 	 
 	//加载模型的情况
-	ObjectComponent(vector<Texture> _textures, vector<Mesh> _meshes) {
+	ObjectComponent(vector<Texture> _textures, vector<Mesh> _meshes, string _id = "") {
 		textures_loaded = _textures;
 		meshes = _meshes;
+		id = _id;
+		pbr = false;
 	}
 
 	ObjectComponent(string const &path, string _id="", bool _pbr = false, bool gamma = false) : gammaCorrection(gamma)
