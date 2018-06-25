@@ -36,6 +36,7 @@
 #include <Systems/HitProcessingSystem.h>
 #include <Systems/TextSystem.h>
 #include <Systems/MonsterCreationSystem.h>
+#include <Systems/GameSystem.h>
 
 
 class Game {
@@ -52,6 +53,8 @@ public:
 	void init(GLFWwindow* _window) {
 		world = World::createWorld();
 		window = _window;
+		int window_width, window_height;
+		glfwGetWindowSize(window, &window_width, &window_height);
 
 		char exeFullPath[MAX_PATH]; // Full path
 		GetModuleFileName(NULL, exeFullPath, MAX_PATH);
@@ -76,6 +79,7 @@ public:
 		world->registerSystem(new RenderSystem(gameRootPath + "/src/Shaders/"));
 		world->registerSystem(new GUISystem());  // Must place after render system
 		world->registerSystem(new TextSystem());
+		world->registerSystem(new GameSystem());
 
 
 		// Singleton components
@@ -88,14 +92,15 @@ public:
 		
 		Entity* bullet_text = world->create();
 		Entity* hp_text = world->create();
-		Entity* test_post = world->create();  // ä»¥åŽ post èµ‹ç»™ gun çš?entityï¼ŒçŽ°åœ¨åªæ˜¯æµ‹è¯?
+		Entity* test_post = world->create();  // ä»¥åŽ post èµ‹ç»™ gun çš?entityï¼ŒçŽ°åœ¨åªæ˜¯æµ‹è�?
 		Entity* old_man = world->create();
 
 		Entity* hitParticles = world->create();
 		Entity* gunFire = world->create();
 
-		Entity* disappear = world->create();	// æ€ªç‰©æ¶ˆå¤±çš„ç²’å­æ•ˆæž?
+		Entity* disappear = world->create();	// æ€ªç‰©æ¶ˆå¤±çš„ç²’å­æ•ˆæ�?
 		Entity* ground = world->create();
+		Entity* time_text = world->create();
 
 		// Initialize static resources of Particle Component
 		Resource::ParticleResource particleResource;
@@ -114,7 +119,7 @@ public:
 			Entity* box = world->create();
 			if (i == 0) {
 				box_resource.init(10.0f, 20.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
-				box->assign<ObjectComponent>(box_resource.vertices, box_resource.indices, box_resource.textures);
+				box->assign<ObjectComponent>(box_resource.vertices, box_resource.indices, box_resource.textures, "box0");
 				box->assign<PositionComponent>(glm::vec3(0.0f, 10.0f, 0.0f));
 				box->assign<CollisionComponent>(10.0f, 30.0f, 10.0f);
 			}
@@ -126,7 +131,7 @@ public:
 				if (i == 4) z = -20.0f;
 
 				box_resource.init(10.0f, 10.0f, 10.0f, textureResource.container_diffuse, textureResource.container_specular);
-				box->assign<ObjectComponent>(box_resource.vertices, box_resource.indices, box_resource.textures);
+				box->assign<ObjectComponent>(box_resource.vertices, box_resource.indices, box_resource.textures, "guarding_box");
 				box->assign<PositionComponent>(glm::vec3(x, 5.0f, z));
 				box->assign<CollisionComponent>(10.0f, 10.0f, 10.0f);
 			}
@@ -204,16 +209,18 @@ public:
 
 		player->assign<ObjectComponent>(gameRootPath + "/resources/objects/gun/Ak-74.obj", "player");
 
-		player->assign<PositionComponent>(glm::vec3(15.0f, 0.6f, 0.0f));
-		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));  // ç¢°æ’žæ£€æµ‹éœ€è¦ï¼Œè¦ç»™ä¸ªå°ä¸€ç‚¹å‘ä¸‹çš„åˆé€Ÿåº¦ï¼›é¿å…ä¸€å¼€å§‹æ£€æµ‹ä¸åˆ°ç¢°æ’žæŽ‰ä¸‹åŽ»
+
+		player->assign<PositionComponent>(glm::vec3(30.0f, 0.6f, 0.0f));
+		player->assign<MovementComponent>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f, -60.0f, 0.0f));
 
 		player->assign<PlayerComponent>();
 		player->assign<TransformComponent>(glm::vec3(-0.63f, 4.52f, 2.0f), glm::vec3(0.022f, 0.022f,0.022f), 0.0f, 180.0f);
 		player->assign<CameraComponent>(glm::vec3(0.0f, 5.0f, 0.0f));
         player->assign<CollisionComponent>(-4.0f, 4.0f, 0.0f, 16.0f, -1.5f, 1.5f);
 
-		bullet_text->assign<TextComponent>("bullet_info", "30 / 30", 20.0f, 30.0f, 0.8f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
-		hp_text->assign<TextComponent>("score", "score: ", 600.0f, 30.0f, 0.8f, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
+		bullet_text->assign<TextComponent>("bullet_info", "30 / 30", 0.05f, 0.05f, 0.8f, window_width, window_height, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
+		hp_text->assign<TextComponent>("score", "score: ", 0.4f, 0.05f, 0.8f, window_width, window_height, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
+		time_text->assign<TextComponent>("time", " ", 0.8f, 0.05f, 0.8f, window_width, window_height, glm::vec3(0.5, 0.8f, 0.2f), gameRootPath + "/resources/fonts/");
 
 		test_post->assign<PostComponent>(glm::vec3(0.0f, 1.0f, 0.0f), 0.025f);
 

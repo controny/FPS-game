@@ -20,12 +20,12 @@ struct Particle {
 };
 
 struct ParticleComponent {
-	int MAX_TOTAL_NUM = 10000; // used to control the exsiting time of particles
-	int producedParticles = MAX_TOTAL_NUM; // not to render particles by default
+	int MAX_TOTAL_NUM; // used to control the exsiting time of particles
+	int producedParticles; // not to render particles by default
 
 	int maxParticles;
 	int particlesCount;
-	int lastUsedParticle = 0;
+	int lastUsedParticle;
 	float life;
 	float spread;
 	// number of new particles per millisecond
@@ -35,6 +35,7 @@ struct ParticleComponent {
 	// main direction of explosion
 	glm::vec3 maindir;
 	float size;
+	bool randomSize;
 
 	GLfloat* g_particule_position_size_data;
 	GLubyte* g_particule_color_data;
@@ -54,15 +55,13 @@ struct ParticleComponent {
 		: resource(_resource), id(_id), maxParticles(_maxParticles), life(_life), newParticlesPerMS(_newParticlesPerMS), spread(_spread),
 		maindir(_maindir), color_r(_color_r), color_g(_color_g), color_b(_color_b), color_a(_color_a)
 	{
+		MAX_TOTAL_NUM = 10000;
+		randomSize = true;
 		container = new Particle[maxParticles];
 		g_particule_position_size_data = new GLfloat[maxParticles * 4];
 		g_particule_color_data = new GLubyte[maxParticles * 4];
 		
-
-		for (int i = 0; i<maxParticles; i++) {
-			container[i].life = -1.0f;
-			container[i].cameradistance = -1.0f;
-		}
+		reset();
 
 		// The VBO containing the 4 vertices of the particles.
 		// Thanks to instancing, they will be shared by all particles.
@@ -87,6 +86,16 @@ struct ParticleComponent {
 		glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
 		// Initialize with empty (NULL) buffer : it will be updated later, each frame.
 		glBufferData(GL_ARRAY_BUFFER, maxParticles * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	}
+
+	void reset() {
+		producedParticles = MAX_TOTAL_NUM;
+		lastUsedParticle = 0;
+
+		for (int i = 0; i<maxParticles; i++) {
+			container[i].life = -1.0f;
+			container[i].cameradistance = -1.0f;
+		}
 	}
 
 };

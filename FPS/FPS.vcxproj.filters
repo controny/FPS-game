@@ -56,6 +56,7 @@
     <ClInclude Include="src\Systems\TextSystem.h" />
     <ClInclude Include="src\Events\TextChangeEvent.h" />
     <ClInclude Include="src\Systems\MonsterCreationSystem.h" />
+    <ClInclude Include="src\Systems\GameSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaderPrograms\object.fs" />
