@@ -2,11 +2,11 @@
 
 SYSU CG final project - Team 15
 
-Contributors：[James-Yip](https://github.com/James-Yip), [Exocoetidate-Xuyouri](https://github.com/Exocoetidate-Xuyouri), [YYPyyp](https://github.com/YYPyyp), [controny](https://github.com/controny), [YHJRUBY](https://github.com/YHJRUBY)
+Thanks to the contributors [James-Yip](https://github.com/James-Yip), [Exocoetidate-Xuyouri](https://github.com/Exocoetidate-Xuyouri), [YYPyyp](https://github.com/YYPyyp), [controny](https://github.com/controny), [YHJRUBY](https://github.com/YHJRUBY) !
 
 ## Introduction
 
-Kill the monsters the prevent them touch the box in the middle. Protect the old man!
+Kill the monsters the prevent them hitting the box in the middle. Protect the old man!
 
 ### Control
 
@@ -15,7 +15,7 @@ Kill the monsters the prevent them touch the box in the middle. Protect the old 
 * SHIFT to run
 * SPACE to jump
 
-![image1](C:\Users\Ruby\Desktop\FPS-game\assets\image1.gif)
+![image1](./assets/image1.gif)
 
 ## Developing environment & 3rd Party Library
 
@@ -47,24 +47,24 @@ Kill the monsters the prevent them touch the box in the middle. Protect the old 
 
 3. Complex Lighting (PBR) 
 
-   ![image8](C:\Users\Ruby\Desktop\FPS-game\assets\image8.png)
+   ![image8](./assets/image8.png)
 
 4. Shadow Improvement (PCSS)
 
-   ![image19](C:\Users\Ruby\Desktop\FPS-game\assets\image19.png)
+   ![image19](./assets/image19.png)
 
 5. Gravity System and Collision Detection
 
-   ![image9](C:\Users\Ruby\Desktop\FPS-game\assets\image9.gif)
+   ![image9](./assets/image9.gif)
 
 6. Skeletal Animation
 
-   ![image13](C:\Users\Ruby\Desktop\FPS-game\assets\image13.gif)
+   ![image13](./assets/image13.gif)
 
 7. Particle System 
 
-   ![particle](C:\Users\Ruby\Desktop\FPS-game\assets\particle.PNG)
+   ![particle](./assets/particle.PNG)
 
 8. Recoil System
 
-   ![image14](C:\Users\Ruby\Desktop\FPS-game\assets\image14.gif)
+   ![image14](./assets/image14.gif)
